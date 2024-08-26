@@ -24,9 +24,9 @@
           for (const extension of extensions) {
             const exButton = document.createElement('button');
             exButton.className = 'extensionButton';
-            exButton.innerText = extension;
+            exButton.innerText = extension[0];
             exButton.addEventListener('click', (e) => {
-              clickHandler(extension);
+              clickHandler(extension[1]);
             });
             // exButton.addAttribute =
             //   ('onClick',
@@ -41,7 +41,7 @@
     }
   });
 
-  function clickHandler(extension) {
-    vscode.postMessage({ type: 'extensionSelected', value: extension });
+  function clickHandler(extensionPath) {
+    vscode.postMessage({ type: 'extensionSelected', value: extensionPath });
   }
 })();

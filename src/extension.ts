@@ -100,9 +100,11 @@ class ExtensionsSidebarViewProvider implements vscode.WebviewViewProvider {
         const extensions = vscode.extensions.all.filter(
           (extension) => !extension.id.startsWith('vscode.')
         );
-        console.log(extensions);
         const extensionsList = extensions.map((extensionObj) => {
-          return extensionObj.packageJSON.displayName;
+          let displayName = extensionObj.packageJSON.displayName;
+          let extensionPath = JSON.stringify(extensionObj.extensionUri.path);
+          return [displayName, extensionPath];
+          //JSON.stringify(extensionObj.extensionUri.path)
         });
         return [...extensionsList];
       }
@@ -115,8 +117,8 @@ class ExtensionsSidebarViewProvider implements vscode.WebviewViewProvider {
         case 'extensionSelected': {
           console.log('extension selected!');
           // const parsedData = data.json();
-          const extensionsScan = data.message;
-          vscode.commands.executeCommand('scanExtension', data);
+          const extensionsScan = JSON.stringify(data.value);
+          vscode.commands.executeCommand('scanExtension', data.value);
           break;
         }
       }
