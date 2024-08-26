@@ -17,9 +17,11 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand('suscode.displayExtensions', () => {
       console.log('command registered');
-      provider.displayExtensions(extensions);
+      provider.displayExtensions(extensions); //-->
     })
   );
+  context.subscriptions.push(scanWindow);
+
   // Use the console to output diagnostic information (console.log) and errors (console.error)
   // This line of code will only be executed once when your extension is activated
   console.log('Congratulations, your extension "suscode" is now active!');
@@ -38,6 +40,37 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(disposable);
 }
+// how to open new webview in response to
+const scanWindow = vscode.commands.registerCommand(
+  'scanExtension',
+  (extensionScan) => {
+    const panel = vscode.window.createWebviewPanel(
+      'extensionScans',
+      'SusCode Results',
+      vscode.ViewColumn.One,
+      {
+        enableScripts: true,
+      }
+    );
+    panel.webview.html = getWebviewContent(extensionScan);
+  }
+);
+
+function getWebviewContent(extensionScan: string) {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+</head>
+<body>
+    <h1> Scan Results Go Here</h1>
+    <p>SusCode Extension Scan Results for ${extensionScan}</p>
+</body>
+</html>`;
+}
+
 class ExtensionsSidebarViewProvider implements vscode.WebviewViewProvider {
   public static readonly viewType = 'ExtensionsSidebarViewProvider';
 
@@ -77,9 +110,14 @@ class ExtensionsSidebarViewProvider implements vscode.WebviewViewProvider {
         case 'getExtensions': {
           const extensions = getExtensions();
           this.displayExtensions(extensions);
+          break;
         }
         case 'extensionSelected': {
           console.log('extension selected!');
+          // const parsedData = data.json();
+          const extensionsScan = data.message;
+          vscode.commands.executeCommand('scanExtension', data);
+          break;
         }
       }
     });
@@ -142,6 +180,7 @@ class ExtensionsSidebarViewProvider implements vscode.WebviewViewProvider {
 }
 
 const nonce = getNonce();
+//---- do I need this? so that it has access to extensions above?----------//
 // function getExtensions2() {
 //   const extensions = vscode.extensions.all.filter(
 //     (extension) => !extension.id.startsWith('vscode.')
