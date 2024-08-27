@@ -2,6 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import path from 'path';
+import { reader } from './fileFinder.ts';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -14,12 +15,12 @@ export function activate(context: vscode.ExtensionContext) {
       provider
     )
   );
-  context.subscriptions.push(
-    vscode.commands.registerCommand('suscode.displayExtensions', () => {
-      console.log('command registered');
-      provider.displayExtensions(extensions); //-->
-    })
-  );
+  // context.subscriptions.push(
+  //   vscode.commands.registerCommand('suscode.displayExtensions', () => {
+  //     console.log('command registered');
+  //     provider.displayExtensions(extensions); //-->
+  //   })
+  // );
   context.subscriptions.push(scanWindow);
 
   // Use the console to output diagnostic information (console.log) and errors (console.error)
@@ -116,9 +117,10 @@ class ExtensionsSidebarViewProvider implements vscode.WebviewViewProvider {
         }
         case 'extensionSelected': {
           console.log('extension selected!');
-          // const parsedData = data.json();
+          //where extension processing occurs
           const extensionsScan = JSON.stringify(data.value);
           vscode.commands.executeCommand('scanExtension', data.value);
+          reader(extensionsScan);
           break;
         }
       }
