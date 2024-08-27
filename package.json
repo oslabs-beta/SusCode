@@ -16,6 +16,14 @@
       {
         "command": "suscode.helloWorld",
         "title": "Hello World"
+      },
+      {
+        "command": "suscode.filetest",
+        "title": "filetest"
+      },
+      {
+        "command": "suscode.betterStreamTest",
+        "title": "testScan"
       }
     ]
   },
