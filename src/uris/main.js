@@ -13,13 +13,6 @@
       case 'displayExtensions': {
         function displayExtensions(extensions) {
           const exButtons = document.querySelector('.extensions-list');
-          // const exButton = document.createElement('button');
-          // exButton.className = 'extensionButton';
-          // exButton.innerText = extensions[1];
-          // exButton.addEventListener('click', (e) => {
-          //   clickHandler(extension);
-          // });
-          // exButtons.appendChild(exButton);
 
           for (const extension of extensions) {
             const exButton = document.createElement('button');
@@ -28,11 +21,6 @@
             exButton.addEventListener('click', (e) => {
               clickHandler(extension[1]);
             });
-            // exButton.addAttribute =
-            //   ('onClick',
-            //   () => {
-            //     clickHandler(extension);
-            //   });
             exButtons.appendChild(exButton);
           }
         }
