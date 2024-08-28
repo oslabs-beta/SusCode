@@ -2,7 +2,8 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import path from 'path';
-import { reader } from './fileFinder.ts';
+import { reader } from './fileFinder';
+import { json } from 'node:stream/consumers';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -116,11 +117,12 @@ class ExtensionsSidebarViewProvider implements vscode.WebviewViewProvider {
           break;
         }
         case 'extensionSelected': {
-          console.log('extension selected!');
           //where extension processing occurs
-          const extensionsScan = JSON.stringify(data.value);
-          vscode.commands.executeCommand('scanExtension', data.value);
-          reader(extensionsScan);
+
+          const extensionsScan = JSON.stringify(data.value); //might not need this. just coming in a data object
+          console.log('extension selected!', data.value, extensionsScan);
+          reader(data.value);
+          vscode.commands.executeCommand('scanExtension', extensionsScan);
           break;
         }
       }
