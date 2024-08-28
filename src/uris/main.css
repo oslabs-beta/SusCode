@@ -1,0 +1,10 @@
+body {
+  background-color: transparent;
+}
+
+.extensionButton {
+  width: 100%;
+  display: flex;
+  margin-bottom: 0.4em;
+  border: 1px solid var(--vscode-input-border);
+}

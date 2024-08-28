@@ -12,7 +12,20 @@
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
+    "views": {
+      "explorer": [
+        {
+          "type": "webview",
+          "id": "ExtensionsSidebarViewProvider",
+          "name": "Suscode"
+        }
+      ]
+    },
     "commands": [
+      {
+        "command": "suscode.displayExtensions",
+        "title": "Display Extensions"
+      },
       {
         "command": "suscode.helloWorld",
         "title": "Hello World"
@@ -24,6 +37,10 @@
       {
         "command": "suscode.betterStreamTest",
         "title": "testScan"
+      },
+      {
+        "command": "scanExtension",
+        "title": "Open extension scan webview"
       }
     ]
   },
