@@ -2,8 +2,18 @@ import * as vscode from 'vscode';
 import path from 'path';
 import App from './sidebar/sidebarApp';
 import fs from 'fs';
+import { DisplaySettings } from '@mui/icons-material';
 
 export function activate(context: vscode.ExtensionContext) {
+  // const panel = vscode.window.createWebviewPanel(
+  //   'extensionScans',
+  //   'SusCode Results',
+  //   vscode.ViewColumn.One,
+  //   {
+  //     enableScripts: true,
+  //   }
+  // );
+
   const provider = new ExtensionsSidebarViewProvider(context.extensionUri);
 
   const sidebar = vscode.window.registerWebviewViewProvider(
@@ -12,50 +22,85 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('suscode.displayExtensions', () => {
-      console.log('command registered');
-      const extensions = getExtensions();
-      provider.displayExtensions(extensions); //-->
-    })
+    vscode.commands.registerCommand(
+      'suscode.displayExtensions',
+      (ExtensionsSidebarViewProvider) => {
+        console.log('command registered');
+        const extensions = getExtensions();
+        // provider.displayExtensions(extensions); //-->
+        function getExtensions() {
+          const extensions = vscode.extensions.all.filter(
+            (extension) => !extension.id.startsWith('vscode.')
+          );
+          const extensionsList = extensions.map((extensionObj) => {
+            let displayName = extensionObj.packageJSON.displayName;
+            let extensionPath = JSON.stringify(extensionObj.extensionUri.path);
+            return [displayName, extensionPath];
+          });
+          return [...extensionsList];
+        }
+
+        // sidebar.displayExtensions(extensions)
+        ExtensionsSidebarViewProvider.webview.postMessage({
+          type: 'displayExtensions',
+          value: extensions,
+          targetOrigin: sidebar,
+        });
+      }
+    )
   );
 
-  // const scanWindow = vscode.commands.registerCommand(
-  //   'scanExtension',
-  //   (extensionScan, context) => {
-  //     const panel = vscode.window.createWebviewPanel(
-  //       'extensionScans',
-  //       'SusCode Results',
-  //       vscode.ViewColumn.One,
-  //       {
-  //         enableScripts: true,
-  //       }
-  //     );
+  vscode.commands.executeCommand(
+    'suscode.displayExtensions',
+    ExtensionsSidebarViewProvider
+  );
 
-  //     const htmlPath = path.join(context.extensionPath, 'src', 'index.html');
-  //     let htmlContent = fs.readFileSync(htmlPath, 'utf8');
-  //     // Replace paths in the HTML to be compatible with the webview
-  //     htmlContent = htmlContent.replace(/(href|src)=“\//g, (match, p1) => {
-  //       return `${p1}=“${panel.webview
-  //         .asWebviewUri(
-  //           vscode.Uri.file(path.join(context.extensionPath, 'src'))
-  //         )
-  //         .toString()}/`;
-  //     });
-  //     // Set the HTML content to the webview
-  //     panel.webview.html = htmlContent;
+  ////////////////////////////////////////////////////////
+  // Panel
+  ////////////////////////////////////////////////////////
+  const scanWindow = vscode.commands.registerCommand(
+    'scanExtension',
+    (extensionScan, context) => {
+      const panel = vscode.window.createWebviewPanel(
+        'extensionScans',
+        'SusCode Results',
+        vscode.ViewColumn.One,
+        {
+          enableScripts: true,
+        }
+      );
 
-  //     // panel.webview.html = getWebviewContent(extensionScan);
-  //     // const scriptUri = panel.webview.asWebviewUri(
-  //     //   vscode.Uri.joinPath(context.extensionURI, 'src', 'uris', 'main.js')
-  //     // );
-  //   }
-  // );
-  // context.subscriptions.push(scanWindow, sidebar);
-  // sidebar.webview.html = getWebviewHTML;
+      const htmlPath = path.join(
+        context.extensionPath,
+        // vscode.extensionPath,
+        'src',
+        'panel',
+        'panelIndex.html'
+      );
 
-  context.subscriptions.push(sidebar);
+      // Read the HTML content from the file
+      let htmlContent = fs.readFileSync(htmlPath, 'utf8');
 
-  console.log('Congratulations, your extension "suscode" is now active!');
+      // Get the webview URI for the JavaScript file
+      // const scriptUri = webview.asWebviewUri(
+      //   vscode.Uri.file(
+      //     path.join(this._extensionUri.fsPath, 'dist', 'panel.js')
+      //   )
+      // );
+
+      // Replace CSP and asset URIs in the HTML content
+      // htmlContent = htmlContent
+      //   .replace(/\${nonce}/g, nonce) // Replace the nonce placeholder
+      //   .replace(/\${webview\.cspSource}/g, webview.cspSource) // Replace the webview.cspSource placeholder
+      //   .replace('../../dist/panel.js', scriptUri.toString()); // Replace the script path with webview URI
+
+      panel.webview.html = htmlContent;
+      console.log('htmlContent within panel', htmlContent);
+    }
+  );
+  context.subscriptions.push(scanWindow, sidebar);
+
+  ////////////////////////////////////////////////////////
 }
 
 class ExtensionsSidebarViewProvider implements vscode.WebviewViewProvider {
@@ -122,75 +167,10 @@ class ExtensionsSidebarViewProvider implements vscode.WebviewViewProvider {
       .replace(/\${webview\.cspSource}/g, webview.cspSource) // Replace the webview.cspSource placeholder
       .replace('../../dist/sidebar.js', scriptUri.toString()); // Replace the script path with webview URI
 
+    console.log('htmlContent within sidebar', htmlContent);
+
     return htmlContent;
   }
-
-  // public getNonce() {
-  //   let text = '';
-  //   const possible =
-  //     'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  //   for (let i = 0; i < 32; i++) {
-  //     text += possible.charAt(Math.floor(Math.random() * possible.length));
-  //   }
-  //   return text;
-  // }
-  // const nonce: string = this.getNonce();
-  // public getWebviewHTML(webview: vscode.Webview) {
-  //   // Generate a nonce
-  //   const nonce = this.getNonce();
-
-  //   // Path to your HTML file
-  //   const htmlPath = path.join(
-  //     this._extensionUri.fsPath,
-  //     'src',
-  //     'sidebar',
-  //     'sidebarIndex.html'
-  //   );
-
-  //   // Read the HTML content from the file
-  //   let htmlContent = fs.readFileSync(htmlPath, 'utf8');
-
-  //   // Replace placeholders for asset paths
-  //   htmlContent = htmlContent.replace(/(href|src)="\//g, (match, p1) => {
-  //     return `${p1}="${webview
-  //       .asWebviewUri(
-  //         vscode.Uri.file(path.join(this._extensionUri.fsPath, 'src'))
-  //       )
-  //       .toString()}/`;
-  //   });
-
-  //   // Replace CSP placeholders
-  //   htmlContent = htmlContent
-  //     .replace(/\${nonce}/g, nonce) // Replace the nonce placeholder
-  //     .replace(/\${webview\.cspSource}/g, webview.cspSource); // Replace the webview.cspSource placeholder
-
-  //   return htmlContent;
-  // }
-
-  // public getWebviewHTML(webview: vscode.Webview) {
-  //   const htmlPath = path.join(
-  //     this._extensionUri.fsPath,
-  //     'src',
-  //     'sidebar',
-  //     'sidebarIndex.html'
-  //   );
-  //   let htmlContent = fs.readFileSync(htmlPath, 'utf8');
-
-  //   htmlContent = htmlContent.replace(/(href|src)="\//g, (match, p1) => {
-  //     return `${p1}="${webview
-  //       .asWebviewUri(
-  //         vscode.Uri.file(path.join(this._extensionUri.fsPath, 'src'))
-  //       )
-  //       .toString()}/`;
-  //   });
-  //   const cspSource = webview.cspSource; // CSP source for styles
-
-  //   htmlContent = htmlContent.replace(
-  //     /<meta http-equiv="Content-Security-Policy"[^>]*>/,
-  //     `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'nonce-${nonce}'; style-src ${cspSource};">`
-  //   );
-  //   return htmlContent;
-  // }
 
   public displayExtensions(extensions: any[] | undefined) {
     console.log('within displayExtensions');
@@ -203,17 +183,17 @@ class ExtensionsSidebarViewProvider implements vscode.WebviewViewProvider {
     }
   }
 }
-function getExtensions() {
-  const extensions = vscode.extensions.all.filter(
-    (extension) => !extension.id.startsWith('vscode.')
-  );
-  const extensionsList = extensions.map((extensionObj) => {
-    let displayName = extensionObj.packageJSON.displayName;
-    let extensionPath = JSON.stringify(extensionObj.extensionUri.path);
-    return [displayName, extensionPath];
-  });
-  return [...extensionsList];
-}
+// function getExtensions() {
+//   const extensions = vscode.extensions.all.filter(
+//     (extension) => !extension.id.startsWith('vscode.')
+//   );
+//   const extensionsList = extensions.map((extensionObj) => {
+//     let displayName = extensionObj.packageJSON.displayName;
+//     let extensionPath = JSON.stringify(extensionObj.extensionUri.path);
+//     return [displayName, extensionPath];
+//   });
+//   return [...extensionsList];
+// }
 
 function getNonce() {
   let text = '';
@@ -226,40 +206,3 @@ function getNonce() {
 }
 const nonce = getNonce();
 export function deactivate() {}
-
-// private _getHtmlForWebview(webview: vscode.Webview) {
-// const scriptUri = webview.asWebviewUri(
-//   vscode.Uri.joinPath(this._extensionUri, 'src', 'uris', 'main.js')
-// );
-// const styleMainUri = webview.asWebviewUri(
-//   vscode.Uri.joinPath(this._extensionUri, 'src', 'uris', 'main.css')
-// );
-// const styleVSCodeUri = webview.asWebviewUri(
-//   vscode.Uri.joinPath(this._extensionUri, 'src', 'uris', 'vscode.css')
-// );
-
-//   return `<!DOCTYPE html>
-//           <html lang="en">
-//           <head>
-//               <meta charset="UTF-8">
-
-//               <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource}; script-src 'nonce-${nonce}';">
-
-//               <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-//               <link href="${styleMainUri}" rel="stylesheet">
-//               <link href="${styleVSCodeUri}" rel="stylesheet">
-
-//               <title>SusCode</title>
-//           </head>
-//           <body class ="body">
-//               <div class="main">
-//                   <button class="get-extensions-button">Get Extensions</button>
-//                   <div class="extensions-list"></div>
-//               </div>
-//               <script nonce="${nonce}" src="${scriptUri}"></script>
-//           </body>
-//           </html>`;
-// }
-
-//
