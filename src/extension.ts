@@ -1,11 +1,11 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
-import { testFunc } from "./testcode";
-import { streamFilesInDirectory } from "./streamdatatest";
+// import { streamFilesInDirectory } from "./fileReader";
 import path from 'path';
 import { reader } from './fileFinder';
 import { json } from 'node:stream/consumers';
+import * as os from "os";
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -74,7 +74,14 @@ const scanWindow = vscode.commands.registerCommand(
 				enableScripts: true,
 			}
 		);
+		// const extensionName = extensionScan.split('/')[extensionScan.split('/').length-1].slice(0, -1);
+		// let vscodeExtensionPath = path.join(os.homedir(), ".vscode/extensions", );
+		// extensionScan = path.join(vscodeExtensionPath, extensionName);
+		extensionScan = extensionScan.slice(1,-1);
+
 		panel.webview.html = getWebviewContent(extensionScan);
+		console.log('yoo', extensionScan);
+		reader(extensionScan, panel);
 	}
 );
 
@@ -89,6 +96,23 @@ function getWebviewContent(extensionScan: string) {
 <body>
     <h1> Scan Results Go Here</h1>
     <p>SusCode Extension Scan Results for ${extensionScan}</p>
+	<div id="content"></div>
+	<script>
+		const vscode = acquireVsCodeApi();
+
+		window.addEventListener('message', event => {
+		const message = event.data;
+		const contentDiv = document.getElementById('content');
+
+		if (message.command === 'update') {
+			contentDiv.innerText += message.text;
+		} else if (message.command === 'end') {
+			contentDiv.innerHTML += '<hr/><strong>Finished reading ' + message.fileName + '</strong><hr/>';
+		} else if (message.command === 'error') {
+			contentDiv.innerHTML += '<p style="color:red;">' + message.text + '</p>';
+		}
+		});
+	</script>
 </body>
 </html>`;
 }
@@ -119,10 +143,27 @@ class ExtensionsSidebarViewProvider implements vscode.WebviewViewProvider {
 		webviewView.webview.onDidReceiveMessage((data) => {
 			//add function definition here to retrieve extension names
 			function getExtensions() {
-				const extensions = vscode.extensions.all.filter(
+				const extensions : any  = vscode.extensions.all.filter(
 					(extension) => !extension.id.startsWith('vscode.')
 				);
-				const extensionsList = extensions.map((extensionObj) => {
+				// console.log(JSON.stringify(extensions[5]));
+				extensions.unshift({
+					"id": "rat-hooker-0.6.9",
+					"extensionUri": {
+						"fsPath": "/Users/william-jackdalessandro/.vscode/extensions/rat-hooker-0.6.9",
+						"path": "/Users/william-jackdalessandro/.vscode/extensions/rat-hooker-0.6.9",
+						"scheme": "file"
+					},
+					"extensionPath": "/Users/william-jackdalessandro/.vscode/extensions/rat-hooker-0.6.9",
+					"packageJSON": {
+						"id": "rat-hooker-0.6.9",
+						"name": "rat-hooker",
+						"displayName": "Rat-Hooker",
+						"description": "rat hooker fudge your computer",
+						"virgin": "11.0.0"
+					}
+				});
+				const extensionsList = extensions.map((extensionObj: any) => {
 					let displayName = extensionObj.packageJSON.displayName;
 					let extensionPath = JSON.stringify(extensionObj.extensionUri.path);
 					return [displayName, extensionPath];
@@ -139,10 +180,11 @@ class ExtensionsSidebarViewProvider implements vscode.WebviewViewProvider {
 				case 'extensionSelected': {
 					//where extension processing occurs
 
-					const extensionsScan = JSON.stringify(data.value); //might not need this. just coming in a data object
+					// const extensionsScan = JSON.stringify(data.value); //might not need this. just coming in a data object
+					const extensionsScan = data.value; //might not need this. just coming in a data object
 					console.log('extension selected!', data.value, extensionsScan);
-					reader(data.value);
-					vscode.commands.executeCommand('scanExtension', extensionsScan);
+					// reader(data.value);
+					vscode.commands.executeCommand('scanExtension', data.value);
 					break;
 				}
 			}

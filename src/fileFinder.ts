@@ -1,7 +1,9 @@
-const fs = require('fs');
-const path = require('path');
+import * as fs from 'fs';
+import * as path from 'path';
+import streamFilesInDirectory from './fileReader';
+import { WebviewPanel } from 'vscode';
 
-export function reader(extPath: string):void {
+export function reader(extPath: string, panel: WebviewPanel):void {
   // makes list of items in main directory
   console.log('inside fileFinder');
   console.log('dirArr: ', extPath);
@@ -15,9 +17,10 @@ export function reader(extPath: string):void {
       const toBeTested = foldArr.filter(el => el.match(extensionRegex) && el.match(/.jsx?$/i));
       // we can either evaluate test here OR pass the path into the test
       //currently only testing the first extension.js file (could have more than 1)
-      const readStream = fs.createReadStream(path.join(extenPath, toBeTested[0]), 'utf8');
+      // const readStream = fs.createReadStream(path.join(extenPath, toBeTested[0]), 'utf8');
+      streamFilesInDirectory(toBeTested, extenPath, panel);
       //this is where we import the test
-      console.log('readStream: ', readStream);
+      // console.log('readStream: ', readStream);
       // const tempWriteStream = fs.createWriteStream(__dirname + '/tempTestingPlaceholder.txt');
       // readStream.pipe(tempWriteStream);
     }
