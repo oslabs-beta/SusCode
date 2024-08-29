@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import path from 'path';
 import fs from 'fs';
+import { reader } from './fileFinder';
 
 // moved getNonce up here - starting getting an error when it was below function activate
 function getNonce() {
@@ -100,6 +101,11 @@ export function activate(context: vscode.ExtensionContext) {
 
       // Set the HTML content to the webview
       panel.webview.html = getPanelHTML();
+
+
+	  extensionScan = extensionScan[0].slice(1,-1);
+	  console.log(extensionScan);
+	  reader(extensionScan, panel);
 
       //-------------------------old attempt-------------------------------------------//
 

@@ -15,12 +15,41 @@ function App() {
   // initialize state for the eval scan
 
   // event listener is looking for vscode.postMessage({ type: 'readme', value: 'read me data string' });
+
+  window.addEventListener('message', event => {
+		const message = event.data;
+		
+		if (message.command === 'update') {
+			
+		} else if (message.command === 'end') {
+			
+		} else if (message.command === 'error') {
+			
+		}
+		});
+
+
   useEffect(() => {
     window.addEventListener('message', (event) => {
+      const contentDiv: any = document.getElementById('content');
       const message = event.data; // The json data that the extension sent
       switch (message.type) {
         case 'readMe': {
           setReadMe(message.value);
+          break;
+        }
+        // Use of eval() method found on line .
+        case 'update': {
+          // contentDiv.innerText += message.text;
+          contentDiv.innerHTML += '<p>' + message.text + '</p>';
+          break;
+        }
+        case 'end': {
+          contentDiv.innerHTML += '<hr/><strong>Finished reading ' + message.fileName + '</strong><hr/>';
+          break;
+        }
+        case 'error': {
+          contentDiv.innerHTML += '<p style="color:red;">' + message.text + '</p>';
           break;
         }
       }
@@ -61,7 +90,7 @@ function App() {
         </Tabs>
         <Box sx={{ padding: 2 }}>
           <Typography variant='body1' fontWeight='light'>
-            Use of eval() method found on line .
+          <div id="content"></div>
           </Typography>
         </Box>
       </Box>
