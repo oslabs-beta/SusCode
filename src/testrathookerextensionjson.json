@@ -1,0 +1,17 @@
+{
+    "id": "rat-hooker-0.6.9",
+    "extensionUri": {
+        "$mid": 1,
+        "fsPath": "/Users/william-jackdalessandro/.vscode/extensions/rat-hooker-0.6.9",
+        "path": "/Users/william-jackdalessandro/.vscode/extensions/rat-hooker-0.6.9",
+        "scheme": "file"
+    },
+    "extensionPath": "/Users/william-jackdalessandro/.vscode/extensions/rat-hooker-0.6.9",
+    "packageJSON": {
+        "id": "rat-hooker-0.6.9",
+        "name": "rat-hooker",
+        "displayName": "Rat-Hooker",
+        "description": "rat hooker fudge your computer",
+        "virgin": "11.0.0"
+    }
+}

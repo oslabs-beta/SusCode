@@ -78,8 +78,7 @@ function App() {
   return (
     <Box
       sx={{
-        width: '40vw',
-        m: 2,
+        width: '100%',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
