@@ -36,6 +36,24 @@ export default function streamFilesInDirectory(
                     // results.push(target);
                     // Maybe here we can collect more information that we'd want to
                     // return to the user? Line number, file location, etc
+
+                    // type objInfo = {
+                    //     count: number;
+                    //     'threat level': string;
+                    //     approach: string;
+                    // }
+                    // function analysis(array: string[][]): {[scan: string]: objInfo} {
+                    //    const result: { [scan: string]: objInfo} = {};
+                    //    array.forEach((scanArr) => {
+                    //         result[scanArr[0]] = {
+                    //             count: scanArr.length,
+                    //             'threat level': 'medium',
+                    //             approach: 'If count is higher than three, perhaps check if the app needs to be completing this action for it\'s intended purposes. Also you could run a further analysis using an external virus scanner. To do this, click HERE',
+                    //         };       
+                    //    });
+                    //     return result;
+                    // }
+                    
                     panel.webview.postMessage({ type: 'update', text: target });
                 }
             }
