@@ -5,7 +5,8 @@ import fs from 'fs';
 // moved getNonce up here - starting getting an error when it was below function activate
 function getNonce() {
   let text = '';
-  const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const possible =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   for (let i = 0; i < 32; i++) {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
   }
@@ -32,7 +33,7 @@ export function activate(context: vscode.ExtensionContext) {
       console.log('Command "suscode.displayExtensions" executed');
       const extensions = getExtensions();
       provider.displayExtensions(extensions);
-  
+
       // Helper function to filter out built-in VS Code extensions and return a list of user-installed extensions
       function getExtensions() {
         const extensions = vscode.extensions.all.filter(
@@ -47,7 +48,7 @@ export function activate(context: vscode.ExtensionContext) {
       }
     })
   );
-  
+
   // Automatically execute the 'suscode.displayExtensions' command when the extension is activated
   vscode.commands.executeCommand('suscode.displayExtensions');
 
@@ -56,29 +57,83 @@ export function activate(context: vscode.ExtensionContext) {
   ////////////////////////////////////////////////////////
   const scanWindow = vscode.commands.registerCommand(
     'scanExtension',
-    (extensionScan, context) => {
+    (extensionScan) => {
       // Create a new webview panel to display the results
+      console.log('scanWindow executed with filepath: ', extensionScan);
       const panel = vscode.window.createWebviewPanel(
         'extensionScans',
         'SusCode Results',
         vscode.ViewColumn.One,
         {
           enableScripts: true,
+          localResourceRoots: [
+            vscode.Uri.file(path.join(context.extensionUri.fsPath, 'dist')),
+          ],
         }
       );
+      //-------------------------original from Seth's working react webview------------------//
+      function getPanelHTML() {
+        const htmlPath = path.join(
+          context.extensionUri.fsPath,
+          'src',
+          'panel',
+          'panelIndex.html'
+          // 'dist',
+          // 'webviews',
+          // 'panelIndex.html'
+        );
+        let htmlContent = fs.readFileSync(htmlPath, 'utf8');
 
-      // Read the HTML content for the panel from a file
-      const htmlPath = path.join(context.extensionPath, 'src', 'panel', 'panelIndex.html');
-      let htmlContent = fs.readFileSync(htmlPath, 'utf8');
+        // Replace paths in the HTML to be compatible with the webview
+        const scriptUri = panel.webview.asWebviewUri(
+          vscode.Uri.file(
+            path.join(context.extensionUri.fsPath, 'dist', 'panel.js')
+          )
+        );
 
-      // Replace relative paths in the HTML content to ensure resources are loaded correctly
-      htmlContent = htmlContent.replace(/(href|src)="\//g, (match, p1) => {
-        return `${p1}="${panel.webview.asWebviewUri(vscode.Uri.file(path.join(context.extensionPath, 'src'))).toString()}/`;
-      });
+        htmlContent = htmlContent
+          .replace(/\${nonce}/g, nonce)
+          .replace(/\${scriptUri}/g, scriptUri.toString());
 
-      // Set the HTML content of the panel's webview
-      panel.webview.html = htmlContent;
-      console.log('htmlContent within panel', htmlContent);
+        return htmlContent;
+      }
+
+      // Set the HTML content to the webview
+      panel.webview.html = getPanelHTML();
+
+      //-------------------------old attempt-------------------------------------------//
+
+      // .replace(/(href|src)="\//g, (match, p1) => {
+      //   return `${p1}="${panel.webview
+      //     .asWebviewUri(
+      //       vscode.Uri.file(
+      //         path.join(context.extensionUri.fsPath, 'dist', 'panel.js')
+      //       )
+      //     )
+      //     .toString()}/`;
+      // })
+
+      // // Read the HTML content for the panel from a file
+      // const htmlPath = path.join(
+      //   context.extensionPath,
+      //   'src',
+      //   'panel',
+      //   'panelIndex.html'
+      // );
+      // let htmlContent = fs.readFileSync(htmlPath, 'utf8');
+
+      // // Replace relative paths in the HTML content to ensure resources are loaded correctly
+      // htmlContent = htmlContent.replace(/(href|src)="\//g, (match, p1) => {
+      //   return `${p1}="${panel.webview
+      //     .asWebviewUri(
+      //       vscode.Uri.file(path.join(context.extensionPath, 'src'))
+      //     )
+      //     .toString()}/`;
+      // });
+
+      // // Set the HTML content of the panel's webview
+      // panel.webview.html = htmlContent;
+      // console.log('htmlContent within panel', htmlContent);
     }
   );
 
@@ -103,16 +158,16 @@ class ExtensionsSidebarViewProvider implements vscode.WebviewViewProvider {
     console.log('WebviewView is being resolved');
     this._view = webviewView;
     this._isInitialized = true;
-  
+
     // Set webview options, including enabling scripts and setting local resource roots
     webviewView.webview.options = {
       enableScripts: true,
       localResourceRoots: [this._extensionUri],
     };
-  
+
     // Set the HTML content for the webview
     webviewView.webview.html = this.getWebviewHTML(webviewView.webview);
-  
+
     // Handle messages received from the webview
     webviewView.webview.onDidReceiveMessage((data) => {
       console.log('Message received:', data);
@@ -123,7 +178,10 @@ class ExtensionsSidebarViewProvider implements vscode.WebviewViewProvider {
           break;
         }
         case 'extensionSelected': {
-          console.log('extension selected!');
+          console.log(
+            'extension selected! The extension filepath is: ',
+            data.value
+          );
           // Command to scan the selected extension
           vscode.commands.executeCommand('scanExtension', data.value);
           break;
@@ -131,7 +189,7 @@ class ExtensionsSidebarViewProvider implements vscode.WebviewViewProvider {
       }
     });
   }
-  
+
   // Method to display extensions in the webview
   public displayExtensions(extensions: any[] | undefined) {
     console.log('within displayExtensions');
@@ -149,24 +207,79 @@ class ExtensionsSidebarViewProvider implements vscode.WebviewViewProvider {
 
   // Method to get the HTML content for the webview, injecting necessary URIs and nonce
   private getWebviewHTML(webview: vscode.Webview) {
-    const htmlPath = path.join(this._extensionUri.fsPath, 'src', 'sidebar', 'sidebarIndex.html');
-    let htmlContent = fs.readFileSync(htmlPath, 'utf8');
-    
-    const scriptUri = webview.asWebviewUri(
-      vscode.Uri.file(path.join(this._extensionUri.fsPath, 'dist', 'sidebar.js'))
+    const htmlPath = path.join(
+      this._extensionUri.fsPath,
+      'src',
+      'sidebar',
+      'sidebarIndex.html'
     );
-  
+    let htmlContent = fs.readFileSync(htmlPath, 'utf8');
+
+    const scriptUri = webview.asWebviewUri(
+      vscode.Uri.file(
+        path.join(this._extensionUri.fsPath, 'dist', 'sidebar.js')
+      )
+    );
+
     const nonce = getNonce();
-  
+
     // Replace placeholders in the HTML with actual URIs and nonce
     htmlContent = htmlContent
       .replace(/\${nonce}/g, nonce)
       .replace(/\${scriptUri}/g, scriptUri.toString());
-  
+
     console.log('Generated HTML Content:', htmlContent);
-  
+
     return htmlContent;
-  }    
+  }
 }
 
 export function deactivate() {}
+
+/*
+// Webview command
+    vscode.commands.registerCommand('catCoding.start', () => {
+		const panel = vscode.window.createWebviewPanel(
+			'catCoding',
+			'SusCode',
+			vscode.ViewColumn.One,
+			{
+				enableScripts: true, // Ensure scripts are enabled for the webview
+				localResourceRoots: [vscode.Uri.file(path.join(context.extensionPath, 'my-app/build'))]
+			}
+		);
+	
+		// Handle messages from the webview
+		panel.webview.onDidReceiveMessage(
+			(message) => {
+				if (message.command === 'cowsay') {
+					// Log to confirm the command was received
+					console.log('cowsay command received, about to execute command...');
+					
+					// Execute the cowsay command
+					vscode.commands.executeCommand('cowsay.say')
+						.then(
+							() => {
+								console.log('cowsay.say command executed successfully.');
+							},
+							(error) => {
+								console.error('Error executing cowsay.say command:', error);
+							}
+						);
+				}
+			},
+			undefined,
+			context.subscriptions
+		);
+	
+		const htmlPath = path.join(context.extensionPath, 'my-app/build', 'index.html');
+		let htmlContent = fs.readFileSync(htmlPath, 'utf8');
+	
+		// Replace paths in the HTML to be compatible with the webview
+		htmlContent = htmlContent.replace(/(href|src)="\//g, (match, p1) => {
+			return `${p1}="${panel.webview.asWebviewUri(vscode.Uri.file(path.join(context.extensionPath, 'my-app/build'))).toString()}/`;
+		});
+	
+		// Set the HTML content to the webview
+		panel.webview.html = htmlContent;
+    */
