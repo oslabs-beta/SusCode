@@ -1,4 +1,4 @@
-:root {
+/* :root {
   --container-paddding: 20px;
   --input-padding-vertical: 6px;
   --input-padding-horizontal: 4px;
@@ -88,4 +88,4 @@ textarea {
 input::placeholder,
 textarea::placeholder {
   color: var(--vscode-input-placeholderForeground);
-}
+} */

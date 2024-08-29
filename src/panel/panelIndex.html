@@ -7,10 +7,12 @@
       content="default-src 'none'; script-src 'nonce-${nonce}'; style-src 'nonce-${nonce}' ${webview.cspSource};"
     />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Panel Webview</title>
+    <title>Sidebar</title>
+    <link nonce="${nonce}"/>
   </head>
   <body>
     <div id="root"></div>
-    <script nonce="${nonce}" src="panel.js"></script>
+    <script nonce="${nonce}" src="../../dist/sidebar.js"></script>
+    <script nonce="${nonce}">window.vscode = acquireVsCodeApi()</script>
   </body>
 </html>
