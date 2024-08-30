@@ -27,10 +27,6 @@
         "title": "Display Extensions"
       },
       {
-        "command": "suscode.helloWorld",
-        "title": "Hello World"
-      },
-      {
         "command": "scanExtension",
         "title": "Open extension scan webview"
       }

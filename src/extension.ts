@@ -3,7 +3,7 @@ import path from 'path';
 import fs from 'fs';
 import { reader } from './fileFinder';
 
-// moved getNonce up here - starting getting an error when it was below function activate
+// script security 
 function getNonce() {
   let text = '';
   const possible =
@@ -45,12 +45,14 @@ export function activate(context: vscode.ExtensionContext) {
           let extensionPath = JSON.stringify(extensionObj.extensionUri.path);
           return [displayName, extensionPath];
         });
+		//check if we need spread and array
         return [...extensionsList];
       }
     })
   );
 
   // Automatically execute the 'suscode.displayExtensions' command when the extension is activated
+  //may not need
   vscode.commands.executeCommand('suscode.displayExtensions');
 
   ////////////////////////////////////////////////////////
@@ -79,9 +81,6 @@ export function activate(context: vscode.ExtensionContext) {
           'src',
           'panel',
           'panelIndex.html'
-          // 'dist',
-          // 'webviews',
-          // 'panelIndex.html'
         );
         let htmlContent = fs.readFileSync(htmlPath, 'utf8');
 
@@ -106,40 +105,6 @@ export function activate(context: vscode.ExtensionContext) {
 	  extensionScan = extensionScan[0].slice(1,-1);
 	  console.log(extensionScan);
 	  reader(extensionScan, panel);
-
-      //-------------------------old attempt-------------------------------------------//
-
-      // .replace(/(href|src)="\//g, (match, p1) => {
-      //   return `${p1}="${panel.webview
-      //     .asWebviewUri(
-      //       vscode.Uri.file(
-      //         path.join(context.extensionUri.fsPath, 'dist', 'panel.js')
-      //       )
-      //     )
-      //     .toString()}/`;
-      // })
-
-      // // Read the HTML content for the panel from a file
-      // const htmlPath = path.join(
-      //   context.extensionPath,
-      //   'src',
-      //   'panel',
-      //   'panelIndex.html'
-      // );
-      // let htmlContent = fs.readFileSync(htmlPath, 'utf8');
-
-      // // Replace relative paths in the HTML content to ensure resources are loaded correctly
-      // htmlContent = htmlContent.replace(/(href|src)="\//g, (match, p1) => {
-      //   return `${p1}="${panel.webview
-      //     .asWebviewUri(
-      //       vscode.Uri.file(path.join(context.extensionPath, 'src'))
-      //     )
-      //     .toString()}/`;
-      // });
-
-      // // Set the HTML content of the panel's webview
-      // panel.webview.html = htmlContent;
-      // console.log('htmlContent within panel', htmlContent);
     }
   );
 
@@ -189,7 +154,8 @@ class ExtensionsSidebarViewProvider implements vscode.WebviewViewProvider {
             data.value
           );
           // Command to scan the selected extension
-          vscode.commands.executeCommand('scanExtension', data.value);
+          const filepath : string = data.value;
+          vscode.commands.executeCommand('scanExtension', filepath);
           break;
         }
       }
@@ -227,8 +193,6 @@ class ExtensionsSidebarViewProvider implements vscode.WebviewViewProvider {
       )
     );
 
-    const nonce = getNonce();
-
     // Replace placeholders in the HTML with actual URIs and nonce
     htmlContent = htmlContent
       .replace(/\${nonce}/g, nonce)
@@ -241,51 +205,3 @@ class ExtensionsSidebarViewProvider implements vscode.WebviewViewProvider {
 }
 
 export function deactivate() {}
-
-/*
-// Webview command
-    vscode.commands.registerCommand('catCoding.start', () => {
-		const panel = vscode.window.createWebviewPanel(
-			'catCoding',
-			'SusCode',
-			vscode.ViewColumn.One,
-			{
-				enableScripts: true, // Ensure scripts are enabled for the webview
-				localResourceRoots: [vscode.Uri.file(path.join(context.extensionPath, 'my-app/build'))]
-			}
-		);
-	
-		// Handle messages from the webview
-		panel.webview.onDidReceiveMessage(
-			(message) => {
-				if (message.command === 'cowsay') {
-					// Log to confirm the command was received
-					console.log('cowsay command received, about to execute command...');
-					
-					// Execute the cowsay command
-					vscode.commands.executeCommand('cowsay.say')
-						.then(
-							() => {
-								console.log('cowsay.say command executed successfully.');
-							},
-							(error) => {
-								console.error('Error executing cowsay.say command:', error);
-							}
-						);
-				}
-			},
-			undefined,
-			context.subscriptions
-		);
-	
-		const htmlPath = path.join(context.extensionPath, 'my-app/build', 'index.html');
-		let htmlContent = fs.readFileSync(htmlPath, 'utf8');
-	
-		// Replace paths in the HTML to be compatible with the webview
-		htmlContent = htmlContent.replace(/(href|src)="\//g, (match, p1) => {
-			return `${p1}="${panel.webview.asWebviewUri(vscode.Uri.file(path.join(context.extensionPath, 'my-app/build'))).toString()}/`;
-		});
-	
-		// Set the HTML content to the webview
-		panel.webview.html = htmlContent;
-    */

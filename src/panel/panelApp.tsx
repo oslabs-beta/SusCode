@@ -1,5 +1,4 @@
 import * as React from 'react';
-import * as vscode from 'vscode';
 import { useEffect, useState } from 'react';
 // import { getNonce } from './getNonce';
 import Box from '@mui/material/Box';
