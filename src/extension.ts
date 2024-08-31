@@ -3,7 +3,7 @@ import path from 'path';
 import fs from 'fs';
 import { reader } from './fileFinder';
 
-// script security 
+// generates a unique key used for script security
 function getNonce() {
   let text = '';
   const possible =
@@ -13,29 +13,28 @@ function getNonce() {
   }
   return text;
 }
-
 const nonce = getNonce();
 
+//=========================ACTIVATE==================================================//
+//this function gets invoked when the extension is ran/opened
+//A view provider is required to have a webview in the sidebar, so we create a class down below and then initialize new instance of the class  within activat() called ExtensionsSidebarViewProvider
+//We register the sidebar webview provider and assign it to the variable 'sidebar'
+//register suscode.displayExtensions command that invokes getExtensions() to get the extension names and filepaths as a nested array, assigns that to 'extensionsList', and then invokes the displayExtensions method on ExtensionsSidebarViewProvider
+//displayExtensions() posts a message to the sidebar with the type 'displayExtensions' and sends the extensionsList as the value of the message. This is received in sidebarApp.tsx
 export function activate(context: vscode.ExtensionContext) {
-  console.log('Extension activated');
-
-  // Create a new instance of ExtensionsSidebarViewProvider
   const provider = new ExtensionsSidebarViewProvider(context.extensionUri);
 
-  // Register the sidebar webview view provider
   const sidebar = vscode.window.registerWebviewViewProvider(
     ExtensionsSidebarViewProvider.viewType,
     provider
   );
 
-  // Register a command that, when executed, displays the extensions in the sidebar
   context.subscriptions.push(
     vscode.commands.registerCommand('suscode.displayExtensions', () => {
       console.log('Command "suscode.displayExtensions" executed');
       const extensions = getExtensions();
       provider.displayExtensions(extensions);
 
-      // Helper function to filter out built-in VS Code extensions and return a list of user-installed extensions
       function getExtensions() {
         const extensions = vscode.extensions.all.filter(
           (extension) => !extension.id.startsWith('vscode.')
@@ -45,7 +44,7 @@ export function activate(context: vscode.ExtensionContext) {
           let extensionPath = JSON.stringify(extensionObj.extensionUri.path);
           return [displayName, extensionPath];
         });
-		//check if we need spread and array
+        //check if we need spread and array
         return [...extensionsList];
       }
     })
@@ -58,11 +57,10 @@ export function activate(context: vscode.ExtensionContext) {
   ////////////////////////////////////////////////////////
   // Register a command to create a new webview panel to display scan results
   ////////////////////////////////////////////////////////
-  const scanWindow = vscode.commands.registerCommand(
-    'scanExtension',
+  const openResultPanel = vscode.commands.registerCommand(
+    'suscode.openResultPanel',
     (extensionScan) => {
       // Create a new webview panel to display the results
-      console.log('scanWindow executed with filepath: ', extensionScan);
       const panel = vscode.window.createWebviewPanel(
         'extensionScans',
         'SusCode Results',
@@ -74,7 +72,7 @@ export function activate(context: vscode.ExtensionContext) {
           ],
         }
       );
-      //-------------------------original from Seth's working react webview------------------//
+
       function getPanelHTML() {
         const htmlPath = path.join(
           context.extensionUri.fsPath,
@@ -84,7 +82,6 @@ export function activate(context: vscode.ExtensionContext) {
         );
         let htmlContent = fs.readFileSync(htmlPath, 'utf8');
 
-        // Replace paths in the HTML to be compatible with the webview
         const scriptUri = panel.webview.asWebviewUri(
           vscode.Uri.file(
             path.join(context.extensionUri.fsPath, 'dist', 'panel.js')
@@ -98,18 +95,15 @@ export function activate(context: vscode.ExtensionContext) {
         return htmlContent;
       }
 
-      // Set the HTML content to the webview
       panel.webview.html = getPanelHTML();
 
-
-	  extensionScan = extensionScan[0].slice(1,-1);
-	  console.log(extensionScan);
-	  reader(extensionScan, panel);
+      extensionScan = extensionScan[0].slice(1, -1);
+      console.log(extensionScan);
+      reader(extensionScan, panel);
     }
   );
 
-  // Add the sidebar and scanWindow commands to the extension's subscriptions
-  context.subscriptions.push(scanWindow, sidebar);
+  context.subscriptions.push(openResultPanel, sidebar);
 }
 
 class ExtensionsSidebarViewProvider implements vscode.WebviewViewProvider {
@@ -144,27 +138,19 @@ class ExtensionsSidebarViewProvider implements vscode.WebviewViewProvider {
       console.log('Message received:', data);
       switch (data.type) {
         case 'getExtensions': {
-          // Command to retrieve and display extensions in the webview
           vscode.commands.executeCommand('suscode.displayExtensions');
           break;
         }
         case 'extensionSelected': {
-          console.log(
-            'extension selected! The extension filepath is: ',
-            data.value
-          );
-          // Command to scan the selected extension
-          const filepath : string = data.value;
-          vscode.commands.executeCommand('scanExtension', filepath);
+          const filepath: string = data.value;
+          vscode.commands.executeCommand('suscode.openResultPanel', filepath);
           break;
         }
       }
     });
   }
 
-  // Method to display extensions in the webview
   public displayExtensions(extensions: any[] | undefined) {
-    console.log('within displayExtensions');
     if (this._isInitialized && this._view) {
       // Show the webview and send the extensions data
       this._view.show?.(true);
@@ -177,7 +163,6 @@ class ExtensionsSidebarViewProvider implements vscode.WebviewViewProvider {
     }
   }
 
-  // Method to get the HTML content for the webview, injecting necessary URIs and nonce
   private getWebviewHTML(webview: vscode.Webview) {
     const htmlPath = path.join(
       this._extensionUri.fsPath,

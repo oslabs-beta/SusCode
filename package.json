@@ -27,8 +27,8 @@
         "title": "Display Extensions"
       },
       {
-        "command": "scanExtension",
-        "title": "Open extension scan webview"
+        "command": "suscode.openResultPanel",
+        "title": "Open webview panel to show scan results"
       }
     ]
   },
