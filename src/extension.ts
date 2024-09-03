@@ -16,14 +16,23 @@ function getNonce() {
 const nonce = getNonce();
 
 //=========================ACTIVATE==================================================//
-//this function gets invoked when the extension is ran/opened
-//A view provider is required to have a webview in the sidebar, so we create a class down below and then initialize new instance of the class  within activat() called ExtensionsSidebarViewProvider
-//We register the sidebar webview provider and assign it to the variable 'sidebar'
-//We register suscode.displayExtensions command that invokes getExtensions() to get the extension names and filepaths as a nested array, assigns that to 'extensionsList', and then invokes the displayExtensions method on ExtensionsSidebarViewProvider
-//Then displayExtensions() posts a message to the sidebar with the type 'displayExtensions' and sends the extensionsList as the value of the message. This is received in sidebarApp.tsx
-//We register suscode.openResultPanel command which when executed will invoke the anonymous function that takes a 'filepath' parameter to create a webview and assign it to the variable 'panel'
-//----> we use getPanelHTML() to locate the panelIndex.html, read the contents, create a path to the bundled file 'panel.js' and replace the script with a URI to the bundle, as well as replace nonce with the variable defined globally on this file
-//----> we take the passed in filepath and use slice(1, -1) to remove extra quotation marks before invoking reader(filepath, panel), which is imported from fileFinder.ts
+// * this function gets invoked when the extension is ran/opened
+// * A view provider is required to have a webview in the sidebar, so we create a class
+//   down below and then initialize new instance of the class  within activate() called
+//   ExtensionsSidebarViewProvider
+// * We register the sidebar webview provider and assign it to the variable 'sidebar'
+// * We register suscode.displayExtensions command that invokes getExtensions() to get
+//   the extension names and filepaths as a nested array, assigns that to 'extensionsList',
+//   and then invokes the displayExtensions method on ExtensionsSidebarViewProvider
+// * Then displayExtensions() posts a message to the sidebar with the type 'displayExtensions'
+//   and sends the extensionsList as the value of the message. This is received in sidebarApp.tsx
+// * We register suscode.openResultPanel command which when executed will invoke the anonymous
+//   function that takes a 'filepath' parameter to create a webview and assign it to the variable 'panel'
+// * ----> we use getPanelHTML() to locate the panelIndex.html, read the contents, create
+//         a path to the bundled file 'panel.js' and replace the script with a URI to the bundle,
+//         as well as replace nonce with the variable defined globally on this file
+// * ----> we take the passed in filepath and use slice(1, -1) to remove extra quotation
+//         marks before invoking reader(filepath, panel), which is imported from fileFinder.ts
 export function activate(context: vscode.ExtensionContext) {
   const provider = new ExtensionsSidebarViewProvider(context.extensionUri);
 
@@ -87,7 +96,6 @@ export function activate(context: vscode.ExtensionContext) {
 
         return htmlContent;
       }
-
       panel.webview.html = getPanelHTML();
 
       filepath = filepath[0].slice(1, -1);
@@ -98,16 +106,26 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(sidebar, displayExtensions, openResultPanel);
 }
 
-//=========================ExtensionsSidebarViewProvider==================================================//
-//this class implements a webview view provider, allowing us to create a webview in the sidebar ('explorer')
-// it starts by setting the viewType, which is found in package.json under views, then handles some vscode API private labeling and establishes a URI to the webviewView with the label _extensionURI
-// the resolveWebviewView() initializes the webview, sets the context and creates a _view variable, before setting the classic options to enable scripts and set localSourceRoots
-//----> this function also uses getWebviewHTML (defined outseid of the resolveWebviewFunction) and sets the evaluated result as the html for the webview
-//----> this function also establishes an event listener:
-//window.addEventListener listens for 'getExtensions' coming from sidebarApp.tsx when a user clicks the 'get extensions' button, and will execute the suscode.displayExtension command
-//window.addEventListener also listens for 'extensionSelected' coming from sidebarApp.tsx when a user clicks/selects an extension, and will execute the suscode.openResultPanel command passing in the filepath which was the value of the message it received.
-//getWebviewHTML locates the sidebarIndex.html, reads the contents, creates a path to the bundled file 'sidebar.js' and replace the script with a URI to the bundle, as well as replace nonce with the variable defined globally on this file
-//Finally we export the default function deactivate() which shuts down the extension functionality when it is closed.
+//=========================ExtensionsSidebarViewProvider================================//
+// * this class implements a webview view provider, allowing us to create a webview
+//   in the sidebar ('explorer')
+// * it starts by setting the viewType, which is found in package.json under views,
+//   then handles some vscode API private labeling and establishes a URI to the webviewView
+//   with the label _extensionURI
+// * the resolveWebviewView() initializes the webview, sets the context and creates
+//   a _view variable, before setting the options to enable scripts and set localSourceRoots
+// * ----> this function also uses getWebviewHTML (defined outseid of the resolveWebviewFunction)
+//         and sets the evaluated result as the html for the webview
+// * ----> this function also establishes an event listener:
+// * window.addEventListener listens for 'getExtensions' coming from sidebarApp.tsx when a user
+//   clicks the 'get extensions' button, and will execute the suscode.displayExtension command
+// * window.addEventListener also listens for 'extensionSelected' coming from sidebarApp.tsx when
+//   a user clicks/selects an extension, and will execute the suscode.openResultPanel command
+//   passing in the filepath which was the value of the message it received.
+// * getWebviewHTML locates the sidebarIndex.html, reads the contents, creates a path to the
+//   bundled file 'sidebar.js' and replace the script with a URI to the bundle, as well as replace
+//   nonce with the variable defined globally on this file
+// * We export the default function deactivate() to shut down the extension when it is closed.
 
 class ExtensionsSidebarViewProvider implements vscode.WebviewViewProvider {
   public static readonly viewType = 'ExtensionsSidebarViewProvider';
