@@ -83,9 +83,8 @@ function App() {
           <Tab label='Scan Result:' />
         </Tabs>
         <Box sx={{ padding: 2 }}>
-          <Typography variant='body1' fontWeight='light'>
-            <div id='content'></div>
-          </Typography>
+          <Box id='content'></Box>
+          <Typography variant='body1' fontWeight='light'></Typography>
         </Box>
       </Box>
     </Box>
