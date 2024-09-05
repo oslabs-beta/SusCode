@@ -3,7 +3,7 @@ import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import { SelectChangeEvent } from '@mui/material/Select';
 //import the evalScanFunction from the file (get this from Will)
-import findReadMe from '../findReadMe';
+import findReadMe from '../workers/findReadMe';
 
 const vscode = acquireVsCodeApi();
 
