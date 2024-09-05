@@ -1,61 +1,56 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
-// import { getNonce } from './getNonce';
+import { useState } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 
-// const nonce = getNonce();
-
 function App() {
   // initialize state for the read me description
   const [readMe, setReadMe] = useState<string>('');
-  // initialize state for the eval scan
 
-  // event listener is looking for vscode.postMessage({ type: 'readme', value: 'read me data string' });
+  //====================   LISTENING FOR MESSAGES FROM findReadMe() WITHIN findReadMe.ts   =================================//
+  //assigning the data sent to the semantic variable message
+  //if the message type is 'readMe', we invoke the setReadMe function with the 'value' which is the filepath for an extension
 
-  window.addEventListener('message', event => {
-		const message = event.data;
-		
-		if (message.command === 'update') {
-			
-		} else if (message.command === 'end') {
-			
-		} else if (message.command === 'error') {
-			
-		}
-		});
-
-
-  useEffect(() => {
-    window.addEventListener('message', (event) => {
-      const contentDiv: any = document.getElementById('content');
-      const message = event.data; // The json data that the extension sent
-      switch (message.type) {
-        case 'readMe': {
-          setReadMe(message.value);
-          break;
-        }
-        // Use of eval() method found on line .
-        case 'update': {
-          // contentDiv.innerText += message.text;
-          contentDiv.innerHTML += '<p>' + message.text + '</p>';
-          break;
-        }
-        case 'end': {
-          contentDiv.innerHTML += '<hr/><strong>Finished reading ' + message.fileName + '</strong><hr/>';
-          break;
-        }
-        case 'error': {
-          contentDiv.innerHTML += '<p style="color:red;">' + message.text + '</p>';
-          break;
-        }
+  window.addEventListener('message', (event) => {
+    const message = event.data;
+    switch (message.type) {
+      case 'readMe': {
+        setReadMe(message.value);
+        break;
       }
-    });
-    return () => {
-      window.removeEventListener('message', () => {});
-    };
+    }
+  });
+
+  //====================   LISTENING FOR MESSAGES FROM streamFilesInDirectory() WITHIN fileReader.ts   =====================//
+  //grabbing html element with id: 'content'
+  //assigning the data sent to the semantic variable message
+  //providing multiple outcomes depending on the "type" of the message that was sent
+  //if the message type is 'update' we add a p tag to display the text which is all the occurence of found patterns
+  //if the message type is 'end' we add a line, a bolded declaration that the file is finished reading, and another line
+  //if the message type is 'error' we display a p tag of red text delcaring the file name and error message
+  window.addEventListener('message', (event) => {
+    const contentDiv: any = document.getElementById('content');
+    const message = event.data;
+    switch (message.type) {
+      case 'update': {
+        contentDiv.innerHTML += '<p>' + message.text + '</p>';
+        break;
+      }
+      case 'end': {
+        contentDiv.innerHTML +=
+          '<hr/><strong>Finished reading ' +
+          message.fileName +
+          '</strong><hr/>';
+        break;
+      }
+      case 'error': {
+        contentDiv.innerHTML +=
+          '<p style="color:red;">' + message.text + '</p>';
+        break;
+      }
+    }
   });
 
   return (
@@ -89,7 +84,7 @@ function App() {
         </Tabs>
         <Box sx={{ padding: 2 }}>
           <Typography variant='body1' fontWeight='light'>
-          <div id="content"></div>
+            <div id='content'></div>
           </Typography>
         </Box>
       </Box>
