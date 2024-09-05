@@ -1,17 +1,6 @@
-import * as fs from 'fs'; // Import all as fs
+import * as fs from 'fs';
 import * as path from 'path';
-// import * as vscode from 'vscode';
 
-// const pathToFile: string =
-//   '/Users/kennyolson/.vscode/extensions/esbenp.prettier-vscode-11.0.0/README.md';
-// const pathToFile2: string =
-//   '/Users/kennyolson/.vscode/extensions/wallabyjs.quokka-vscode-1.0.649/README.md';
-// const filesWithin: string =
-//   '/Users/kennyolson/.vscode/extensions/esbenp.prettier-vscode-11.0.0';
-// const filesWithin2: string =
-//   '/Users/kennyolson/.vscode/extensions/wallabyjs.quokka-vscode-1.0.649';
-
-// console.log(extArr);
 // const vscode = acquireVsCodeApi();
 
 function findReadMe(
@@ -58,7 +47,6 @@ function findReadMe(
     callback(null, description);
 
     //add the functionality to send it elsewhere or populate the description
-    //
   });
 
   myReadStream.on('error', (err: Error) => {
@@ -67,15 +55,4 @@ function findReadMe(
   });
 }
 
-// findReadMe(Path, (err: string | null, description: string | null) => {
-//   if (err) {
-//     console.error('Error: ', err);
-//   } else {
-//     console.log(description);
-//     //can't return out so functionality(sending to front) must be done here
-//   }
-// });
-
 export default findReadMe;
-
-//'readMe'
