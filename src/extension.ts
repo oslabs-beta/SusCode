@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import path from 'path';
 import fs from 'fs';
-import { reader } from './fileFinder';
+import { reader } from './workers/fileFinder';
 
 // generates a unique key used for script security
 function getNonce() {
