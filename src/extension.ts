@@ -139,7 +139,7 @@ export function activate(context: vscode.ExtensionContext) {
           } else {
             console.log('made it back to findReadMe invocation: ', description);
             
-            panel.webview.postMessage({ //there is an error on "postMessage does not exist on type 'typeof import("vscode")'. Did you mean 'TestMessage'?"
+            panel.webview.postMessage({
               type: 'readMe',
               value: description,
             });
