@@ -2,6 +2,9 @@ import * as vscode from 'vscode';
 import path from 'path';
 import fs from 'fs';
 import { reader } from './workers/fileFinder';
+import findReadMe from './workers/findReadMe';
+
+
 
 // generates a unique key used for script security
 function getNonce() {
@@ -33,6 +36,7 @@ const nonce = getNonce();
 //         as well as replace nonce with the variable defined globally on this file
 // * ----> we take the passed in filepath and use slice(1, -1) to remove extra quotation
 //         marks before invoking reader(filepath, panel), which is imported from fileFinder.ts
+// let panel: vscode.WebviewPanel | undefined; // commented out because not referencing the panel that is defined already
 export function activate(context: vscode.ExtensionContext) {
   const provider = new ExtensionsSidebarViewProvider(context.extensionUri);
 
@@ -40,6 +44,31 @@ export function activate(context: vscode.ExtensionContext) {
     ExtensionsSidebarViewProvider.viewType,
     provider
   );
+  // getReadMe
+  // const getReadMe = vscode.commands.registerCommand(
+  //   'suscode.getReadMe', (selectedPath) => {
+  //   findReadMe(
+  //     selectedPath,
+  //     (err: string | null, description: string | null) => {
+  //       if (err) {
+  //         console.error('Error: ', err);
+  //       } else {
+  //         console.log('made it back to findReadMe invocation: ', description);
+  //         if (panel) {
+  //         panel.webview.postMessage({ //there is an error on "postMessage does not exist on type 'typeof import("vscode")'. Did you mean 'TestMessage'?"
+  //           type: 'readMe',
+  //           value: description,
+  //         });
+  //       } else {
+  //         console.error('Panel is not defined poop');
+  //       }
+  //       }
+  //     }
+  //   );
+  //   }
+  // )
+
+
 
   const displayExtensions = vscode.commands.registerCommand(
     'suscode.displayExtensions',
@@ -100,6 +129,24 @@ export function activate(context: vscode.ExtensionContext) {
 
       filepath = filepath[0].slice(1, -1);
       reader(filepath, panel);
+      // getReadMe(filepath, panel)
+
+      findReadMe(
+        filepath, panel,
+        (err: string | null, description: string | null) => {
+          if (err) {
+            console.error('Error: ', err);
+          } else {
+            console.log('made it back to findReadMe invocation: ', description);
+            
+            panel.webview.postMessage({ //there is an error on "postMessage does not exist on type 'typeof import("vscode")'. Did you mean 'TestMessage'?"
+              type: 'readMe',
+              value: description,
+            });
+          
+          }
+        }
+      );
     }
   );
 
@@ -133,6 +180,7 @@ class ExtensionsSidebarViewProvider implements vscode.WebviewViewProvider {
   private _isInitialized = false;
   constructor(private readonly _extensionUri: vscode.Uri) {}
 
+
   public resolveWebviewView(
     webviewView: vscode.WebviewView,
     context: vscode.WebviewViewResolveContext,
@@ -158,6 +206,13 @@ class ExtensionsSidebarViewProvider implements vscode.WebviewViewProvider {
         case 'extensionSelected': {
           const filepath: string = data.value;
           vscode.commands.executeCommand('suscode.openResultPanel', filepath);
+          break;
+        }
+        case 'getReadMe': {
+          console.log('in the event listener');
+          const selectedPaths = data.value;
+          const selectedPath = selectedPaths.slice(1, -1);
+          vscode.commands.executeCommand('suscode.getReadMe', selectedPath);
           break;
         }
       }
@@ -186,6 +241,8 @@ class ExtensionsSidebarViewProvider implements vscode.WebviewViewProvider {
 
     return htmlContent;
   }
+  
+
 
   public displayExtensions(extensions: any[] | undefined) {
     if (this._isInitialized && this._view) {

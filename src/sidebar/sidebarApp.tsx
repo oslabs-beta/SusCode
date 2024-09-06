@@ -46,6 +46,10 @@ function App() {
       .filter((name) => selectedExtensions.includes(name[0]))
       .map((name) => name[1]);
     console.log('selectedPaths in clickHandler', selectedPaths);
+    
+    // invoke evalScanFunction(selectedPaths);
+    vscode.postMessage({ type: 'extensionSelected', value: selectedPaths });
+    vscode.postMessage({ type: 'getReadMe', value: selectedPaths[0] });
     // findReadMe(
     //   selectedPaths[0],
     //   (err: string | null, description: string | null) => {
@@ -58,11 +62,10 @@ function App() {
     //         value: description,
     //       });
     //       //can't return out so functionality(sending to front) must be done here
+    //       console.log('Do something with: ', description);
     //     }
     //   }
     // );
-    // invoke evalScanFunction(selectedPaths);
-    vscode.postMessage({ type: 'extensionSelected', value: selectedPaths });
   }
 
   const getExtensions = () => {

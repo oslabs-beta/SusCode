@@ -1,10 +1,10 @@
 import * as fs from 'fs';
 import * as path from 'path';
-
+import * as vscode from 'vscode';
 // const vscode = acquireVsCodeApi();
 
 function findReadMe(
-  trail: string,
+  trail: string, panel: vscode.WebviewPanel,
   callback: (err: string | null, description: string | null) => void
 ): string | void {
   //   const fileRegex = new RegExp('readme?', 'g');

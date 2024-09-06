@@ -5,6 +5,7 @@ import Typography from '@mui/material/Typography';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 
+
 function App() {
   // initialize state for the read me description
   const [readMe, setReadMe] = useState<string>('');
@@ -13,7 +14,8 @@ function App() {
   //assigning the data sent to the semantic variable message
   //if the message type is 'readMe', we invoke the setReadMe function with the 'value' which is the filepath for an extension
 
-  window.addEventListener('message', (event) => {
+  window.addEventListener('message', (event: MessageEvent) => {
+    console.log('In the panelAppTSX in the assEventListener')
     const message = event.data;
     switch (message.type) {
       case 'readMe': {
