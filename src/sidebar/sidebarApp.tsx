@@ -7,6 +7,7 @@ import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
 
 const vscode = acquireVsCodeApi();
+let extensionNames: string[];
 
 function App() {
   const [names, setNames] = useState<string[][]>([]);
@@ -16,6 +17,7 @@ function App() {
     const messageListener = (event: MessageEvent) => {
       const message = event.data;
       const extensions = message.value;
+      extensionNames = extensions;
       setNames(extensions);
     };
 

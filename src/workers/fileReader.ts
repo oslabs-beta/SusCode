@@ -24,34 +24,24 @@ export default function streamFilesInDirectory(
     // const results: any = [];
     readStream.on('data', (chunk) => {
       for (let content of patterns) {
-        // console.log('contentfdsf', content);
         let target = ('' + chunk).match(content);
         // I may not want to push the results into an array- I'd
         // want to transmit this info when I can
-        // console.log('before target');
         if (target) {
-          // console.log('in target');
-          // results.push(target);
           // Maybe here we can collect more information that we'd want to
           // return to the user? Line number, file location, etc
 
-          // type objInfo = {
-          //     count: number;
-
-          // }
-          // function analysis(array: string[][]): {[scan: string]: objInfo} {
-          //    const result: { [scan: string]: objInfo} = {};
-          //    array.forEach((scanArr) => {
-          //         result[scanArr[0]] = {
-          //             count: scanArr.length,
-          //         };
-          //    });
-          //     return result;
-          // }
+          function counter(array: string[]): { name: string; count: number } {
+            return {
+              name: array[0],
+              count: array.length,
+            };
+          }
+          let updatedTarget = counter(target);
 
           panel.webview.postMessage({
             type: 'update',
-            text: target,
+            text: updatedTarget, // { functionName : activate, count: 5 }
             fileName: file,
           });
         }

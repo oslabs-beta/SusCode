@@ -97,13 +97,12 @@ export function activate(context: vscode.ExtensionContext) {
         return htmlContent;
       }
       panel.webview.html = getPanelHTML();
-
-      filepath = filepath[0].slice(1, -1);
-      reader(filepath, panel);
       panel.webview.postMessage({
         type: 'selectedExtensionNames',
         value: selectedExtensions,
       });
+      filepath = filepath[0].slice(1, -1);
+      reader(filepath, panel);
     }
   );
 

@@ -25,7 +25,7 @@ export default function NavBar() {
             <FlashlightOnIcon />
           </IconButton>
           <Typography variant='h6' component='div' sx={{ flexGrow: 1 }}>
-            SusCode
+            SusCode Extension Scan Results
           </Typography>
         </Toolbar>
       </AppBar>
