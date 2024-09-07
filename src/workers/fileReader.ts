@@ -49,7 +49,11 @@ export default function streamFilesInDirectory(
           //     return result;
           // }
 
-          panel.webview.postMessage({ type: 'update', text: target });
+          panel.webview.postMessage({
+            type: 'update',
+            text: target,
+            fileName: file,
+          });
         }
       }
     });

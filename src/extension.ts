@@ -62,7 +62,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   const openResultPanel = vscode.commands.registerCommand(
     'suscode.openResultPanel',
-    (filepath) => {
+    (filepath, selectedExtensions) => {
       const panel = vscode.window.createWebviewPanel(
         'resultPanel',
         'SusCode Results',
@@ -100,6 +100,10 @@ export function activate(context: vscode.ExtensionContext) {
 
       filepath = filepath[0].slice(1, -1);
       reader(filepath, panel);
+      panel.webview.postMessage({
+        type: 'selectedExtensionNames',
+        value: selectedExtensions,
+      });
     }
   );
 
@@ -156,8 +160,13 @@ class ExtensionsSidebarViewProvider implements vscode.WebviewViewProvider {
           break;
         }
         case 'extensionSelected': {
-          const filepath: string = data.value;
-          vscode.commands.executeCommand('suscode.openResultPanel', filepath);
+          const filepath: string[] | string = data.value[0];
+          const selectedExtensions: string[] | string = data.value[1];
+          vscode.commands.executeCommand(
+            'suscode.openResultPanel',
+            filepath,
+            selectedExtensions
+          );
           break;
         }
       }
