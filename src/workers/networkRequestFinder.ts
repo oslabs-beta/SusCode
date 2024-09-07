@@ -38,7 +38,10 @@ async function analyzeFilesForNetworkRequests(filePaths: string[], panel: vscode
         const results: any = await mapResultsToOriginal(file, detailedResults);
         console.log('yoyo', results)
         if (results.length){
-            displayResults(results);
+            const httpPattern = /https?:\/\/[^\s'"]+/;
+            const finalResults = results.filter((result: any) => httpPattern.test(result.url));
+            displayResults(finalResults);
+            // displayResults(results);
         }
         // for (let result of results){
             // let parsedResult = JSON.stringify(result, null, 2);
@@ -155,11 +158,12 @@ function isNetworkRequest(node: any): boolean {
 function extractUrl(node: any): string | null {
     if (node.type === 'CallExpression' && node.arguments.length > 0) {
         const arg = node.arguments[0];
-        if (arg.type === 'Literal' && typeof arg.value === 'string') {
-            return arg.value;
-        } else if (arg.type === 'TemplateLiteral' && arg.quasis.length > 0) {
-            return arg.quasis[0].value.cooked;
-        } else if (arg.type === 'ObjectExpression') {
+
+        if (arg.type === 'Literal' && typeof arg.value === 'string') return arg.value;
+
+        else if (arg.type === 'TemplateLiteral' && arg.quasis.length > 0) return arg.quasis[0].value.cooked;
+
+        else if (arg.type === 'ObjectExpression') {
             const urlProp = arg.properties.find((prop: any) =>
                 (prop.key.type === 'Identifier' && prop.key.name === 'url') ||
                 (prop.key.type === 'Literal' && prop.key.value === 'url')
@@ -203,9 +207,15 @@ async function detailedAnalysis(filePath: string, potentialRequests: PotentialRe
     });
 
     // Filter results based on potential requests from initial scan
-    return results.filter(result =>
+    // part of me feels this is completely useless
+
+    console.log('passed in nonsense', potentialRequests.length, potentialRequests)
+    console.log('detailed anal results', results.length, results);
+    let ho = results.filter(result =>
         potentialRequests.some(req => req.line === result.line)
     );
+    console.log('ho the intersection', ho.length, ho)
+    return ho;
 }
 
 async function mapResultsToOriginal(filePath: string, results: AnalysisResult[]): Promise<AnalysisResult[]> {
@@ -214,6 +224,7 @@ async function mapResultsToOriginal(filePath: string, results: AnalysisResult[])
 
     try {
         if (fs.existsSync(sourceMapPath)) {
+            console.log('inside this sourceMapPath nonsense conditional I probably am never hitting?')
             const sourceMapContent = await fs.promises.readFile(sourceMapPath, 'utf8');
             consumer = await new sourceMap.SourceMapConsumer(sourceMapContent);
         }
@@ -224,6 +235,7 @@ async function mapResultsToOriginal(filePath: string, results: AnalysisResult[])
     // Fix up some of these types later
     const mappedResults: any = results.map(result => {
         if (consumer) {
+            console.log('creating a consumer??')
             const original = consumer.originalPositionFor({
                 line: result.line,
                 column: result.column
@@ -237,6 +249,7 @@ async function mapResultsToOriginal(filePath: string, results: AnalysisResult[])
                 };
             }
         }
+        console.log('this is probably being untouched')
         return result;
     });
 
@@ -244,6 +257,7 @@ async function mapResultsToOriginal(filePath: string, results: AnalysisResult[])
         consumer.destroy();
     }
 
+    
     return mappedResults;
 }
 

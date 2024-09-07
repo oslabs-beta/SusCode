@@ -2,6 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import streamFilesInDirectory from './fileReader';
 import { WebviewPanel } from 'vscode';
+import { analyzeFilesForNetworkRequests, AnalysisResult } from './networkRequestFinder';
 
 export function reader(extPath: string, panel: WebviewPanel):void {
   // makes list of items in main directory
@@ -23,7 +24,10 @@ export function reader(extPath: string, panel: WebviewPanel):void {
       }
       // ***** remove console.log and add the test once we combine cleanup *****
       // console.log('path found files', pathFoundFiles);
-      streamFilesInDirectory(pathFoundFiles, panel);
+
+      // For the time being, instead how about this calls my other shit for testing
+      // streamFilesInDirectory(pathFoundFiles, panel);
+      analyzeFilesForNetworkRequests(pathFoundFiles, panel);
     }
 
     //checking for directories

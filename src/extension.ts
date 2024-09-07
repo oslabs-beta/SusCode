@@ -98,6 +98,8 @@ export function activate(context: vscode.ExtensionContext) {
       }
       panel.webview.html = getPanelHTML();
 
+      console.log('wahh',filepath)
+
       filepath = filepath[0].slice(1, -1);
       reader(filepath, panel);
     }
