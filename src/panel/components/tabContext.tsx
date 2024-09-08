@@ -5,6 +5,8 @@ import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import generateTabPanels from './tabPanels';
 import generateTabs from './tabs';
+import Tabs from './tabs';
+import TabPanels from './tabPanels';
 
 //=================TabContextDive COMPONENT==========================//
 // * This is the container for the Tabs and TabPanels
@@ -13,22 +15,49 @@ import generateTabs from './tabs';
 
 export default function TabContextDiv(props: any) {
   const [value, setValue] = useState<number>(0);
-  const { displayNames, panelState } = props;
-
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
-  };
+  const { displayNames, panelState, readMe } = props;
 
   return (
     <TabContext value={value}>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <TabList onChange={handleChange} aria-label='lab API tabs example'>
-          {generateTabs(displayNames)}
-        </TabList>
+      <Box
+        sx={{
+          borderBottom: 2,
+          borderColor: 'divider',
+          bgcolor: 'inherit',
+          width: 500,
+        }}
+      >
+        <Tabs displayNames={displayNames} setValue={setValue} />
       </Box>
-      {generateTabPanels(displayNames, panelState)}
+      <TabPanels
+        displayNames={displayNames}
+        panelState={panelState}
+        readMe={readMe}
+      />
     </TabContext>
   );
 }
 
 module.exports = TabContextDiv;
+
+// export default function TabContextDiv(props: any) {
+//   const [value, setValue] = useState<number>(0);
+//   const { displayNames, panelState } = props;
+
+//   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+//     setValue(newValue);
+//   };
+
+//   return (
+//     <TabContext value={value}>
+//       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+//         <TabList onChange={handleChange} aria-label='lab API tabs example'>
+//           {generateTabs(displayNames)}
+//         </TabList>
+//       </Box>
+//       {generateTabPanels(displayNames, panelState)}
+//     </TabContext>
+//   );
+// }
+
+// module.exports = TabContextDiv;

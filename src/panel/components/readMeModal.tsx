@@ -27,10 +27,10 @@ export default function ReadMeModal(props: any) {
     >
       <Box sx={style}>
         <Typography id='modal-modal-title' variant='h6' component='h2'>
-          Extension Description for Quokka
+          Extension Description for Quokka:
         </Typography>
         <Typography id='modal-modal-description' sx={{ mt: 2 }}>
-          ReadMe Description will go here
+          ReadMe Description will go here!!!
         </Typography>
       </Box>
     </Modal>

@@ -41,13 +41,21 @@ function App() {
   //if the message type is 'update' we add a p tag to display the text which is all the occurence of found patterns
   //if the message type is 'end' we add a line, a bolded declaration that the file is finished reading, and another line
   //if the message type is 'error' we display a p tag of red text delcaring the file name and error message
-
+  let nameSwitcher = true;
+  let disName: string;
   let extensionObj: panelCache | undefined = panelState;
   window.addEventListener('message', (event) => {
     const message = event.data;
-    console.log('within mesage received, displayNames state:', displayNames);
+    // console.log('within mesage received, displayNames state:', displayNames);
     //let disName = message.name  ==> when display names are sent with each message we can uncomment and get rid of the next line
-    let disName: string = displayNamesArray[2];
+    if (nameSwitcher === true) {
+      disName = displayNamesArray[2];
+    }
+    if (nameSwitcher === false) {
+      disName = displayNamesArray[1];
+    }
+    console.log('disName should be switching', disName);
+    console.log('nameswitcher should be switching', nameSwitcher);
 
     switch (message.type) {
       case 'update': {
@@ -73,6 +81,7 @@ function App() {
             }
           }
         }
+        nameSwitcher = !nameSwitcher;
         break;
       }
       case 'end': {
@@ -91,7 +100,11 @@ function App() {
   return (
     <Box sx={{ width: '100%', typography: 'body1' }}>
       <NavBar />
-      <TabContextDiv displayNames={displayNames} panelState={panelState} />
+      <TabContextDiv
+        displayNames={displayNames}
+        panelState={panelState}
+        readMe={readMe}
+      />
       <Box>
         <Typography> {readMe}</Typography>
       </Box>
