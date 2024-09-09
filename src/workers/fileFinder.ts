@@ -22,8 +22,8 @@ export function reader(extPath: string, panel: WebviewPanel):void {
         pathFoundFiles.push(path.join(extenPath, file)); 
       }
       // ***** remove console.log and add the test once we combine cleanup *****
-      console.log('path found files', pathFoundFiles);
-      //streamFilesInDirectory(pathFoundFiles, panel);
+      // console.log('path found files', pathFoundFiles);
+      streamFilesInDirectory(pathFoundFiles, panel);
     }
 
     //checking for directories

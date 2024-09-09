@@ -4,16 +4,14 @@ import * as vscode from 'vscode';
 
 export default function streamFilesInDirectory(
     files: string [],
-    directoryPath: string,
     panel: vscode.WebviewPanel
 ): void {
     for (let file of files) {
         // Reading the content of the files
         // Potentially move the file parsing data out so we can better
         // separate this functionality out
-        const filePath = path.join(directoryPath, file);
-        console.log('thisss is', filePath);
-        const readStream = fs.createReadStream(filePath, { encoding: 'utf8' });
+        console.log('thisss is', file);
+        const readStream = fs.createReadStream(file, { encoding: 'utf8' });
 
         const patterns = [
             /eval\(/g,
