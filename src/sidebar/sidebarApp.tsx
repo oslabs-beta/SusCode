@@ -1,4 +1,4 @@
-import * as React from 'react'; 
+import * as React from 'react';
 import { useEffect, useState } from 'react';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -7,6 +7,7 @@ import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
 
 const vscode = acquireVsCodeApi();
+let extensionNames: string[];
 
 function App() {
   const [names, setNames] = useState<string[][]>([]);
@@ -16,6 +17,7 @@ function App() {
     const messageListener = (event: MessageEvent) => {
       const message = event.data;
       const extensions = message.value;
+      extensionNames = extensions;
       setNames(extensions);
     };
 
@@ -36,13 +38,15 @@ function App() {
       .filter((name) => selectedExtensions.includes(name[0]))
       .map((name) => name[1]);
 
-    vscode.postMessage({ type: 'selectedExtensionNames', value: selectedExtensions});
-    vscode.postMessage({ type: 'extensionSelected', value: selectedPaths });
+    vscode.postMessage({
+      type: 'extensionSelected',
+      value: [selectedPaths, selectedExtensions],
+    });
   }
 
   function getExtensions() {
     vscode.postMessage({ type: 'getExtensions' });
-  };
+  }
 
   function handleCheckboxClick(value: string) {
     selectedExtensions.push(value);
@@ -68,34 +72,28 @@ function App() {
         }}
       >
         <List>
-        {names.map((name) => (
-          <ListItem
-          sx={{ color: '#cccccc'}}
-          key={name[0]}
-          >
-            <Checkbox 
-            sx={{ 
-              color: '#cccccc',
-            }}
-            onClick={() => handleCheckboxClick(name[0])}
-            />
-            {name[0]}
-            <Box 
-            sx={{
-              flexDirection: 'column',
-              alignItems: 'right',
-              justifyContent: 'right',
-            }}>
-            </Box>
-          </ListItem>
-        ))}
+          {names.map((name) => (
+            <ListItem sx={{ color: '#cccccc' }} key={name[0]}>
+              <Checkbox
+                sx={{
+                  color: '#cccccc',
+                }}
+                onClick={() => handleCheckboxClick(name[0])}
+              />
+              {name[0]}
+              <Box
+                sx={{
+                  flexDirection: 'column',
+                  alignItems: 'right',
+                  justifyContent: 'right',
+                }}
+              ></Box>
+            </ListItem>
+          ))}
         </List>
-          <Button
-            variant='contained'
-            onClick={() => scanExtensionsClick()}
-          >
-            Scan Extensions
-          </Button>
+        <Button variant='contained' onClick={() => scanExtensionsClick()}>
+          Scan Extensions
+        </Button>
       </Box>
     </Box>
   );

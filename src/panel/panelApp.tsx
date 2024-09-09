@@ -1,13 +1,18 @@
 import * as React from 'react';
 import { useState } from 'react';
+import { resultsObj, panelCache } from '../types';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
+import NavBar from './components/navBar';
+import TabContextDiv from './components/tabContext';
 
 function App() {
   // initialize state for the read me description
   const [readMe, setReadMe] = useState<string>('');
+  const [displayNames, setDisplayNames] = useState<string[]>([]);
+  const [panelState, setPanelState] = useState<panelCache>({});
+
+  let displayNamesArray: string[];
 
   //====================   LISTENING FOR MESSAGES FROM findReadMe() WITHIN findReadMe.ts   =================================//
   //assigning the data sent to the semantic variable message
@@ -16,6 +21,12 @@ function App() {
   window.addEventListener('message', (event) => {
     const message = event.data;
     switch (message.type) {
+      case 'selectedExtensionNames': {
+        const extensions: string[] = message.value;
+        displayNamesArray = extensions;
+        setDisplayNames(extensions);
+        break;
+      }
       case 'readMe': {
         setReadMe(message.value);
         break;
@@ -30,63 +41,72 @@ function App() {
   //if the message type is 'update' we add a p tag to display the text which is all the occurence of found patterns
   //if the message type is 'end' we add a line, a bolded declaration that the file is finished reading, and another line
   //if the message type is 'error' we display a p tag of red text delcaring the file name and error message
+  let nameSwitcher = true;
+  let disName: string;
+  let extensionObj: panelCache | undefined = panelState;
   window.addEventListener('message', (event) => {
-    const contentDiv: any = document.getElementById('content');
     const message = event.data;
+    // console.log('within mesage received, displayNames state:', displayNames);
+    //let disName = message.name  ==> when display names are sent with each message we can uncomment and get rid of the next line
+    if (nameSwitcher === true) {
+      disName = displayNamesArray[2];
+    }
+    if (nameSwitcher === false) {
+      disName = displayNamesArray[1];
+    }
+    console.log('disName should be switching', disName);
+    console.log('nameswitcher should be switching', nameSwitcher);
+
     switch (message.type) {
       case 'update': {
-        contentDiv.innerHTML += '<p>' + message.text + '</p>';
+        let funcName = message.text.name;
+        let count = message.text.count;
+
+        if (!extensionObj[disName]) {
+          extensionObj[disName] = { filepath: '', results: [] };
+        } else {
+          const currentExResArray: resultsObj[] | undefined =
+            extensionObj[disName].results;
+
+          let objectValues = currentExResArray.map((obj) => {
+            return obj.name;
+          });
+          if (!objectValues.includes(message.text.name)) {
+            currentExResArray.push(message.text);
+          } else {
+            for (let obj of currentExResArray) {
+              if (obj.name === funcName) {
+                obj.count += count;
+              }
+            }
+          }
+        }
+        nameSwitcher = !nameSwitcher;
         break;
       }
       case 'end': {
-        contentDiv.innerHTML +=
-          '<hr/><strong>Finished reading ' +
-          message.fileName +
-          '</strong><hr/>';
+        extensionObj[disName].filepath = message.fileName;
+        setPanelState(extensionObj);
+        console.log('end, showing extensionObj', extensionObj);
         break;
       }
       case 'error': {
-        contentDiv.innerHTML +=
-          '<p style="color:red;">' + message.text + '</p>';
+        //display error somehow, it is stored as message.text
         break;
       }
     }
   });
 
   return (
-    <Box
-      sx={{
-        width: '100vw',
-        m: 3,
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-      }}
-    >
-      <Box
-        sx={{
-          width: '450px',
-          m: 2,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <Typography variant='h4' fontWeight='bold'>
-          SusCode Extension Scan Results: {readMe}
-        </Typography>
-      </Box>
-
+    <Box sx={{ width: '100%', typography: 'body1' }}>
+      <NavBar />
+      <TabContextDiv
+        displayNames={displayNames}
+        panelState={panelState}
+        readMe={readMe}
+      />
       <Box>
-        <Tabs value={0}>
-          <Tab label='Scan Result:' />
-        </Tabs>
-        <Box sx={{ padding: 2 }}>
-          <Typography variant='body1' fontWeight='light'>
-            <div id='content'></div>
-          </Typography>
-        </Box>
+        <Typography> {readMe}</Typography>
       </Box>
     </Box>
   );
