@@ -36,25 +36,3 @@ export default function TabContextDiv(props: any) {
 }
 
 module.exports = TabContextDiv;
-
-// export default function TabContextDiv(props: any) {
-//   const [value, setValue] = useState<number>(0);
-//   const { displayNames, panelState } = props;
-
-//   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-//     setValue(newValue);
-//   };
-
-//   return (
-//     <TabContext value={value}>
-//       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-//         <TabList onChange={handleChange} aria-label='lab API tabs example'>
-//           {generateTabs(displayNames)}
-//         </TabList>
-//       </Box>
-//       {generateTabPanels(displayNames, panelState)}
-//     </TabContext>
-//   );
-// }
-
-// module.exports = TabContextDiv;

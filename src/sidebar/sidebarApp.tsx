@@ -55,11 +55,6 @@ function App() {
       return;
     }
 
-    // console.log('selectedExtensions: ', selectedExtensions);
-    // vscode.postMessage({
-    //   type: 'selectedExtensionNames',
-    //   value: selectedExtensions,
-    // });
     vscode.postMessage({
       type: 'extensionSelected',
       value: [selectedPaths, selectedExtensions],

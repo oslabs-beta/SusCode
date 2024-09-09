@@ -30,15 +30,7 @@ function App() {
       case 'readMe': {
         //{ name: description}
         let currentReadMeObj = readMe;
-        console.log(
-          'received readMe in panelapp, this is message.value: ',
-          message.value
-        );
         let updatedReadMeState = Object.assign(currentReadMeObj, message.value);
-        console.log(
-          'updatedReadMeState after object.assign',
-          updatedReadMeState
-        );
         setReadMe(updatedReadMeState);
         break;
       }
@@ -52,12 +44,9 @@ function App() {
   //if the message type is 'update' we add a p tag to display the text which is all the occurence of found patterns
   //if the message type is 'end' we add a line, a bolded declaration that the file is finished reading, and another line
   //if the message type is 'error' we display a p tag of red text delcaring the file name and error message
-  let nameSwitcher = true;
-  let disName: string;
   let extensionObj: panelCache | undefined = panelState;
   window.addEventListener('message', (event) => {
     const message = event.data;
-    // console.log('within mesage received, displayNames state:', displayNames);
     let disName = message.displayName;
 
     switch (message.type) {
@@ -66,7 +55,7 @@ function App() {
         let count = message.text.count;
 
         if (!extensionObj[disName]) {
-          extensionObj[disName] = { filepath: '', results: [] };
+          extensionObj[disName] = { filepath: [], results: [] };
         } else {
           const currentExResArray: resultsObj[] | undefined =
             extensionObj[disName].results;
@@ -84,13 +73,11 @@ function App() {
             }
           }
         }
-        nameSwitcher = !nameSwitcher;
         break;
       }
       case 'end': {
-        extensionObj[disName].filepath = message.fileName;
+        extensionObj[disName].filepath.push(message.fileName);
         setPanelState(extensionObj);
-        console.log('end, showing extensionObj', extensionObj);
         break;
       }
       case 'error': {

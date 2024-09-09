@@ -8,12 +8,6 @@ import FlashlightOnIcon from '@mui/icons-material/FlashlightOn';
 import Skeleton from '@mui/material/Skeleton';
 
 export default function NavBar() {
-  const styles = {
-    customizeToolbar: {
-      minHeight: 36,
-    },
-  };
-
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Skeleton />
@@ -38,4 +32,3 @@ export default function NavBar() {
 }
 
 module.exports = NavBar;
-//          <Button color='inherit'>Login</Button>

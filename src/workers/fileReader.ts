@@ -12,7 +12,6 @@ export default function streamFilesInDirectory(
     // Reading the content of the files
     // Potentially move the file parsing data out so we can better
     // separate this functionality out
-    // console.log('thisss is', file);
     const readStream = fs.createReadStream(file, { encoding: 'utf8' });
 
     const patterns = [
@@ -43,7 +42,7 @@ export default function streamFilesInDirectory(
 
           panel.webview.postMessage({
             type: 'update',
-            text: updatedTarget, // { functionName : activate, count: 5 }
+            text: updatedTarget,
             fileName: file,
             displayName: name,
           });
@@ -52,7 +51,11 @@ export default function streamFilesInDirectory(
     });
 
     readStream.on('end', () => {
-      panel.webview.postMessage({ type: 'end', fileName: file });
+      panel.webview.postMessage({
+        type: 'end',
+        fileName: file,
+        displayName: name,
+      });
     });
 
     readStream.on('error', (err) => {
