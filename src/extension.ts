@@ -108,12 +108,8 @@ export function activate(context: vscode.ExtensionContext) {
         reader(trimmedFilepath, panel, names[i]);
       }
 
-      // const forWill = filepaths[0].slice(1, -1); // changed this so I wouldn't break will's code but also need the raw file passed in
-      // getReadMe(filepaths, panel)
       filepaths.forEach((el: string, i: number) => {
         el = el.slice(1, -1);
-        console.log('Im in my really cool forEach');
-        // const result = {};
         findReadMe(
           el,
           panel,
@@ -121,16 +117,11 @@ export function activate(context: vscode.ExtensionContext) {
             if (err) {
               console.error('Error: ', err);
             } else {
-              console.log(
-                'made it back to findReadMe invocation: ',
-                description
-              );
               const aliObj: { [key: string]: string | undefined } = {
                 [names[i]]: description ?? '',
               };
 
               panel.webview.postMessage({
-                //there is an error on "postMessage does not exist on type 'typeof import("vscode")'. Did you mean 'TestMessage'?"
                 type: 'readMe',
                 value: aliObj,
               });
@@ -138,8 +129,6 @@ export function activate(context: vscode.ExtensionContext) {
           }
         );
       });
-
-      // }
     }
   );
 
@@ -189,7 +178,6 @@ class ExtensionsSidebarViewProvider implements vscode.WebviewViewProvider {
     webviewView.webview.html = this.getWebviewHTML(webviewView.webview);
 
     webviewView.webview.onDidReceiveMessage((data) => {
-      console.log('Message received:', data);
       switch (data.type) {
         case 'getExtensions': {
           vscode.commands.executeCommand('suscode.displayExtensions');
@@ -228,9 +216,6 @@ class ExtensionsSidebarViewProvider implements vscode.WebviewViewProvider {
     htmlContent = htmlContent
       .replace(/\${nonce}/g, nonce)
       .replace(/\${scriptUri}/g, scriptUri.toString());
-
-    console.log('Generated HTML Content:', htmlContent);
-
     return htmlContent;
   }
 

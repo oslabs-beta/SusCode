@@ -17,10 +17,6 @@ export default function ReadMeModal(props: any) {
     boxShadow: 24,
     p: 4,
   };
-  console.log(
-    'readMe.extensionName should be description: ',
-    readMe[extensionName]
-  );
   return (
     <Modal
       open={open}

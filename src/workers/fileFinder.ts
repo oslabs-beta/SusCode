@@ -27,8 +27,6 @@ export function reader(
       for (let file of toBeTested) {
         pathFoundFiles.push(path.join(extenPath, file));
       }
-      // ***** remove console.log and add the test once we combine cleanup *****
-      // console.log('path found files', pathFoundFiles);
       streamFilesInDirectory(pathFoundFiles, panel, name);
     }
 

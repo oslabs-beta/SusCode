@@ -4,7 +4,7 @@ export interface resultsObj {
   [key: string]: number;
 }
 export interface scanResult {
-  filepath?: string;
+  filepath: string[];
   results: resultsObj[];
 }
 
