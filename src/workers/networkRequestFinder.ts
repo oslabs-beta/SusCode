@@ -31,24 +31,27 @@ interface ParserOptions {
 // This will analyze the results and then send the results over to a listener in the frontend
 // async function analyzeFilesForNetworkRequests(filePath: string): Promise<AnalysisResult[]> {
 async function analyzeFilesForNetworkRequests(filePaths: string[], panel: vscode.WebviewPanel) {
+    const finalResults: any = [];
     for (let file of filePaths) {
         const potentialRequests = await initialScan(file);
         const detailedResults = await detailedAnalysis(file, potentialRequests);
         // const results: AnalysisResult[] = await mapResultsToOriginal(file, detailedResults);
         const results: any = await mapResultsToOriginal(file, detailedResults);
         console.log('yoyo', results)
-        if (results.length){
+        if (results.length) {
             const httpPattern = /https?:\/\/[^\s'"]+/;
-            const finalResults = results.filter((result: any) => httpPattern.test(result.url));
-            displayResults(finalResults);
+            finalResults.push(...results.filter((result: any) => httpPattern.test(result.url)));
+            console.log('finalResults', finalResults)
             // displayResults(results);
+            finalResults.push(...results)
         }
         // for (let result of results){
-            // let parsedResult = JSON.stringify(result, null, 2);
-            // panel.webview.postMessage({ type: 'update', text: parsedResult });
-            // displayResults(result);
+        // let parsedResult = JSON.stringify(result, null, 2);
+        // panel.webview.postMessage({ type: 'update', text: parsedResult });
+        // displayResults(result);
         // }
     }
+    displayResults(finalResults);
 
 }
 
@@ -257,7 +260,7 @@ async function mapResultsToOriginal(filePath: string, results: AnalysisResult[])
         consumer.destroy();
     }
 
-    
+
     return mappedResults;
 }
 
