@@ -58,15 +58,7 @@ function App() {
   window.addEventListener('message', (event) => {
     const message = event.data;
     // console.log('within mesage received, displayNames state:', displayNames);
-    //let disName = message.name  ==> when display names are sent with each message we can uncomment and get rid of the next line
-    if (nameSwitcher === true) {
-      disName = displayNamesArray[2];
-    }
-    if (nameSwitcher === false) {
-      disName = displayNamesArray[1];
-    }
-    console.log('disName should be switching', disName);
-    console.log('nameswitcher should be switching', nameSwitcher);
+    let disName = message.displayName;
 
     switch (message.type) {
       case 'update': {

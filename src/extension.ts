@@ -63,7 +63,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   const openResultPanel = vscode.commands.registerCommand(
     'suscode.openResultPanel',
-    (filepath, selectedExtensions, names) => {
+    (filepaths, selectedExtensions, names) => {
       const panel = vscode.window.createWebviewPanel(
         'resultPanel',
         'SusCode Results',
@@ -102,10 +102,15 @@ export function activate(context: vscode.ExtensionContext) {
         type: 'selectedExtensionNames',
         value: selectedExtensions,
       });
-      const forWill = filepath[0].slice(1, -1); // changed this so I wouldn't break will's code but also need the raw file passed in
-      reader(forWill, panel);
-      // getReadMe(filepath, panel)
-      filepath.forEach((el: string, i: number) => {
+
+      for (let i = 0; i < filepaths.length; i++) {
+        let trimmedFilepath = filepaths[i].slice(1, -1);
+        reader(trimmedFilepath, panel, names[i]);
+      }
+
+      // const forWill = filepaths[0].slice(1, -1); // changed this so I wouldn't break will's code but also need the raw file passed in
+      // getReadMe(filepaths, panel)
+      filepaths.forEach((el: string, i: number) => {
         el = el.slice(1, -1);
         console.log('Im in my really cool forEach');
         // const result = {};
@@ -191,12 +196,12 @@ class ExtensionsSidebarViewProvider implements vscode.WebviewViewProvider {
           break;
         }
         case 'extensionSelected': {
-          const filepath: string[] | string = data.value[0];
+          const filepaths: string[] | string = data.value[0];
           const selectedExtensions: string[] | string = data.value[1];
           const names: string = data.name;
           vscode.commands.executeCommand(
             'suscode.openResultPanel',
-            filepath,
+            filepaths,
             selectedExtensions,
             names
           );
