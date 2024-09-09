@@ -5,12 +5,16 @@ import ListItem from '@mui/material/ListItem';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
+import Typography from '@mui/material/Typography';
 
 const vscode = acquireVsCodeApi();
 let extensionNames: string[];
 
 function App() {
   const [names, setNames] = useState<string[][]>([]);
+  const [error, setError] = useState<boolean>(false);
+  const [checked, setChecked] = useState<{ [key: string]: boolean }>({});
+  const [selectedExtensions, setSelectedExtensions] = useState<string[]>([]);
 
   useEffect(() => {
     //====================   LISTENING FOR MESSAGES FROM suscode.getExtensions to list extensions in ListItem =================================//
@@ -19,6 +23,13 @@ function App() {
       const extensions = message.value;
       extensionNames = extensions;
       setNames(extensions);
+
+      // Initialize checked state for all extensions as false
+      const initialState: { [key: string]: boolean } = {};
+      extensions.forEach((extension: string[]) => {
+        initialState[extension[0]] = false;
+      });
+      setChecked(initialState);
     };
 
     window.addEventListener('message', messageListener);
@@ -30,8 +41,6 @@ function App() {
     };
   }, []);
 
-  const selectedExtensions: string[] = [];
-
   function scanExtensionsClick() {
     // filtering through the extension names to find the user's file path of extension installed to send to back end to begin scanning
     const selectedPaths = names
@@ -40,11 +49,31 @@ function App() {
     const selectedNames = names
       .filter((name) => selectedExtensions.includes(name[0]))
       .map((name) => name[0]);
+
+    if (selectedPaths.length === 0) {
+      setError(true);
+      return;
+    }
+
+    // console.log('selectedExtensions: ', selectedExtensions);
+    // vscode.postMessage({
+    //   type: 'selectedExtensionNames',
+    //   value: selectedExtensions,
+    // });
     vscode.postMessage({
       type: 'extensionSelected',
       value: [selectedPaths, selectedExtensions],
       name: selectedNames,
     });
+
+    // Reset the checked state (uncheck all checkboxes)
+    const resetCheckedState: { [key: string]: boolean } = {};
+    names.forEach((name) => {
+      resetCheckedState[name[0]] = false;
+    });
+    setChecked(resetCheckedState);
+
+    setSelectedExtensions([]);
   }
 
   function getExtensions() {
@@ -52,7 +81,22 @@ function App() {
   }
 
   function handleCheckboxClick(value: string) {
-    selectedExtensions.push(value);
+    if (error === true) {
+      setError(false);
+    }
+
+    setChecked((prevState) => ({
+      ...prevState,
+      [value]: !prevState[value],
+    }));
+
+    setSelectedExtensions((prevSelected) => {
+      if (!prevSelected.includes(value)) {
+        return [...prevSelected, value];
+      } else {
+        return prevSelected.filter((ext) => ext !== value);
+      }
+    });
   }
 
   return (
@@ -82,6 +126,7 @@ function App() {
                   color: '#cccccc',
                 }}
                 onClick={() => handleCheckboxClick(name[0])}
+                checked={checked[name[0]] || false}
               />
               {name[0]}
               <Box
@@ -97,6 +142,9 @@ function App() {
         <Button variant='contained' onClick={() => scanExtensionsClick()}>
           Scan Extensions
         </Button>
+        <Typography color='red' display={error ? 'block' : 'none'}>
+          *No Extensions Selected
+        </Typography>
       </Box>
     </Box>
   );
