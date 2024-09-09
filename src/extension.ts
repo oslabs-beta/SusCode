@@ -44,29 +44,6 @@ export function activate(context: vscode.ExtensionContext) {
     ExtensionsSidebarViewProvider.viewType,
     provider
   );
-  // getReadMe
-  // const getReadMe = vscode.commands.registerCommand(
-  //   'suscode.getReadMe', (selectedPath) => {
-  //   findReadMe(
-  //     selectedPath,
-  //     (err: string | null, description: string | null) => {
-  //       if (err) {
-  //         console.error('Error: ', err);
-  //       } else {
-  //         console.log('made it back to findReadMe invocation: ', description);
-  //         if (panel) {
-  //         panel.webview.postMessage({ //there is an error on "postMessage does not exist on type 'typeof import("vscode")'. Did you mean 'TestMessage'?"
-  //           type: 'readMe',
-  //           value: description,
-  //         });
-  //       } else {
-  //         console.error('Panel is not defined poop');
-  //       }
-  //       }
-  //     }
-  //   );
-  //   }
-  // )
 
 
 
@@ -91,7 +68,8 @@ export function activate(context: vscode.ExtensionContext) {
 
   const openResultPanel = vscode.commands.registerCommand(
     'suscode.openResultPanel',
-    (filepath) => {
+    (filepath, names) => {
+      console.log('this is where file path is brought in to extensionJS and her is filepath: ',filepath)
       const panel = vscode.window.createWebviewPanel(
         'resultPanel',
         'SusCode Results',
@@ -126,27 +104,38 @@ export function activate(context: vscode.ExtensionContext) {
         return htmlContent;
       }
       panel.webview.html = getPanelHTML();
-
-      filepath = filepath[0].slice(1, -1);
-      reader(filepath, panel);
+      // for (let i = 0; i < filepath.length; i++) {
+        // filepath = filepath[0].slice(1, -1);
+        const forWill = filepath[0].slice(1, -1);// changed this so I wouldn't break will's code but also need the raw file passed in
+        reader(forWill, panel);
       // getReadMe(filepath, panel)
-
-      findReadMe(
-        filepath, panel,
-        (err: string | null, description: string | null) => {
-          if (err) {
-            console.error('Error: ', err);
-          } else {
-            console.log('made it back to findReadMe invocation: ', description);
-            
-            panel.webview.postMessage({
-              type: 'readMe',
-              value: description,
-            });
+      filepath.forEach((el:string, i:number) => {
+        el = el.slice(1, -1);
+        console.log('Im in my really cool forEach');
+        // const result = {};
+        findReadMe(
+          el, panel,
+          (err: string | null, description: string | null) => {
+            if (err) {
+              console.error('Error: ', err);
+            } else {
+              console.log('made it back to findReadMe invocation: ', description);
+              const aliObj: {[key: string]: string | undefined} = {
+                [names[i]]: description ?? ''
+              };
           
+              panel.webview.postMessage({ //there is an error on "postMessage does not exist on type 'typeof import("vscode")'. Did you mean 'TestMessage'?"
+                type: 'readMe',
+                value: aliObj,
+              });
+            
+            }
           }
-        }
-      );
+        );
+      })
+        
+      // }
+      
     }
   );
 
@@ -204,17 +193,19 @@ class ExtensionsSidebarViewProvider implements vscode.WebviewViewProvider {
           break;
         }
         case 'extensionSelected': {
+          console.log("in extension line 193 - data.value: ", data.name);
           const filepath: string = data.value;
-          vscode.commands.executeCommand('suscode.openResultPanel', filepath);
+          const names: string = data.name;
+          vscode.commands.executeCommand('suscode.openResultPanel', filepath, names);
           break;
         }
-        case 'getReadMe': {
-          console.log('in the event listener');
-          const selectedPaths = data.value;
-          const selectedPath = selectedPaths.slice(1, -1);
-          vscode.commands.executeCommand('suscode.getReadMe', selectedPath);
-          break;
-        }
+        // case 'getReadMe': {
+        //   console.log('in the event listener');
+        //   const selectedPaths = data.value;
+        //   const selectedPath = selectedPaths.slice(1, -1);
+        //   vscode.commands.executeCommand('suscode.getReadMe', selectedPath);
+        //   break;
+        // }
       }
     });
   }

@@ -15,8 +15,9 @@ function App() {
   //if the message type is 'readMe', we invoke the setReadMe function with the 'value' which is the filepath for an extension
 
   window.addEventListener('message', (event: MessageEvent) => {
-    console.log('In the panelAppTSX in the assEventListener')
+    
     const message = event.data;
+    console.log('In the panelAppTSX in the addEventListener and here is the message sent to Ali: ', message.value);
     switch (message.type) {
       case 'readMe': {
         setReadMe(message.value);

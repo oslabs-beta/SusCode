@@ -35,34 +35,14 @@ function App() {
     const selectedPaths = names
       .filter((name) => selectedExtensions.includes(name[0]))
       .map((name) => name[1]);
-<<<<<<< HEAD
-    console.log('selectedPaths in clickHandler', selectedPaths);
-    
-    // invoke evalScanFunction(selectedPaths);
-    vscode.postMessage({ type: 'extensionSelected', value: selectedPaths });
-    vscode.postMessage({ type: 'getReadMe', value: selectedPaths[0] });
-    // findReadMe(
-    //   selectedPaths[0],
-    //   (err: string | null, description: string | null) => {
-    //     if (err) {
-    //       console.error('Error: ', err);
-    //     } else {
-    //       console.log('made it back to findReadMe invocation: ', description);
-    //       vscode.postMessage({
-    //         type: 'readMe',
-    //         value: description,
-    //       });
-    //       //can't return out so functionality(sending to front) must be done here
-    //       console.log('Do something with: ', description);
-    //     }
-    //   }
-    // );
-=======
-
-    vscode.postMessage({ type: 'selectedExtensionNames', value: selectedExtensions});
-    vscode.postMessage({ type: 'extensionSelected', value: selectedPaths });
->>>>>>> dev
+    const selectedNames = names
+      .filter((name) => selectedExtensions.includes(name[0]))
+      .map((name) => name[0]);
+    console.log('In sidebar getting the names: ', names);
+    vscode.postMessage({ type: 'selectedExtensionNames', value: selectedExtensions });
+    vscode.postMessage({ type: 'extensionSelected', value: selectedPaths, name: selectedNames });// I think I'm getting the 3 names...
   }
+    
 
   function getExtensions() {
     vscode.postMessage({ type: 'getExtensions' });

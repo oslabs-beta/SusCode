@@ -10,7 +10,7 @@ export default function streamFilesInDirectory(
         // Reading the content of the files
         // Potentially move the file parsing data out so we can better
         // separate this functionality out
-        console.log('thisss is', file);
+        // console.log('thisss is', file);
         const readStream = fs.createReadStream(file, { encoding: 'utf8' });
 
         const patterns = [
@@ -24,13 +24,13 @@ export default function streamFilesInDirectory(
         // const results: any = [];
         readStream.on('data', (chunk) => {
             for (let content of patterns) {
-                console.log('contentfdsf', content);
+                // console.log('contentfdsf', content);
                 let target = ("" + chunk).match(content);
                 // I may not want to push the results into an array- I'd
                 // want to transmit this info when I can
-                console.log('before target');
+                // console.log('before target');
                 if (target) {
-                    console.log('in target');
+                    // console.log('in target');
                     // results.push(target);
                     // Maybe here we can collect more information that we'd want to
                     // return to the user? Line number, file location, etc
