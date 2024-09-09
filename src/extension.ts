@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import path from 'path';
 import fs from 'fs';
 import { reader } from './workers/fileFinder';
+import findReadMe from './workers/findReadMe';
 
 // generates a unique key used for script security
 function getNonce() {
@@ -62,7 +63,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   const openResultPanel = vscode.commands.registerCommand(
     'suscode.openResultPanel',
-    (filepath) => {
+    (filepaths, selectedExtensions, names) => {
       const panel = vscode.window.createWebviewPanel(
         'resultPanel',
         'SusCode Results',
@@ -97,9 +98,37 @@ export function activate(context: vscode.ExtensionContext) {
         return htmlContent;
       }
       panel.webview.html = getPanelHTML();
+      panel.webview.postMessage({
+        type: 'selectedExtensionNames',
+        value: selectedExtensions,
+      });
 
-      filepath = filepath[0].slice(1, -1);
-      reader(filepath, panel);
+      for (let i = 0; i < filepaths.length; i++) {
+        let trimmedFilepath = filepaths[i].slice(1, -1);
+        reader(trimmedFilepath, panel, names[i]);
+      }
+
+      filepaths.forEach((el: string, i: number) => {
+        el = el.slice(1, -1);
+        findReadMe(
+          el,
+          panel,
+          (err: string | null, description: string | null) => {
+            if (err) {
+              console.error('Error: ', err);
+            } else {
+              const aliObj: { [key: string]: string | undefined } = {
+                [names[i]]: description ?? '',
+              };
+
+              panel.webview.postMessage({
+                type: 'readMe',
+                value: aliObj,
+              });
+            }
+          }
+        );
+      });
     }
   );
 
@@ -149,15 +178,21 @@ class ExtensionsSidebarViewProvider implements vscode.WebviewViewProvider {
     webviewView.webview.html = this.getWebviewHTML(webviewView.webview);
 
     webviewView.webview.onDidReceiveMessage((data) => {
-      console.log('Message received:', data);
       switch (data.type) {
         case 'getExtensions': {
           vscode.commands.executeCommand('suscode.displayExtensions');
           break;
         }
         case 'extensionSelected': {
-          const filepath: string = data.value;
-          vscode.commands.executeCommand('suscode.openResultPanel', filepath);
+          const filepaths: string[] | string = data.value[0];
+          const selectedExtensions: string[] | string = data.value[1];
+          const names: string = data.name;
+          vscode.commands.executeCommand(
+            'suscode.openResultPanel',
+            filepaths,
+            selectedExtensions,
+            names
+          );
           break;
         }
       }
@@ -181,9 +216,6 @@ class ExtensionsSidebarViewProvider implements vscode.WebviewViewProvider {
     htmlContent = htmlContent
       .replace(/\${nonce}/g, nonce)
       .replace(/\${scriptUri}/g, scriptUri.toString());
-
-    console.log('Generated HTML Content:', htmlContent);
-
     return htmlContent;
   }
 
