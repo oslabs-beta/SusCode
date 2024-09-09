@@ -4,9 +4,11 @@ import * as vscode from 'vscode';
 
 export default function streamFilesInDirectory(
   files: string[],
-  panel: vscode.WebviewPanel
+  panel: vscode.WebviewPanel,
+  name: string
 ): void {
-  for (let file of files) {
+  for (let i = 0; i < files.length; i++) {
+    let file = files[i];
     // Reading the content of the files
     // Potentially move the file parsing data out so we can better
     // separate this functionality out
@@ -43,6 +45,7 @@ export default function streamFilesInDirectory(
             type: 'update',
             text: updatedTarget, // { functionName : activate, count: 5 }
             fileName: file,
+            displayName: name,
           });
         }
       }

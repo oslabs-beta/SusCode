@@ -8,7 +8,7 @@ import TabContextDiv from './components/tabContext';
 
 function App() {
   // initialize state for the read me description
-  const [readMe, setReadMe] = useState<string>('');
+  const [readMe, setReadMe] = useState<object>({});
   const [displayNames, setDisplayNames] = useState<string[]>([]);
   const [panelState, setPanelState] = useState<panelCache>({});
 
@@ -28,7 +28,18 @@ function App() {
         break;
       }
       case 'readMe': {
-        setReadMe(message.value);
+        //{ name: description}
+        let currentReadMeObj = readMe;
+        console.log(
+          'received readMe in panelapp, this is message.value: ',
+          message.value
+        );
+        let updatedReadMeState = Object.assign(currentReadMeObj, message.value);
+        console.log(
+          'updatedReadMeState after object.assign',
+          updatedReadMeState
+        );
+        setReadMe(updatedReadMeState);
         break;
       }
     }
@@ -47,15 +58,7 @@ function App() {
   window.addEventListener('message', (event) => {
     const message = event.data;
     // console.log('within mesage received, displayNames state:', displayNames);
-    //let disName = message.name  ==> when display names are sent with each message we can uncomment and get rid of the next line
-    if (nameSwitcher === true) {
-      disName = displayNamesArray[2];
-    }
-    if (nameSwitcher === false) {
-      disName = displayNamesArray[1];
-    }
-    console.log('disName should be switching', disName);
-    console.log('nameswitcher should be switching', nameSwitcher);
+    let disName = message.displayName;
 
     switch (message.type) {
       case 'update': {
@@ -105,9 +108,6 @@ function App() {
         panelState={panelState}
         readMe={readMe}
       />
-      <Box>
-        <Typography> {readMe}</Typography>
-      </Box>
     </Box>
   );
 }

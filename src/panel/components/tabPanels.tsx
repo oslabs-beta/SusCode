@@ -22,7 +22,7 @@ export default function TabPanels(props: any) {
     return (
       <TabPanel value={value} key={getRandom()} id={content}>
         <Results results={panel.results} />
-        <ReadMeDiv readMe={readMe} />
+        <ReadMeDiv readMe={readMe} extensionName={extensionName} />
       </TabPanel>
     );
   });

@@ -7,7 +7,7 @@ import ReadMeModal from './readMeModal';
 
 export default function ReadMeDiv(props: any) {
   const [open, setOpen] = useState<boolean>(false);
-  const { readMe } = props;
+  const { readMe, extensionName } = props;
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -19,7 +19,12 @@ export default function ReadMeDiv(props: any) {
           <LibraryBooksSharpIcon />
         </Tooltip>
       </IconButton>
-      <ReadMeModal handleClose={handleClose} open={open} />
+      <ReadMeModal
+        handleClose={handleClose}
+        open={open}
+        readMe={readMe}
+        extensionName={extensionName}
+      />
     </div>
   );
 }
