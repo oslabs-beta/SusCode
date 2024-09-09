@@ -30,20 +30,27 @@ interface ParserOptions {
 
 // This will analyze the results and then send the results over to a listener in the frontend
 // async function analyzeFilesForNetworkRequests(filePath: string): Promise<AnalysisResult[]> {
-async function analyzeFilesForNetworkRequests(filePaths: string[], panel: vscode.WebviewPanel) {
-    const finalResults: any = [];
+async function analyzeFilesForNetworkRequests(filePaths: string[], panel: vscode.WebviewPanel, verbose: boolean | undefined) {
+    let finalResults: any = [];
     for (let file of filePaths) {
+        // Can I explain the actual use of doing this inital scan? For now all it does is just slims down the
+        // number of matches we get, however it's still a complete scan in it of itself. I slim the most down
+        // trying to look for a specific "http" text inside a retrieved URL. For now, I'll just keep it there
         const potentialRequests = await initialScan(file);
         const detailedResults = await detailedAnalysis(file, potentialRequests);
         // const results: AnalysisResult[] = await mapResultsToOriginal(file, detailedResults);
         const results: any = await mapResultsToOriginal(file, detailedResults);
         console.log('yoyo', results)
+
         if (results.length) {
-            const httpPattern = /https?:\/\/[^\s'"]+/;
-            finalResults.push(...results.filter((result: any) => httpPattern.test(result.url)));
-            console.log('finalResults', finalResults)
+            if (verbose) {
+                finalResults.push(...results)
+            }
+            else {
+                const httpPattern = /https?:\/\/[^\s'"]+/;
+                finalResults.push(...results.filter((result: any) => httpPattern.test(result.url)));
+            }
             // displayResults(results);
-            finalResults.push(...results)
         }
         // for (let result of results){
         // let parsedResult = JSON.stringify(result, null, 2);
@@ -51,6 +58,7 @@ async function analyzeFilesForNetworkRequests(filePaths: string[], panel: vscode
         // displayResults(result);
         // }
     }
+    console.log('finalResults', finalResults)
     displayResults(finalResults);
 
 }
@@ -65,7 +73,7 @@ function displayResults(results: AnalysisResult[]) {
     if (results.length === 0) {
         outputChannel.appendLine('No potential network requests found.');
     } else {
-        results.forEach(result => {
+        for (let result of results) {
             outputChannel.appendLine(`File: ${result.file}`);
             if (result.originalFile) {
                 const originalUri = vscode.Uri.file(result.originalFile);
@@ -79,7 +87,7 @@ function displayResults(results: AnalysisResult[]) {
             outputChannel.appendLine(`Minified: ${minifiedLink}`);
             outputChannel.appendLine(`URL: ${result.url}`);
             outputChannel.appendLine('');
-        });
+        };
     }
 }
 
@@ -212,12 +220,12 @@ async function detailedAnalysis(filePath: string, potentialRequests: PotentialRe
     // Filter results based on potential requests from initial scan
     // part of me feels this is completely useless
 
-    console.log('passed in nonsense', potentialRequests.length, potentialRequests)
-    console.log('detailed anal results', results.length, results);
+    console.log('passed in potentialRequests', potentialRequests.length, potentialRequests)
+    console.log('detailed analysis results', results.length, results);
     let ho = results.filter(result =>
         potentialRequests.some(req => req.line === result.line)
     );
-    console.log('ho the intersection', ho.length, ho)
+    console.log('the intersection', ho.length, ho)
     return ho;
 }
 
@@ -227,7 +235,7 @@ async function mapResultsToOriginal(filePath: string, results: AnalysisResult[])
 
     try {
         if (fs.existsSync(sourceMapPath)) {
-            console.log('inside this sourceMapPath nonsense conditional I probably am never hitting?')
+            console.log('inside sourceMapPath, found a map file to read reference');
             const sourceMapContent = await fs.promises.readFile(sourceMapPath, 'utf8');
             consumer = await new sourceMap.SourceMapConsumer(sourceMapContent);
         }
@@ -252,7 +260,7 @@ async function mapResultsToOriginal(filePath: string, results: AnalysisResult[])
                 };
             }
         }
-        console.log('this is probably being untouched')
+        console.log('inside mappedResults')
         return result;
     });
 
