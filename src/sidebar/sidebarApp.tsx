@@ -37,10 +37,13 @@ function App() {
     const selectedPaths = names
       .filter((name) => selectedExtensions.includes(name[0]))
       .map((name) => name[1]);
-
+    const selectedNames = names
+      .filter((name) => selectedExtensions.includes(name[0]))
+      .map((name) => name[0]);
     vscode.postMessage({
       type: 'extensionSelected',
       value: [selectedPaths, selectedExtensions],
+      name: selectedNames,
     });
   }
 

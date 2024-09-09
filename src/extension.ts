@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import path from 'path';
 import fs from 'fs';
 import { reader } from './workers/fileFinder';
+import findReadMe from './workers/findReadMe';
 
 // generates a unique key used for script security
 function getNonce() {
@@ -62,7 +63,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   const openResultPanel = vscode.commands.registerCommand(
     'suscode.openResultPanel',
-    (filepath, selectedExtensions) => {
+    (filepath, selectedExtensions, names) => {
       const panel = vscode.window.createWebviewPanel(
         'resultPanel',
         'SusCode Results',
@@ -101,8 +102,39 @@ export function activate(context: vscode.ExtensionContext) {
         type: 'selectedExtensionNames',
         value: selectedExtensions,
       });
-      filepath = filepath[0].slice(1, -1);
-      reader(filepath, panel);
+      const forWill = filepath[0].slice(1, -1); // changed this so I wouldn't break will's code but also need the raw file passed in
+      reader(forWill, panel);
+      // getReadMe(filepath, panel)
+      filepath.forEach((el: string, i: number) => {
+        el = el.slice(1, -1);
+        console.log('Im in my really cool forEach');
+        // const result = {};
+        findReadMe(
+          el,
+          panel,
+          (err: string | null, description: string | null) => {
+            if (err) {
+              console.error('Error: ', err);
+            } else {
+              console.log(
+                'made it back to findReadMe invocation: ',
+                description
+              );
+              const aliObj: { [key: string]: string | undefined } = {
+                [names[i]]: description ?? '',
+              };
+
+              panel.webview.postMessage({
+                //there is an error on "postMessage does not exist on type 'typeof import("vscode")'. Did you mean 'TestMessage'?"
+                type: 'readMe',
+                value: aliObj,
+              });
+            }
+          }
+        );
+      });
+
+      // }
     }
   );
 
@@ -161,10 +193,12 @@ class ExtensionsSidebarViewProvider implements vscode.WebviewViewProvider {
         case 'extensionSelected': {
           const filepath: string[] | string = data.value[0];
           const selectedExtensions: string[] | string = data.value[1];
+          const names: string = data.name;
           vscode.commands.executeCommand(
             'suscode.openResultPanel',
             filepath,
-            selectedExtensions
+            selectedExtensions,
+            names
           );
           break;
         }

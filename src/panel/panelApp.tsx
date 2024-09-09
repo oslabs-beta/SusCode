@@ -30,7 +30,16 @@ function App() {
       case 'readMe': {
         //{ name: description}
         let currentReadMeObj = readMe;
-        setReadMe(Object.assign({}, currentReadMeObj, message.value));
+        console.log(
+          'received readMe in panelapp, this is message.value: ',
+          message.value
+        );
+        let updatedReadMeState = Object.assign(currentReadMeObj, message.value);
+        console.log(
+          'updatedReadMeState after object.assign',
+          updatedReadMeState
+        );
+        setReadMe(updatedReadMeState);
         break;
       }
     }

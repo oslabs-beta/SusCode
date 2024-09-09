@@ -2,10 +2,12 @@ import * as React from 'react';
 
 export default function Results(props: any) {
   const { results } = props;
-
+  function getRandom() {
+    return Math.random() * 100;
+  }
   const resultPhrases = results.map((funcObj: any) => {
     return (
-      <div>
+      <div key={getRandom()}>
         <strong>{funcObj.name}</strong> was found {funcObj.count} times.
       </div>
     );
