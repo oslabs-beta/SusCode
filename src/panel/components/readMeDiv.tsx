@@ -19,7 +19,7 @@ export default function ReadMeDiv(props: any) {
           <LibraryBooksSharpIcon />
         </Tooltip>
       </IconButton>
-      <ReadMeModal handleClose={handleClose} open={open} />
+      <ReadMeModal handleClose={handleClose} open={open} readeMe={readMe} />
     </div>
   );
 }

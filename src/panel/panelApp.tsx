@@ -8,7 +8,7 @@ import TabContextDiv from './components/tabContext';
 
 function App() {
   // initialize state for the read me description
-  const [readMe, setReadMe] = useState<string>('');
+  const [readMe, setReadMe] = useState<object>({});
   const [displayNames, setDisplayNames] = useState<string[]>([]);
   const [panelState, setPanelState] = useState<panelCache>({});
 
@@ -28,7 +28,9 @@ function App() {
         break;
       }
       case 'readMe': {
-        setReadMe(message.value);
+        //{ name: description}
+        let currentReadMeObj = readMe;
+        setReadMe(Object.assign({}, currentReadMeObj, message.value));
         break;
       }
     }
@@ -105,9 +107,6 @@ function App() {
         panelState={panelState}
         readMe={readMe}
       />
-      <Box>
-        <Typography> {readMe}</Typography>
-      </Box>
     </Box>
   );
 }

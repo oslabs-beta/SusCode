@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 
 export default function ReadMeModal(props: any) {
-  const { handleClose, open } = props;
+  const { handleClose, open, readMe } = props;
 
   const style = {
     position: 'absolute' as 'absolute',
@@ -27,10 +27,10 @@ export default function ReadMeModal(props: any) {
     >
       <Box sx={style}>
         <Typography id='modal-modal-title' variant='h6' component='h2'>
-          Extension Description for Quokka:
+          Extension Description for {readMe.name}:
         </Typography>
         <Typography id='modal-modal-description' sx={{ mt: 2 }}>
-          ReadMe Description will go here!!!
+          {readMe.description}
         </Typography>
       </Box>
     </Modal>
