@@ -84,7 +84,7 @@ function App() {
       }
       case 'dependencyCheck': {
         console.log('depCheck', message);
-        console.log('patternMatchPanelState', patternMatchPanelState);
+        patternMatchExtensionObj[message.displayName].depVulns = message.depVulns;
         break;
       }
       case 'error': {
@@ -94,7 +94,7 @@ function App() {
     }
   });
 
-  // Repeating this for ease of implementation
+    // Repeating this for ease of implementation
   //====================   LISTENING FOR MESSAGES FROM analyzeFilesForNetworkRequests() WITHIN fileReader.ts   =====================//
   //grabbing html element with id: 'content'
   //assigning the data sent to the semantic variable message
@@ -138,7 +138,6 @@ function App() {
       }
     }
   });
-
 
   
 
