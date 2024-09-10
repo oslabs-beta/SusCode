@@ -30,8 +30,8 @@ interface ParserOptions {
 
 // This will analyze the results and then send the results over to a listener in the frontend
 // async function analyzeFilesForNetworkRequests(filePath: string): Promise<AnalysisResult[]> {
-async function analyzeFilesForNetworkRequests(filePaths: string[], panel: vscode.WebviewPanel, verbose: boolean | undefined) {
-    let finalResults: any = [];
+async function analyzeFilesForNetworkRequests(filePaths: string[], panel: vscode.WebviewPanel, name: string, verbose: boolean | undefined) {
+    const finalResults: any = [];
     for (let file of filePaths) {
         // Can I explain the actual use of doing this inital scan? For now all it does is just slims down the
         // number of matches we get, however it's still a complete scan in it of itself. I slim the most down
@@ -50,17 +50,31 @@ async function analyzeFilesForNetworkRequests(filePaths: string[], panel: vscode
                 const httpPattern = /https?:\/\/[^\s'"]+/;
                 finalResults.push(...results.filter((result: any) => httpPattern.test(result.url)));
             }
-            // displayResults(results);
         }
-        // for (let result of results){
+        // for (let result of finalResults) {
         // let parsedResult = JSON.stringify(result, null, 2);
         // panel.webview.postMessage({ type: 'update', text: parsedResult });
-        // displayResults(result);
+        if (finalResults.length) {
+            console.log('finalResults', finalResults)
+            panel.webview.postMessage({
+                type: 'telemetryMatchUpdate',
+                resultObjArr: finalResults,
+                fileName: file,
+                displayName: name,
+            });
+        }
         // }
     }
-    console.log('finalResults', finalResults)
-    displayResults(finalResults);
+    
+    // displayResults(finalResults);
+    // So let's say the state object gets loaded fully at this point- I'm going to call
+    // this "end" message to simply update the state? Maybe I can also just update the state
+    // as each element comes in
 
+    // Potentially use this to update state after everything is done
+    // panel.webview.postMessage({
+    //     type: 'telemetryMatchEnd',
+    // });
 }
 
 //////////////////////// testing ////////////////////////
@@ -89,6 +103,7 @@ function displayResults(results: AnalysisResult[]) {
             outputChannel.appendLine('');
         };
     }
+
 }
 
 function createClickableLink(uri: vscode.Uri, position: vscode.Position, text: string): string {
