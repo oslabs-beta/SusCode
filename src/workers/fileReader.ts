@@ -55,7 +55,7 @@ export default function streamFilesInDirectory(
           let updatedTarget = counter(target);
 
           panel.webview.postMessage({
-            type: 'update',
+            type: 'patternMatchUpdate',
             text: updatedTarget,
             fileName: file,
             displayName: name,
@@ -66,7 +66,7 @@ export default function streamFilesInDirectory(
 
     readStream.on('end', () => {
       panel.webview.postMessage({
-        type: 'end',
+        type: 'patternMatchEnd',
         fileName: file,
         displayName: name,
       });
