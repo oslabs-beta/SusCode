@@ -6,7 +6,7 @@ import Box from '@mui/material/Box';
 import ReadMeDiv from './readMeDiv';
 
 export default function TabPanels(props: any) {
-  const { displayNames, panelState, readMe } = props;
+  const { displayNames, patternMatchPanelState, telemetryPanelState, readMe } = props;
 
   function getRandom() {
     return Math.random() * 100;
@@ -15,13 +15,16 @@ export default function TabPanels(props: any) {
   const tabPanels = displayNames.map((extensionName: string, i: number) => {
     let value = i.toString();
     let content = `panelFor${extensionName}`;
-    const panel: scanResult = panelState[extensionName] || {
+    const patternMatchPanel: scanResult = patternMatchPanelState[extensionName] || {
       results: [{ funcName: 'no results yet', count: 0 }],
+    };
+    const telemetryMatchPanel: scanResult = telemetryPanelState[extensionName] || {
+      results: ['No potential network requests found.'],
     };
 
     return (
       <TabPanel value={value} key={getRandom()} id={content}>
-        <Results results={panel.results} />
+        <Results patternMatchPanelResults={patternMatchPanel.results} telemetryMatchPanelResults={telemetryMatchPanel.results} />
         <ReadMeDiv readMe={readMe} extensionName={extensionName} />
       </TabPanel>
     );

@@ -31,10 +31,9 @@ export function reader(
       // ***** remove console.log and add the test once we combine cleanup *****
       // console.log('path found files', pathFoundFiles);
 
-      // For the time being, instead how about this calls my other shit for testing
       // streamFilesInDirectory(pathFoundFiles, panel);
-      // analyzeFilesForNetworkRequests(pathFoundFiles, panel);
-      streamFilesInDirectory(pathFoundFiles, panel, name);
+      analyzeFilesForNetworkRequests(pathFoundFiles, panel, name, true);
+      // streamFilesInDirectory(pathFoundFiles, panel, name);
     }
 
     //checking for directories

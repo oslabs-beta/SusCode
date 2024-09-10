@@ -10,7 +10,9 @@ function App() {
   // initialize state for the read me description
   const [readMe, setReadMe] = useState<object>({});
   const [displayNames, setDisplayNames] = useState<string[]>([]);
-  const [panelState, setPanelState] = useState<panelCache>({});
+  // Adding unique state for each search that appears in a panel for an app
+  const [patternMatchPanelState, setPatternMatchPanelState] = useState<panelCache>({});
+  const [telemetryPanelState, setTelemetryPanelState] = useState<panelCache>({});
 
   let displayNamesArray: string[];
 
@@ -41,25 +43,24 @@ function App() {
   //grabbing html element with id: 'content'
   //assigning the data sent to the semantic variable message
   //providing multiple outcomes depending on the "type" of the message that was sent
-  //if the message type is 'update' we add a p tag to display the text which is all the occurence of found patterns
-  //if the message type is 'end' we add a line, a bolded declaration that the file is finished reading, and another line
+  //if the message type is 'patternMatchUpdate' we add a p tag to display the text which is all the occurence of found patterns
+  //if the message type is 'patternMatchEnd' we add a line, a bolded declaration that the file is finished reading, and another line
   //if the message type is 'error' we display a p tag of red text delcaring the file name and error message
-  let extensionObj: panelCache | undefined = panelState;
+  let patternMatchExtensionObj: panelCache | undefined = patternMatchPanelState;
   window.addEventListener('message', (event) => {
     const message = event.data;
     let disName = message.displayName;
 
     switch (message.type) {
-      case 'update': {
+      // Does this skip the first result that comes in?
+      case 'patternMatchUpdate': {
         let funcName = message.text.name;
         let count = message.text.count;
 
-        if (!extensionObj[disName]) {
-          extensionObj[disName] = { filepath: [], results: [] };
+        if (!patternMatchExtensionObj[disName]) {
+          patternMatchExtensionObj[disName] = { filepath: [], results: [] };
         } else {
-          const currentExResArray: resultsObj[] | undefined =
-            extensionObj[disName].results;
-
+          const currentExResArray: resultsObj[] | undefined = patternMatchExtensionObj[disName].results;
           let objectValues = currentExResArray.map((obj) => {
             return obj.name;
           });
@@ -75,9 +76,10 @@ function App() {
         }
         break;
       }
-      case 'end': {
-        extensionObj[disName].filepath.push(message.fileName);
-        setPanelState(extensionObj);
+
+      case 'patternMatchEnd': {
+        patternMatchExtensionObj[disName].filepath.push(message.fileName);
+        setPatternMatchPanelState(patternMatchExtensionObj);
         break;
       }
       case 'error': {
@@ -87,12 +89,62 @@ function App() {
     }
   });
 
+  // Repeating this for ease of implementation
+  //====================   LISTENING FOR MESSAGES FROM analyzeFilesForNetworkRequests() WITHIN fileReader.ts   =====================//
+  //grabbing html element with id: 'content'
+  //assigning the data sent to the semantic variable message
+  //providing multiple outcomes depending on the "type" of the message that was sent
+  //if the message type is 'telemetryMatchUpdate' we add a p tag to display the text which is just potential telemetry content
+  //if the message type is 'error' we display a p tag of red text delcaring the file name and error message
+
+  let telemetryExtensionObj: panelCache | undefined = telemetryPanelState;
+  window.addEventListener('message', (event) => {
+    console.log('content inside telemetryaddEventListener', event)
+    const message = event.data;
+    let disName = message.displayName;
+
+    switch (message.type) {
+
+      // This may be overwriting results as they come in
+      case 'telemetryMatchUpdate': {
+
+        // this is the data that comes in from networkRequestFinder
+        console.log('content inside telemetryMatchUpdate', message.resultObjArr)
+    
+        // Here we're trying to build up what will be the state object that's associated with 
+        // holding the telemetry data
+        if (!telemetryExtensionObj[disName]) {
+          telemetryExtensionObj[disName] = { filepath: [], results: [] };
+        }
+        
+        // I'm going to call this for each individual result, so fuck you
+        // I think we use an object to keep track of each extension we're specifically
+        // scanning through. The nonsense from the other function is fucking me up and annoying me
+        // The shit I have here is also annoying
+        telemetryExtensionObj[disName].filepath.push(message.fileName);
+        telemetryExtensionObj[disName].results.push(...message.resultObjArr);
+
+        console.log('setting the telepanel state', telemetryExtensionObj);
+        setTelemetryPanelState(telemetryExtensionObj);
+        break;
+      }
+      case 'error': {
+        //display error somehow, it is stored as message.text
+        break;
+      }
+    }
+  });
+
+
+  
+
   return (
     <Box sx={{ width: '100%', typography: 'body1' }}>
       <NavBar />
       <TabContextDiv
         displayNames={displayNames}
-        panelState={panelState}
+        patternMatchPanelState={patternMatchPanelState}
+        telemetryPanelState={telemetryPanelState}
         readMe={readMe}
       />
     </Box>

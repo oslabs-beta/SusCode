@@ -12,7 +12,7 @@ import TabPanels from './tabPanels';
 
 export default function TabContextDiv(props: any) {
   const [value, setValue] = useState<number>(0);
-  const { displayNames, panelState, readMe } = props;
+  const { displayNames, patternMatchPanelState, telemetryPanelState, readMe } = props;
 
   return (
     <TabContext value={value}>
@@ -28,7 +28,8 @@ export default function TabContextDiv(props: any) {
       </Box>
       <TabPanels
         displayNames={displayNames}
-        panelState={panelState}
+        patternMatchPanelState={patternMatchPanelState}
+        telemetryPanelState={telemetryPanelState}
         readMe={readMe}
       />
     </TabContext>

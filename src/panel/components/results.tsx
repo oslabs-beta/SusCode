@@ -1,17 +1,13 @@
 import * as React from 'react';
+import PatternSearchResults from './searchResultComponents/patternSearchResults';
+import TelemetrySearchResults from './searchResultComponents/telemetrySearchResults';
 
 export default function Results(props: any) {
-  const { results } = props;
-  function getRandom() {
-    return Math.random() * 100;
-  }
-  const resultPhrases = results.map((funcObj: any) => {
-    return (
-      <div key={getRandom()}>
-        <strong>{funcObj.name}</strong> was found {funcObj.count} times.
-      </div>
-    );
-  });
-
-  return <div>{resultPhrases}</div>;
+  const { patternMatchPanelResults, telemetryMatchPanelResults } = props;
+  return (
+    <div>
+      <PatternSearchResults results={patternMatchPanelResults} />
+      <TelemetrySearchResults results={telemetryMatchPanelResults} />
+    </div>
+  );
 }
