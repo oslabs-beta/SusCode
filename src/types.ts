@@ -6,6 +6,7 @@ export interface resultsObj {
 export interface scanResult {
   filepath: string[];
   results: resultsObj[];
+  depVulns?: any; //[[{}, {}],[{}, {}]] //push to panelState.displayName.depResults
 }
 
 export interface panelCache {

@@ -4,6 +4,7 @@ import { scanResult } from '../../types';
 import Results from './results';
 import Box from '@mui/material/Box';
 import ReadMeDiv from './readMeDiv';
+import DependencyChecker from './dependencyChecker';
 
 export default function TabPanels(props: any) {
   const { displayNames, panelState, readMe } = props;
@@ -23,6 +24,7 @@ export default function TabPanels(props: any) {
       <TabPanel value={value} key={getRandom()} id={content}>
         <Results results={panel.results} />
         <ReadMeDiv readMe={readMe} extensionName={extensionName} />
+        <DependencyChecker  depResults={panel.depVulns}/>
       </TabPanel>
     );
   });

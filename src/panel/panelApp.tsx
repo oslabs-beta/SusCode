@@ -85,7 +85,7 @@ function App() {
       }
       case 'dependencyCheck': {
         console.log('depCheck', message);
-        console.log('panelstate', panelState);
+        extensionObj[message.displayName].depVulns = message.depVulns;
         break;
       }
       case 'error': {
