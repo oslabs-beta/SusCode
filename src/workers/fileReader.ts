@@ -14,12 +14,22 @@ export default function streamFilesInDirectory(
     // separate this functionality out
     const readStream = fs.createReadStream(file, { encoding: 'utf8' });
 
+    // const patterns = [
+    //   /eval\(/g,
+    //   /new Function\(/g,
+    //   /activate/g,
+    //   /openBySpecify/g,
+    //   /this.log/g,
+    // ];
     const patterns = [
-      /eval\(/g,
-      /new Function\(/g,
-      /activate/g,
-      /openBySpecify/g,
-      /this.log/g,
+      /eval ?\(/g, // evaluation
+      /exec ?\(/g, // execute
+      /system ?\(/g, // system commands
+      /popen ?\(/g, // Shell execution
+      /shell_exec ?\(/g, // Shell execution
+      /os.system ?\(/g, // system-level commands
+      /document.write ?\(/g, // cross-site scripting (XSS)
+      /dangerouslySetInnerHTML ?\(/g, // React - expose app to XSS
     ];
 
     // const results: any = [];
@@ -33,6 +43,10 @@ export default function streamFilesInDirectory(
           // return to the user? Line number, file location, etc
 
           function counter(array: string[]): { name: string; count: number } {
+            console.log(
+              'within fileReader.ts showing pattern name: ',
+              array[0]
+            );
             return {
               name: array[0],
               count: array.length,
