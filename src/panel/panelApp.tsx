@@ -122,10 +122,9 @@ function App() {
           telemetryExtensionObj[disName] = { filepath: [], results: [] };
         }
         
-        // I'm going to call this for each individual result, so fuck you
-        // I think we use an object to keep track of each extension we're specifically
-        // scanning through. The nonsense from the other function is fucking me up and annoying me
-        // The shit I have here is also annoying
+
+        // At this point in time the results are coming in as an array of objects- I will
+        // keep it as such so that the state can rerender the array of values
         telemetryExtensionObj[disName].filepath.push(message.fileName);
         telemetryExtensionObj[disName].results.push(...message.resultObjArr);
 
