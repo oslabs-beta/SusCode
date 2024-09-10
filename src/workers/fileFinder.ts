@@ -35,6 +35,7 @@ export function reader(
     // sending package.json file to packages.ts
     if (foldArr.some(el => el.match(regexJSON))) {
       const JSONFile = foldArr.filter(el => el.match(regexJSON));
+      console.log('jsonfile',JSONFile)
       const packagePath = path.join(extenPath, JSONFile[0]);
       packageChecker(packagePath);
     }
