@@ -37,6 +37,9 @@ export default function Tabs(props: any) {
       scrollButtons='auto'
       onChange={handleChange}
       aria-label='lab API tabs example'
+      sx={{
+        width: 'auto',
+      }}
     >
       {tabs}
     </TabList>

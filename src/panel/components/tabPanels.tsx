@@ -32,11 +32,12 @@ export default function TabPanels(props: any) {
 
     return (
       <TabPanel value={value} key={getRandom()} id={content}>
+        <ReadMeDiv readMe={readMe} extensionName={extensionName} />
         <Results
           patternMatchPanelResults={patternMatchPanel.results}
           telemetryMatchPanelResults={telemetryMatchPanel.results}
         />
-        <ReadMeDiv readMe={readMe} extensionName={extensionName} />
+
         <PatternInfo patternNames={patternNames} />
       </TabPanel>
     );

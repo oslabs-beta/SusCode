@@ -6,6 +6,8 @@ export default function PatternSearchResults(props: any) {
     return Math.random() * 100;
   }
   const resultPhrases = results.map((funcObj: any) => {
+    if (!funcObj.name) {
+    }
     return (
       <div key={getRandom()}>
         <strong>{funcObj.name}</strong> was found {funcObj.count} times.

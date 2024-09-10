@@ -1,4 +1,5 @@
 import * as React from 'react';
+import Box from '@mui/material/Box';
 
 interface ClickableLinkProps {
   file: string;
@@ -7,7 +8,12 @@ interface ClickableLinkProps {
   text: string;
 }
 
-const ClickableLink: React.FC<ClickableLinkProps> = ({ file, line, column, text }) => {
+const ClickableLink: React.FC<ClickableLinkProps> = ({
+  file,
+  line,
+  column,
+  text,
+}) => {
   const href = encodeURI(`vscode://file/${file}:${line}:${column}`);
   return <a href={href}>{text}</a>;
 };
@@ -18,20 +24,18 @@ export default function TelemetrySearchResults(props: any) {
   //   return Math.random() * 100;
   // }
 
-  console.log('inside the tele tsx file!', results)
+  // console.log('inside the tele tsx file!', results)
   if (!results.length) {
     return (
       //'No potential network requests found.'
-      <div>
-        {results[0]}
-      </div>
-    )
+      <div>{results[0]}</div>
+    );
   }
 
   return (
-    <div>
+    <Box sx={{ color: 'rgb(191 182 182 / 60%)', padding: '4px 2px' }}>
       {results.map((result: any, index: any) => (
-        <div key={index} style={{ marginBottom: '20px' }}>
+        <Box key={index} style={{ marginBottom: '20px', padding: '4px 4px' }}>
           <div>File: {result.file}</div>
           {result.originalFile && (
             <div>
@@ -40,7 +44,7 @@ export default function TelemetrySearchResults(props: any) {
                 file={result.originalFile}
                 line={result.originalLine!}
                 column={result.originalColumn!}
-                text="Original Source"
+                text='Original Source'
               />
             </div>
           )}
@@ -50,12 +54,12 @@ export default function TelemetrySearchResults(props: any) {
               file={result.file}
               line={result.line}
               column={result.column}
-              text="Minified Source"
+              text='Minified Source'
             />
           </div>
           <div>URL: {result.url}</div>
-        </div>
+        </Box>
       ))}
-    </div>
+    </Box>
   );
 }

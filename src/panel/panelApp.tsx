@@ -11,8 +11,11 @@ function App() {
   const [readMe, setReadMe] = useState<object>({});
   const [displayNames, setDisplayNames] = useState<string[]>([]);
   // Adding unique state for each search that appears in a panel for an app
-  const [patternMatchPanelState, setPatternMatchPanelState] = useState<panelCache>({});
-  const [telemetryPanelState, setTelemetryPanelState] = useState<panelCache>({});
+  const [patternMatchPanelState, setPatternMatchPanelState] =
+    useState<panelCache>({});
+  const [telemetryPanelState, setTelemetryPanelState] = useState<panelCache>(
+    {}
+  );
 
   let displayNamesArray: string[];
 
@@ -60,7 +63,8 @@ function App() {
         if (!patternMatchExtensionObj[disName]) {
           patternMatchExtensionObj[disName] = { filepath: [], results: [] };
         } else {
-          const currentExResArray: resultsObj[] | undefined = patternMatchExtensionObj[disName].results;
+          const currentExResArray: resultsObj[] | undefined =
+            patternMatchExtensionObj[disName].results;
           let objectValues = currentExResArray.map((obj) => {
             return obj.name;
           });
@@ -104,31 +108,28 @@ function App() {
 
   let telemetryExtensionObj: panelCache | undefined = telemetryPanelState;
   window.addEventListener('message', (event) => {
-    console.log('content inside telemetryaddEventListener', event)
+    // console.log('content inside telemetryaddEventListener', event)
     const message = event.data;
     let disName = message.displayName;
 
     switch (message.type) {
-
       // This may be overwriting results as they come in
       case 'telemetryMatchUpdate': {
-
         // this is the data that comes in from networkRequestFinder
-        console.log('content inside telemetryMatchUpdate', message.resultObjArr)
-    
-        // Here we're trying to build up what will be the state object that's associated with 
+        // console.log('content inside telemetryMatchUpdate', message.resultObjArr)
+
+        // Here we're trying to build up what will be the state object that's associated with
         // holding the telemetry data
         if (!telemetryExtensionObj[disName]) {
           telemetryExtensionObj[disName] = { filepath: [], results: [] };
         }
-        
 
         // At this point in time the results are coming in as an array of objects- I will
         // keep it as such so that the state can rerender the array of values
         telemetryExtensionObj[disName].filepath.push(message.fileName);
         telemetryExtensionObj[disName].results.push(...message.resultObjArr);
 
-        console.log('setting the telepanel state', telemetryExtensionObj);
+        // console.log('setting the telepanel state', telemetryExtensionObj);
         setTelemetryPanelState(telemetryExtensionObj);
         break;
       }
@@ -138,9 +139,6 @@ function App() {
       }
     }
   });
-
-
-  
 
   return (
     <Box sx={{ width: '100%', typography: 'body1' }}>

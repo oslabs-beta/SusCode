@@ -23,7 +23,7 @@ export default function streamFilesInDirectory(
     // ];
     const patterns = [
       /eval ?\(/g, // evaluation
-      /exec ?\(/g, // execute
+      // /exec ?\(/g, // execute
       /system ?\(/g, // system commands
       /popen ?\(/g, // Shell execution
       /shell_exec ?\(/g, // Shell execution
