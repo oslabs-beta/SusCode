@@ -94,6 +94,50 @@ function App() {
     }
   });
 
+    // Repeating this for ease of implementation
+  //====================   LISTENING FOR MESSAGES FROM analyzeFilesForNetworkRequests() WITHIN fileReader.ts   =====================//
+  //grabbing html element with id: 'content'
+  //assigning the data sent to the semantic variable message
+  //providing multiple outcomes depending on the "type" of the message that was sent
+  //if the message type is 'telemetryMatchUpdate' we add a p tag to display the text which is just potential telemetry content
+  //if the message type is 'error' we display a p tag of red text delcaring the file name and error message
+
+  let telemetryExtensionObj: panelCache | undefined = telemetryPanelState;
+  window.addEventListener('message', (event) => {
+    console.log('content inside telemetryaddEventListener', event)
+    const message = event.data;
+    let disName = message.displayName;
+
+    switch (message.type) {
+
+      // This may be overwriting results as they come in
+      case 'telemetryMatchUpdate': {
+
+        // this is the data that comes in from networkRequestFinder
+        console.log('content inside telemetryMatchUpdate', message.resultObjArr)
+    
+        // Here we're trying to build up what will be the state object that's associated with 
+        // holding the telemetry data
+        if (!telemetryExtensionObj[disName]) {
+          telemetryExtensionObj[disName] = { filepath: [], results: [] };
+        }
+        
+
+        // At this point in time the results are coming in as an array of objects- I will
+        // keep it as such so that the state can rerender the array of values
+        telemetryExtensionObj[disName].filepath.push(message.fileName);
+        telemetryExtensionObj[disName].results.push(...message.resultObjArr);
+
+        console.log('setting the telepanel state', telemetryExtensionObj);
+        setTelemetryPanelState(telemetryExtensionObj);
+        break;
+      }
+      case 'error': {
+        //display error somehow, it is stored as message.text
+        break;
+      }
+    }
+  });
 
   
 
