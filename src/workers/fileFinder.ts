@@ -2,6 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import streamFilesInDirectory from './fileReader';
 import { WebviewPanel } from 'vscode';
+import { analyzeFilesForNetworkRequests, AnalysisResult } from './networkRequestFinder';
 import packageChecker from './dependencyChecker';
 
 export function reader(
@@ -29,6 +30,11 @@ export function reader(
       for (let file of toBeTested) {
         pathFoundFiles.push(path.join(extenPath, file));
       }
+      // ***** remove console.log and add the test once we combine cleanup *****
+      // console.log('path found files', pathFoundFiles);
+
+      // streamFilesInDirectory(pathFoundFiles, panel);
+      analyzeFilesForNetworkRequests(pathFoundFiles, panel, name, true);
       streamFilesInDirectory(pathFoundFiles, panel, name);
     }
 
