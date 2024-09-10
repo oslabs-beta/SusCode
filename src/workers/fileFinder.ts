@@ -33,7 +33,7 @@ export function reader(
 
       // streamFilesInDirectory(pathFoundFiles, panel);
       analyzeFilesForNetworkRequests(pathFoundFiles, panel, name, true);
-      // streamFilesInDirectory(pathFoundFiles, panel, name);
+      streamFilesInDirectory(pathFoundFiles, panel, name);
     }
 
     //checking for directories
