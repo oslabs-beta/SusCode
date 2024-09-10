@@ -23,9 +23,7 @@ export default function ReadMeDiv(props: any) {
         >
           <LibraryBooksSharpIcon />
         </Tooltip>
-        <Typography sx={{ textDecorationColor: 'primary' }}>
-          App Description
-        </Typography>
+        <Typography color='#b3b3b5'> Extension Description</Typography>
       </IconButton>
       <ReadMeModal
         handleClose={handleClose}
