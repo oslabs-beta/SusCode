@@ -109,7 +109,7 @@ function App() {
     >
       <Paper
         style={{
-          maxHeight: 350,
+          maxHeight: '100%',
           overflow: 'auto',
           background: 'inherit',
         }}
