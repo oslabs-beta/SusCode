@@ -82,6 +82,11 @@ function App() {
         setPatternMatchPanelState(patternMatchExtensionObj);
         break;
       }
+      case 'dependencyCheck': {
+        console.log('depCheck', message);
+        console.log('patternMatchPanelState', patternMatchPanelState);
+        break;
+      }
       case 'error': {
         //display error somehow, it is stored as message.text
         break;
