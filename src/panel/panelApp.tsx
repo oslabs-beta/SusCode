@@ -51,6 +51,8 @@ function App() {
 
     switch (message.type) {
       case 'update': {
+
+        // data handling for patterns results
         let funcName = message.text.name;
         let count = message.text.count;
 
@@ -73,11 +75,17 @@ function App() {
             }
           }
         }
+
         break;
       }
       case 'end': {
         extensionObj[disName].filepath.push(message.fileName);
         setPanelState(extensionObj);
+        break;
+      }
+      case 'dependencyCheck': {
+        console.log('depCheck', message);
+        console.log('panelstate', panelState);
         break;
       }
       case 'error': {

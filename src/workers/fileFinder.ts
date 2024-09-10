@@ -37,7 +37,7 @@ export function reader(
       const JSONFile = foldArr.filter(el => el.match(regexJSON));
       console.log('jsonfile',JSONFile)
       const packagePath = path.join(extenPath, JSONFile[0]);
-      packageChecker(packagePath);
+      packageChecker(packagePath, panel, name);
     }
 
     //checking for directories

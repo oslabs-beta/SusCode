@@ -1,23 +1,19 @@
 import * as fs from 'fs';
+import { WebviewPanel } from 'vscode';
 
 // find package.json file
 // filter to find dependencies and dev-dependencies
 // remove common packages like webpack and react and typescript
 // make the api call
 
-export default function packageChecker(JSONFile: string):void {
+export default function packageChecker(JSONFile: string, panel: WebviewPanel, name: string):void {
 
   interface npmPackage {
     "package" : {
-      // "ecosystem": string, // should all be npm since vs extensions are all JS using node
+      // "ecosystem": string, API documentation said to add ecosystem, but doesn't work for npm. Keeping for future reference
       "name": string,
     },
     "version": unknown //doesn't let me use string. but this is always be string
-  }
-
-  // format for API
-  function queryPush(array:string[]):void {
-
   }
 
 // Read JSON from a file
@@ -28,7 +24,6 @@ export default function packageChecker(JSONFile: string):void {
   const queries: npmPackage[] = [];
   
   // find all dependency packages
-  // console.log("Dependencies:", dependencies);
   Object.entries(dependencies).forEach(([packageName, version]) => {
       queries.push({
         "package" : {
@@ -40,7 +35,6 @@ export default function packageChecker(JSONFile: string):void {
   });
   
   // find all dev dependency packages
-  // console.log("\nDevDependencies:", devDependencies);
   Object.entries(devDependencies).forEach(([packageName, version]) => {
     queries.push({
       "package" : {
@@ -50,10 +44,6 @@ export default function packageChecker(JSONFile: string):void {
       "version": version 
     });
   });
-  
-  let queriesObj = {"queries": queries};
-
-  console.log("queries", JSON.stringify({"queries": queries}));
 
   //API call to OSV
   fetch('https://api.osv.dev/v1/querybatch',{
@@ -70,8 +60,6 @@ export default function packageChecker(JSONFile: string):void {
   })
   .then(response => {
     //logic for message send vulnerbility and npm package name
-    // in index
-    // of content
     const depVulns = [];
     for (const vulnObj of response.results) {
       if(Object.hasOwn(vulnObj, "vulns")) {
@@ -80,7 +68,13 @@ export default function packageChecker(JSONFile: string):void {
         depVulns.push([queries[index], vulnObj]);
       }
     }
-    console.log(depVulns);
+    // console.log('depVulns', depVulns)
+    // give info to frontend to handle
+    panel.webview.postMessage({
+      type: 'dependencyCheck',
+      displayName: name, 
+      depVulns: depVulns
+    });
   })
   .catch(err => {
     console.log(err);
