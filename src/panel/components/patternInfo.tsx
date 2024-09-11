@@ -6,10 +6,13 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { infoObj } from '../../types';
 import getPatternDictionary from '../../patternDictionary';
+import Typography from '@mui/material/Typography';
 
 export default function PatternInfo(props: any) {
   let patternDictionary = getPatternDictionary();
-
+  function getRandom() {
+    return Math.random() * 100;
+  }
   const { patternNames } = props;
   let patternInfoObj: infoObj;
   //iterate through the dictionary and grab the object where the current pattern name is a match with the regex expression
@@ -21,7 +24,15 @@ export default function PatternInfo(props: any) {
     });
 
     if (!patternInfoObj){
-      return <div>No patternNames found</div>;
+      return (
+        <Typography
+          key={getRandom()}
+          variant='subtitle1'
+          sx={{ marginLeft: '8px', color: '#b3b3b5' }}
+        >
+          No pattern names found
+        </Typography>
+      )
     }
 
     return (
