@@ -127,7 +127,7 @@ Initial release of SusCode
 | Add typosquatting scan/test                                                                 | 🙏🏻     |
 | Allow users to choose which scan they want to perform                                       | 🙏🏻     |
 | Offer a login option used to store scan history and its results                             | 🙏🏻     |
-| Offer a login option used to store scan history and its results                             | 🙏🏻     |
+| A loading animation for scans still in progress                                             | 🙏🏻     |
 
 
 
