@@ -3,13 +3,23 @@ import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import Typography from '@mui/material/Typography';
 
 export default function dependencyCheck(props: any) {
   const { depResults } = props;
+  function getRandom() {
+    return Math.random() * 100;
+  }
   if (!depResults || (depResults && depResults.length === 0)) {
     return (
-      <div>No dependencies packages vulnerabilities found through OSV API</div>
-    );
+      <Typography
+        key={getRandom()}
+        variant='subtitle1'
+        sx={{ marginLeft: '8px', color: '#b3b3b5' }}
+      >
+        No dependencies packages vulnerabilities found through OSV API
+      </Typography>
+    )
   }
   const packAndVulns = depResults.map((elObj: any) => {
     const fetchReturn = elObj[1].vulns;
