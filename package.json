@@ -53,6 +53,7 @@
     "test": "vscode-test"
   },
   "devDependencies": {
+    "@types/form-data": "^2.2.1",
     "@types/mocha": "^10.0.7",
     "@types/node": "20.x",
     "@types/react-dom": "^18.3.0",
@@ -76,6 +77,7 @@
     "@mui/material": "^5.16.7",
     "@mui/x-tree-view": "^7.14.0",
     "acorn-walk": "^8.3.3",
+    "axios": "^1.7.7",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.1"

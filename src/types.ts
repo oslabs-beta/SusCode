@@ -28,3 +28,45 @@ export interface infoObj {
   info: string;
   regex: any;
 }
+export interface FileUploadResponse {
+  data: {
+    type: string;
+    id: string;
+    links: {
+      self: string;
+    };
+  };
+}
+
+export interface AnalysisResponse {
+  data: {
+    id: string;
+    type: string;
+    links: {
+      self: string;
+      item: string;
+    };
+    attributes: {
+      date: number;
+      stats: Record<string, any>; 
+      results: Record<string, {
+        method: string;
+        engine_name: string;
+        engine_version: string;
+        engine_update: string;
+        category: string;
+        result: any; 
+      }>;
+      status: string;
+    };
+  };
+  meta: {
+    file_info: {
+      sha256: string;
+      md5: string;
+      sha1: string;
+      size: number;
+    };
+  };
+}
+
