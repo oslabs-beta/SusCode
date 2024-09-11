@@ -68,8 +68,16 @@ export default function TabPanels(props: any) {
             color='primary'
           />
         </Divider>
+        <Paper
+          style={{
+            maxHeight: 300,
+            overflow: 'auto',
+            background: 'inherit',
+          }}
+          elevation={4}
+        >
         <PatternInfo patternNames={patternNames} />
-
+        </Paper>
 
         <Divider sx={{ marginTop: '8px', marginBottom: '8px' }}>
           <Chip
@@ -93,7 +101,16 @@ export default function TabPanels(props: any) {
         <Divider sx={{ marginTop: '8px', marginBottom: '8px' }}>
           <Chip label='DEPENDENCIES FOUND' variant='outlined' color='primary' />
         </Divider>
+        <Paper
+          style={{
+            maxHeight: 300,
+            overflow: 'auto',
+            background: 'inherit',
+          }}
+          elevation={4}
+        >
         <DependencyChecker depResults={patternMatchPanel.depVulns} />
+        </Paper>
       </TabPanel>
     );
   });
