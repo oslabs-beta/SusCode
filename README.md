@@ -127,6 +127,8 @@ Initial release of SusCode
 | Add typosquatting scan/test                                                                 | 🙏🏻     |
 | Allow users to choose which scan they want to perform                                       | 🙏🏻     |
 | Offer a login option used to store scan history and its results                             | 🙏🏻     |
+| Offer a login option used to store scan history and its results                             | 🙏🏻     |
+
 
 
 - ✅ = Ready to use
@@ -142,11 +144,11 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 <!-- CREATORS -->
 ## Creators
-+ Ali McNamara
-+ Joyce Oh
-+ Kenny Olson
-+ Seth Hollingsworth
-+ Billy-Jack Dalessandro
++ [Ali McNamara](https://github.com/allisonrm95)
++ [Joyce Oh](https://github.com/joyceoh)
++ [Kenny Olson](https://github.com/AchillesHeir)
++ [Seth Hollingsworth](https://github.com/sethjholl07)
++ [Billy-Jack Dalessandro](https://github.com/bjdooi)
 
 
 <!-- CONTACT -->
@@ -159,10 +161,10 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgements
 
-icons from [icons8](https://icons8.com/)
-logo built with [Canva] (https://www.canva.com/)
+icons from [icons8](https://icons8.com/) <br>
+logo built with [Canva](https://www.canva.com/) <br>
 landing page inspiration from [Vercel templates](https://vercel.com/templates/next.js)
-[Open Source Vulnerabilities (OSV) API] (https://github.com/google/osv.dev) used.
+[Open Source Vulnerabilities (OSV) API](https://github.com/google/osv.dev) used.<br>
 
 The creation of this extension was inspired by issues from posts such as:
 [Github issue](https://github.com/microsoft/vscode/issues/52116) and [Hacker News](https://news.ycombinator.com/item?id=36029020)
