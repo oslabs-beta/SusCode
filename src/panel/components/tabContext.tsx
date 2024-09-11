@@ -12,7 +12,8 @@ import TabPanels from './tabPanels';
 
 export default function TabContextDiv(props: any) {
   const [value, setValue] = useState<number>(0);
-  const { displayNames, patternMatchPanelState, telemetryPanelState, readMe } = props;
+  const { displayNames, patternMatchPanelState, telemetryPanelState, readMe } =
+    props;
 
   return (
     <TabContext value={value}>
@@ -21,7 +22,7 @@ export default function TabContextDiv(props: any) {
           borderBottom: 2,
           borderColor: 'divider',
           bgcolor: 'inherit',
-          width: 500,
+          width: 'auto',
         }}
       >
         <Tabs displayNames={displayNames} setValue={setValue} />

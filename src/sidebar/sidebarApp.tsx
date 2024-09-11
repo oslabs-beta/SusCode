@@ -6,6 +6,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
 import Typography from '@mui/material/Typography';
+import Paper from '@mui/material/Paper';
 
 const vscode = acquireVsCodeApi();
 let extensionNames: string[];
@@ -98,49 +99,74 @@ function App() {
     <Box
       sx={{
         m: 2,
-        width: '90%',
+        width: '95%',
         display: 'flex',
         flexDirection: 'column',
+        boxShadow: 5,
+        marginLeft: '0px',
+        marginRight: '0px',
       }}
     >
-      <Box
-        sx={{
-          width: '100%',
-          mt: 2,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'left',
-          justifyContent: 'left',
+      <Paper
+        style={{
+          maxHeight: '100%',
+          overflow: 'auto',
+          background: 'inherit',
         }}
       >
         <List>
-          {names.map((name) => (
-            <ListItem sx={{ color: '#cccccc' }} key={name[0]}>
-              <Checkbox
-                sx={{
-                  color: '#cccccc',
-                }}
-                onClick={() => handleCheckboxClick(name[0])}
-                checked={checked[name[0]] || false}
-              />
-              {name[0]}
-              <Box
-                sx={{
-                  flexDirection: 'column',
-                  alignItems: 'right',
-                  justifyContent: 'right',
-                }}
-              ></Box>
-            </ListItem>
-          ))}
+          <Box
+            sx={{
+              padding: '0px 0px',
+              width: '100%',
+              mt: 2,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'left',
+              justifyContent: 'left',
+              maxHeight: '100%',
+              overflow: 'auto',
+              marginTop: '0px',
+            }}
+          >
+            <List sx={{ padding: '0px 0px' }}>
+              {names.map((name) => (
+                <ListItem
+                  sx={{
+                    color: '#cccccc',
+                    padding: '1px 2px',
+                    fontSize: '14px',
+                  }}
+                  key={name[0]}
+                >
+                  <Checkbox
+                    sx={{
+                      color: '#cccccc',
+                    }}
+                    onClick={() => handleCheckboxClick(name[0])}
+                    checked={checked[name[0]] || false}
+                    size='small'
+                  />
+                  {name[0]}
+                  <Box
+                    sx={{
+                      flexDirection: 'column',
+                      alignItems: 'right',
+                      justifyContent: 'right',
+                    }}
+                  ></Box>
+                </ListItem>
+              ))}
+            </List>
+          </Box>
         </List>
-        <Button variant='contained' onClick={() => scanExtensionsClick()}>
-          Scan Extensions
-        </Button>
-        <Typography color='red' display={error ? 'block' : 'none'}>
-          *No Extensions Selected
-        </Typography>
-      </Box>
+      </Paper>
+      <Button variant='contained' onClick={() => scanExtensionsClick()}>
+        Scan Extensions
+      </Button>
+      <Typography color='red' display={error ? 'block' : 'none'}>
+        *No Extensions Selected
+      </Typography>
     </Box>
   );
 }

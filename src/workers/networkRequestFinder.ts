@@ -49,18 +49,19 @@ async function analyzeFilesForNetworkRequests(filePaths: string[], panel: vscode
 
         if (results.length) {
             if (verbose) {
-                finalResults.push(...results)
-            }
-            else {
+                finalResults.push(...results);
+            } else {
                 const httpPattern = /https?:\/\/[^\s'"]+/;
-                finalResults.push(...results.filter((result: any) => httpPattern.test(result.url)));
+                finalResults.push(
+                    ...results.filter((result: any) => httpPattern.test(result.url))
+                );
             }
         }
         // for (let result of finalResults) {
         // let parsedResult = JSON.stringify(result, null, 2);
         // panel.webview.postMessage({ type: 'update', text: parsedResult });
         if (finalResults.length) {
-            console.log('finalResults', finalResults)
+            // console.log('finalResults', finalResults);
             panel.webview.postMessage({
                 type: 'telemetryMatchUpdate',
                 resultObjArr: finalResults,
@@ -70,7 +71,7 @@ async function analyzeFilesForNetworkRequests(filePaths: string[], panel: vscode
         }
         // }
     }
-    
+
     // displayResults(finalResults);
     // So let's say the state object gets loaded fully at this point- I'm going to call
     // this "end" message to simply update the state? Maybe I can also just update the state
@@ -130,13 +131,13 @@ async function initialScan(filePath: string): Promise<PotentialRequest[]> {
     const networkPatterns = [
         /\b(?:fetch|axios|http|https|get|post|put|delete|ajax)\b/i,
         /\burl\s*:/i,
-        /https?:\/\/[^\s'"]+/
+        /https?:\/\/[^\s'"]+/,
     ];
 
     let lineNumber = 0;
     for await (const line of rl) {
         lineNumber++;
-        if (networkPatterns.some(pattern => pattern.test(line))) {
+        if (networkPatterns.some((pattern) => pattern.test(line))) {
             potentialRequests.push({ line: lineNumber, content: line });
         }
     }
@@ -156,7 +157,8 @@ function determineParserOptions(content: string): ParserOptions {
     if (/\basync\b|\bawait\b/.test(content)) {
         ecmaVersion = 2017;
     }
-    if (/\s\.\.\.\w+/.test(content)) {  // spread operator
+    if (/\s\.\.\.\w+/.test(content)) {
+        // spread operator
         ecmaVersion = 2018;
     }
     // Check if it's likely a module
@@ -172,8 +174,10 @@ function isNetworkRequest(node: any): boolean {
     return (
         (node.type === 'CallExpression' &&
             node.callee.type === 'MemberExpression' &&
-            ['fetch', 'get', 'post', 'put', 'delete', 'ajax', 'send'].some(name =>
-                (node.callee.property as any).name === name || (node.callee.property as any).value === name
+            ['fetch', 'get', 'post', 'put', 'delete', 'ajax', 'send'].some(
+                (name) =>
+                    (node.callee.property as any).name === name ||
+                    (node.callee.property as any).value === name
             )) ||
         (node.type === 'CallExpression' &&
             node.callee.type === 'Identifier' &&
@@ -192,16 +196,21 @@ function extractUrl(node: any): string | null {
     if (node.type === 'CallExpression' && node.arguments.length > 0) {
         const arg = node.arguments[0];
 
-        if (arg.type === 'Literal' && typeof arg.value === 'string') return arg.value;
-
-        else if (arg.type === 'TemplateLiteral' && arg.quasis.length > 0) return arg.quasis[0].value.cooked;
-
+        if (arg.type === 'Literal' && typeof arg.value === 'string')
+            return arg.value;
+        else if (arg.type === 'TemplateLiteral' && arg.quasis.length > 0)
+            return arg.quasis[0].value.cooked;
         else if (arg.type === 'ObjectExpression') {
-            const urlProp = arg.properties.find((prop: any) =>
-                (prop.key.type === 'Identifier' && prop.key.name === 'url') ||
-                (prop.key.type === 'Literal' && prop.key.value === 'url')
+            const urlProp = arg.properties.find(
+                (prop: any) =>
+                    (prop.key.type === 'Identifier' && prop.key.name === 'url') ||
+                    (prop.key.type === 'Literal' && prop.key.value === 'url')
             );
-            if (urlProp && urlProp.value.type === 'Literal' && typeof urlProp.value.value === 'string') {
+            if (
+                urlProp &&
+                urlProp.value.type === 'Literal' &&
+                typeof urlProp.value.value === 'string'
+            ) {
                 return urlProp.value.value;
             }
         }
@@ -253,14 +262,20 @@ async function detailedAnalysis(filePath: string, potentialRequests: PotentialRe
     return intersected_results;
 }
 
-async function mapResultsToOriginal(filePath: string, results: AnalysisResult[]): Promise<AnalysisResult[]> {
+async function mapResultsToOriginal(
+    filePath: string,
+    results: AnalysisResult[]
+): Promise<AnalysisResult[]> {
     const sourceMapPath = `${filePath}.map`;
     let consumer: sourceMap.SourceMapConsumer | null = null;
 
     try {
         if (fs.existsSync(sourceMapPath)) {
-            console.log('inside sourceMapPath, found a map file to read reference');
-            const sourceMapContent = await fs.promises.readFile(sourceMapPath, 'utf8');
+            // console.log('inside sourceMapPath, found a map file to read reference');
+            const sourceMapContent = await fs.promises.readFile(
+                sourceMapPath,
+                'utf8'
+            );
             consumer = await new sourceMap.SourceMapConsumer(sourceMapContent);
         }
     } catch (error) {
@@ -268,29 +283,30 @@ async function mapResultsToOriginal(filePath: string, results: AnalysisResult[])
     }
 
     // Fix up some of these types later
-    const mappedResults: any = results.map(result => {
+    const mappedResults: any = results.map((result) => {
         if (consumer) {
-            console.log('creating a consumer??')
+            // console.log('creating a consumer??');
             const original = consumer.originalPositionFor({
                 line: result.line,
-                column: result.column
+                column: result.column,
             });
             if (original.source) {
                 return {
                     ...result,
                     originalFile: path.resolve(path.dirname(filePath), original.source),
                     originalLine: original.line,
-                    originalColumn: original.column
+                    originalColumn: original.column,
                 };
             }
         }
-        console.log('inside mappedResults')
+        // console.log('inside mappedResults')
         return result;
     });
 
     if (consumer) {
         consumer.destroy();
     }
+
     return mappedResults;
 }
 

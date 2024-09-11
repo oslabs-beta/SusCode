@@ -13,9 +13,11 @@ export default function ReadMeModal(props: any) {
     transform: 'translate(-50%, -50%)',
     width: 400,
     bgcolor: 'background.paper',
+    color: 'inherit',
     border: '2px solid #000',
     boxShadow: 24,
     p: 4,
+    backdropFilter: 'blur(5px)',
   };
   return (
     <Modal

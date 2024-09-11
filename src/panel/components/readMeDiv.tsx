@@ -4,6 +4,7 @@ import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 import LibraryBooksSharpIcon from '@mui/icons-material/LibraryBooksSharp';
 import ReadMeModal from './readMeModal';
+import { Typography } from '@mui/material';
 
 export default function ReadMeDiv(props: any) {
   const [open, setOpen] = useState<boolean>(false);
@@ -15,9 +16,14 @@ export default function ReadMeDiv(props: any) {
   return (
     <div>
       <IconButton onClick={handleOpen}>
-        <Tooltip title='Learn about this Extension' placement='left-end'>
+        <Tooltip
+          title='Learn about this Extension'
+          placement='left-end'
+          color='primary'
+        >
           <LibraryBooksSharpIcon />
         </Tooltip>
+        <Typography color='#b3b3b5'> Extension Description</Typography>
       </IconButton>
       <ReadMeModal
         handleClose={handleClose}
