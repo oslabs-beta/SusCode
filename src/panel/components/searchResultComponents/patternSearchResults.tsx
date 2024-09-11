@@ -8,6 +8,13 @@ export default function PatternSearchResults(props: any) {
   }
   const resultPhrases = results.map((funcObj: any) => {
     if (!funcObj.name) {
+      return <Typography
+        key={getRandom()}
+        variant='subtitle1'
+        sx={{ marginLeft: '8px', color: '#b3b3b5' }}
+      >
+        No pattern matches found
+      </Typography>;
     }
     return (
       <Typography

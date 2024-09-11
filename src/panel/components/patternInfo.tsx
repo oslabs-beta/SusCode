@@ -15,10 +15,14 @@ export default function PatternInfo(props: any) {
   //iterate through the dictionary and grab the object where the current pattern name is a match with the regex expression
   const accordianLayers = patternNames.map((patternName: any) => {
     patternDictionary.forEach((patternObj: any) => {
-      if (patternName.includes(patternObj.pattern)) {
+      if (patternName && patternName.includes(patternObj.pattern)) {
         patternInfoObj = patternObj;
       }
     });
+
+    if (!patternInfoObj){
+      return <div>No patternNames found</div>;
+    }
 
     return (
       <Accordion

@@ -6,9 +6,9 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 export default function dependencyCheck(props: any) {
   const { depResults } = props;
-  if (depResults.length === 0) {
+  if (!depResults || (depResults && depResults.length === 0)) {
     return (
-      <div>No dependencies packages vulnerbilities found through OSV API</div>
+      <div>No dependencies packages vulnerabilities found through OSV API</div>
     );
   }
   const packAndVulns = depResults.map((elObj: any) => {

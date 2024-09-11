@@ -28,8 +28,10 @@ export default function TelemetrySearchResults(props: any) {
   if (!results.length) {
     return (
       //'No potential network requests found.'
-      <div>{results[0]}</div>
-    );
+      <div>
+        No potential network requests found.
+      </div>
+    )
   }
 
   return (
@@ -58,6 +60,8 @@ export default function TelemetrySearchResults(props: any) {
             />
           </div>
           <div>URL: {result.url}</div>
+          <div>Line Number: {result.line}</div>
+          <div>Column: {result.column}</div>
         </Box>
       ))}
     </Box>
