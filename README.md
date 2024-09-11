@@ -1,25 +1,52 @@
 # SusCode README
+<a id="readme-top"></a>
 
   <p align="center">
   <img src="src/assets/suscode.png" height="230px" width="230px"/>
   </p>
-  <div display="flex" align="center" margin-bottom="50px">
-<img src="https://img.shields.io/badge/Material%20UI-007FFF?style=for-the-badge&logo=mui&logoColor=white" />
-<img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" />
-<img src= "https://img.shields.io/badge/Webpack-8DD6F9?style=for-the-badge&logo=Webpack&logoColor=white" />
-<img src="https://img.shields.io/badge/Visual_Studio_Code-0078D4?style=for-the-badge&logo=visual%20studio%20code&logoColor=white" />
-<img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" />
-<img src="https://img.shields.io/badge/nodejs-00A95C?style=for-the-badge&logo=nodejs&logoColor=white" />
-</div>
+  </div>
   <div display="flex" align="center" margin-bottom="50px">
     <a href="https://github.com/oslabs-beta/SusCode/issues/new?assignees=&labels=bug%2Cpending+triage&projects=&template=1_bug_report.yml"> Report Bug</a>
     <a href="https://github.com/oslabs-beta/SusCode/issues/new?assignees=&labels=enhancement%2Cpending+triage&projects=&template=2_feature_request.yml"> Request Feature </a>
   </div>
 <hr>
 
+<!-- BUILT WITH -->
+
+  <div display="flex" align="center" margin-bottom="50px">
+    <img src="https://img.shields.io/badge/Material%20UI-007FFF?style=for-the-badge&logo=mui&logoColor=white" />
+    <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" />
+    <img src= "https://img.shields.io/badge/Webpack-8DD6F9?style=for-the-badge&logo=Webpack&logoColor=white" />
+    <img src="https://img.shields.io/badge/Visual_Studio_Code-0078D4?style=for-the-badge&logo=visual%20studio%20code&logoColor=white" />
+    <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" />
+    <img src="https://img.shields.io/badge/nodejs-00A95C?style=for-the-badge&logo=nodejs&logoColor=white" />
+
+<!-- TABLE OF CONTENTS -->
+
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#about-the-extension">About The Extension</a>
+      <ul>
+        <li><a href="#background-info">Background Info</a></li>
+        <li><a href="#our-solution">Our Solution</a></li>
+      </ul>
+    </li>
+    <li><a href="#how-it-works">How it Works</a></li>
+    <li><a href="#initial-setup-&-installation">Initial Setup & Installation</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#creators">Creators</a></li>
+    <li><a href="#license">License</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#acknowledgments">Acknowledgments</a></li>
+  </ol>
+</details>
 
 
-## About the Extension
+<!-- ABOUT THE EXTENSION -->
+
+## About The Extension
 
 ### Background Info
 
@@ -31,6 +58,7 @@ Although it's best practice for developers to adhere to the principle of least p
 
 SusCode is a VScode extension built to help users take the security of their extensions into their own hands. SusCode counteracts both the lack of an extensive permissions protocol and the low threshold for extension security in Microsoft’s Visual Studio Marketplace by searching through your already downloaded extensions and making you aware of patterns, packages, and requests that could increase an extension’s vulnerability to malicious attacks or an extension's own potential malicious activity. SusCode stands out as the first application meeting this need within the VScode community.
 
+<!-- HOW IT WORKS -->
 
 ## How it Works
 
@@ -42,6 +70,9 @@ When you download an extension for VScode, that extension’s source code is sto
 - SusCode also scans these files for potential requests to external sources and displays a direct link to the exact location in the code where the request is being made. This is important as it allows you to understand what sort of remote connections your extensions are making, potentially informing you of unsanctioned telemetry or other malicious requests.
 - SusCode also grabs a list of dependencies required by each extension found in its package.json file and runs it through the Open Source Vulnerabilities (OSV) API and displays the results along with a link to vulnerbility details listed in the GitHub Security Advisory database. This schema has been adopted by many vulnerability databases including GitHub Security Advisories, PyPA, RustSec, and many more. 
 [Click here](https://osv.dev/) to learn more about OSV on their offical website.
+
+
+<!-- SETUP GUIDE -->
 
 ## Initial Setup & Installation
 
@@ -62,18 +93,22 @@ When you download an extension for VScode, that extension’s source code is sto
 
   <p align="start">
   <img src="src/assets/demo_sidebar.png" height= "250" width= "auto"/>
+  <img src="src/assets/SusCode_Demo_2.gif" height= "500" width= "auto"/>  
+
   </p>
 
 - A window will open and display the results for each extension in its own tab.
 
   <div display="flex" flex-direction="row" align="start" >  
-    <img src="src/assets/demo_panel.png" height= "500" width= "auto"/>  
-    <img src="src/assets/dependencies.png" height= "500" width= "auto"/> 
+    <img src="src/assets/SusCode_Demo_dependencies.gif" height= "500" width= "auto"/> 
+    <img src="src/assets/SusCode_Demo_network_requests.gif" height= "500" width= "auto"/> 
   </div>
 
-## Release Notes
-### 0.1.0
+<!-- FEATURES -->
 
+## Features
+
+### 0.1.0
 - Initial release of SusCode
 
 | Feature                                                                                     | Status |
@@ -100,18 +135,29 @@ When you download an extension for VScode, that extension’s source code is sto
 - 🙏🏻 = Looking for contributors
 
 
-## Creators
-Ali McNamara
-Joyce Oh
-Kenny Olson
-Seth Hollingsworth
-Billy-Jack Dalessandro
+<!-- LICENSE -->
+## License
 
+Distributed under the MIT License. See `LICENSE.txt` for more information.
+
+
+<!-- CREATORS -->
+## Creators
++ Ali McNamara
++ Joyce Oh
++ Kenny Olson
++ Seth Hollingsworth
++ Billy-Jack Dalessandro
+
+
+<!-- CONTACT -->
 ## Contact
  X(Twitter): [@suscode_](https://x.com/suscode_) | Email: suscodeapp@gmail.com
 
  GitHub: https://github.com/oslabs-beta/SusCode/
 
+
+<!-- ACKNOWLEDGMENTS -->
 ## Acknowledgements
 
 icons from [icons8](https://icons8.com/)
@@ -121,3 +167,5 @@ landing page inspiration from [Vercel templates](https://vercel.com/templates/ne
 
 The creation of this extension was inspired by issues from posts such as:
 [Github issue](https://github.com/microsoft/vscode/issues/52116) and [Hacker News](https://news.ycombinator.com/item?id=36029020)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
