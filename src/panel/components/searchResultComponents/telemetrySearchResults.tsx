@@ -23,7 +23,7 @@ export default function TelemetrySearchResults(props: any) {
     return (
       //'No potential network requests found.'
       <div>
-        {results[0]}
+        No potential network requests found.
       </div>
     )
   }
@@ -54,6 +54,8 @@ export default function TelemetrySearchResults(props: any) {
             />
           </div>
           <div>URL: {result.url}</div>
+          <div>Line Number: {result.line}</div>
+          <div>Column: {result.column}</div>
         </div>
       ))}
     </div>

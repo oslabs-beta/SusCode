@@ -29,10 +29,14 @@ interface ParserOptions {
 }
 
 // This will analyze the results and then send the results over to a listener in the frontend
+// Ok this function gets called multiple times depending on the directory it's looking through
+// and the files we identify to search through
 // async function analyzeFilesForNetworkRequests(filePath: string): Promise<AnalysisResult[]> {
 async function analyzeFilesForNetworkRequests(filePaths: string[], panel: vscode.WebviewPanel, name: string, verbose: boolean | undefined) {
     const finalResults: any = [];
+    console.log('******* passed in filepaths here: *******', filePaths)
     for (let file of filePaths) {
+        console.log('////******** scanning ********///////', file)
         // Can I explain the actual use of doing this inital scan? For now all it does is just slims down the
         // number of matches we get, however it's still a complete scan in it of itself. I slim the most down
         // trying to look for a specific "http" text inside a retrieved URL. For now, I'll just keep it there
@@ -40,6 +44,7 @@ async function analyzeFilesForNetworkRequests(filePaths: string[], panel: vscode
         const detailedResults = await detailedAnalysis(file, potentialRequests);
         // const results: AnalysisResult[] = await mapResultsToOriginal(file, detailedResults);
         const results: any = await mapResultsToOriginal(file, detailedResults);
+        console.log('scanned', file, results)
         console.log('yoyo', results)
 
         if (results.length) {
@@ -79,36 +84,36 @@ async function analyzeFilesForNetworkRequests(filePaths: string[], panel: vscode
 
 //////////////////////// testing ////////////////////////
 
-function displayResults(results: AnalysisResult[]) {
-    const outputChannel = vscode.window.createOutputChannel('Network Request Analysis');
-    outputChannel.clear();
-    outputChannel.show();
+// function displayResults(results: AnalysisResult[]) {
+//     const outputChannel = vscode.window.createOutputChannel('Network Request Analysis');
+//     outputChannel.clear();
+//     outputChannel.show();
 
-    if (results.length === 0) {
-        outputChannel.appendLine('No potential network requests found.');
-    } else {
-        for (let result of results) {
-            outputChannel.appendLine(`File: ${result.file}`);
-            if (result.originalFile) {
-                const originalUri = vscode.Uri.file(result.originalFile);
-                const originalLocation = new vscode.Position(result.originalLine! - 1, result.originalColumn!);
-                const originalLink = createClickableLink(originalUri, originalLocation, 'Original Source');
-                outputChannel.appendLine(`Original: ${originalLink}`);
-            }
-            const minifiedUri = vscode.Uri.file(result.file);
-            const minifiedLocation = new vscode.Position(result.line - 1, result.column);
-            const minifiedLink = createClickableLink(minifiedUri, minifiedLocation, 'Minified Source');
-            outputChannel.appendLine(`Minified: ${minifiedLink}`);
-            outputChannel.appendLine(`URL: ${result.url}`);
-            outputChannel.appendLine('');
-        };
-    }
+//     if (results.length === 0) {
+//         outputChannel.appendLine('No potential network requests found.');
+//     } else {
+//         for (let result of results) {
+//             outputChannel.appendLine(`File: ${result.file}`);
+//             if (result.originalFile) {
+//                 const originalUri = vscode.Uri.file(result.originalFile);
+//                 const originalLocation = new vscode.Position(result.originalLine! - 1, result.originalColumn!);
+//                 const originalLink = createClickableLink(originalUri, originalLocation, 'Original Source');
+//                 outputChannel.appendLine(`Original: ${originalLink}`);
+//             }
+//             const minifiedUri = vscode.Uri.file(result.file);
+//             const minifiedLocation = new vscode.Position(result.line - 1, result.column);
+//             const minifiedLink = createClickableLink(minifiedUri, minifiedLocation, 'Minified Source');
+//             outputChannel.appendLine(`Minified: ${minifiedLink}`);
+//             outputChannel.appendLine(`URL: ${result.url}`);
+//             outputChannel.appendLine('');
+//         };
+//     }
 
-}
+// }
 
-function createClickableLink(uri: vscode.Uri, position: vscode.Position, text: string): string {
-    return `[${text}](${uri.with({ fragment: `${position.line + 1},${position.character + 1}` })})`;
-}
+// function createClickableLink(uri: vscode.Uri, position: vscode.Position, text: string): string {
+//     return `[${text}](${uri.with({ fragment: `${position.line + 1},${position.character + 1}` })})`;
+// }
 
 /////////////////////////////////////////////////////////
 
@@ -117,6 +122,8 @@ async function initialScan(filePath: string): Promise<PotentialRequest[]> {
     const fileStream = fs.createReadStream(filePath);
     const rl = readline.createInterface({
         input: fileStream,
+        // The crlfDelay option is there to recognize all instances of CR LF
+        // ('\r\n') in input.txt as a single line break.
         crlfDelay: Infinity
     });
 
@@ -204,6 +211,8 @@ function extractUrl(node: any): string | null {
 
 async function detailedAnalysis(filePath: string, potentialRequests: PotentialRequest[]): Promise<AnalysisResult[]> {
     const content = await fs.promises.readFile(filePath, 'utf8');
+    // Depending on the version of JS we're looking at we would have to change our acron parser
+    // To determine the version of js we're looking at we just see what unique language features are present
     const { ecmaVersion, sourceType }: any = determineParserOptions(content);
 
     let ast: acorn.Node;
@@ -237,11 +246,11 @@ async function detailedAnalysis(filePath: string, potentialRequests: PotentialRe
 
     console.log('passed in potentialRequests', potentialRequests.length, potentialRequests)
     console.log('detailed analysis results', results.length, results);
-    let ho = results.filter(result =>
+    const intersected_results = results.filter(result =>
         potentialRequests.some(req => req.line === result.line)
     );
-    console.log('the intersection', ho.length, ho)
-    return ho;
+    console.log('the intersection', intersected_results.length, intersected_results)
+    return intersected_results;
 }
 
 async function mapResultsToOriginal(filePath: string, results: AnalysisResult[]): Promise<AnalysisResult[]> {
@@ -282,8 +291,6 @@ async function mapResultsToOriginal(filePath: string, results: AnalysisResult[])
     if (consumer) {
         consumer.destroy();
     }
-
-
     return mappedResults;
 }
 

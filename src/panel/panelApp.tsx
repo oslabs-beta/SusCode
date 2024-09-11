@@ -119,14 +119,20 @@ function App() {
         // Here we're trying to build up what will be the state object that's associated with 
         // holding the telemetry data
         if (!telemetryExtensionObj[disName]) {
-          telemetryExtensionObj[disName] = { filepath: [], results: [] };
+          // I'm going to change this to associate each filepath and result better
+          telemetryExtensionObj[disName] = { 
+            filepath: [],
+            results: []
+          };
         }
         
-
         // At this point in time the results are coming in as an array of objects- I will
         // keep it as such so that the state can rerender the array of values
-        telemetryExtensionObj[disName].filepath.push(message.fileName);
-        telemetryExtensionObj[disName].results.push(...message.resultObjArr);
+        if (!telemetryExtensionObj[disName].filepath.includes(message.fileName)){
+          telemetryExtensionObj[disName].filepath.push(message.fileName);
+        }
+        // Instead of pushing we can just refresh
+        telemetryExtensionObj[disName].results = message.resultObjArr;
 
         console.log('setting the telepanel state', telemetryExtensionObj);
         setTelemetryPanelState(telemetryExtensionObj);

@@ -20,7 +20,7 @@ export default function TabPanels(props: any) {
       results: [{ funcName: 'no results yet', count: 0 }],
     };
     const telemetryMatchPanel: scanResult = telemetryPanelState[extensionName] || {
-      results: ['No potential network requests found.'],
+      results: [],
     };
 
     return (
