@@ -73,9 +73,10 @@ export function activate(context: vscode.ExtensionContext) {
           localResourceRoots: [
             vscode.Uri.file(path.join(context.extensionUri.fsPath, 'dist')),
           ],
+          retainContextWhenHidden: true,
         }
       );
-
+      panel.onDidChangeViewState;
       function getPanelHTML() {
         const htmlPath = path.join(
           context.extensionUri.fsPath,
