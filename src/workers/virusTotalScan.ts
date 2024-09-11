@@ -8,12 +8,13 @@ import { AnalysisResponse, FileUploadResponse } from '../types';
 interface FileAppendOptions {
     filename: string;
   }
-const myApi: string = ''; // passed in from input or grabbing from vscode settings
+const myApi: string = ''; // temporary placeholder - passed in from input or grabbing from vscode settings
 // store in settings.json as "myExtension.apiKey": "your-api-key-goes-here"
     //then import vscode from vscode
     //const apiKey = vscode.workspace.getConfiguration('myExtension').get<string>('apiKey')
         //https://code.visualstudio.com/api/references/vscode-api#workspaceConfiguration
         //https://code.visualstudio.com/api/references/vscode-api#Configuration
+        //https://code.visualstudio.com/api/references/contribution-points#contributes.configuration <- Ali
                             //could do in combo with this 
 //encourage users to store API key in an .env
     //https://nodejs.org/en/learn/command-line/how-to-read-environment-variables-from-nodejs
