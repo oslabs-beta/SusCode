@@ -4,7 +4,6 @@
   <p align="center">
   <img src="src/assets/suscode.png" height="230px" width="230px"/>
   </p>
-  </div>
   <div display="flex" align="center" margin-bottom="50px">
     <a href="https://github.com/oslabs-beta/SusCode/issues/new?assignees=&labels=bug%2Cpending+triage&projects=&template=1_bug_report.yml"> Report Bug</a>
     <a href="https://github.com/oslabs-beta/SusCode/issues/new?assignees=&labels=enhancement%2Cpending+triage&projects=&template=2_feature_request.yml"> Request Feature </a>
@@ -20,12 +19,12 @@
     <img src="https://img.shields.io/badge/Visual_Studio_Code-0078D4?style=for-the-badge&logo=visual%20studio%20code&logoColor=white" />
     <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" />
     <img src="https://img.shields.io/badge/nodejs-00A95C?style=for-the-badge&logo=nodejs&logoColor=white" />
-
+  </div>
 <!-- TABLE OF CONTENTS -->
 
 <details>
   <summary>Table of Contents</summary>
-  <ol>
+  <ul>
     <li>
       <a href="#about-the-extension">About The Extension</a>
       <ul>
@@ -40,7 +39,7 @@
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
-  </ol>
+  </ul>
 </details>
 
 
@@ -109,7 +108,7 @@ When you download an extension for VScode, that extension’s source code is sto
 ## Features
 
 ### 0.1.0
-- Initial release of SusCode
+Initial release of SusCode
 
 | Feature                                                                                     | Status |
 | ------------------------------------------------------------------------------------------- | ------ |
