@@ -15,6 +15,7 @@ export interface scanResult {
   filepath: string[];
   results: resultsObj[];
   telemResultsObj?: telemResults[];
+  depVulns?: any; //[[{}, {}],[{}, {}]] //push to panelState.displayName.depResults
 }
 
 export interface panelCache {

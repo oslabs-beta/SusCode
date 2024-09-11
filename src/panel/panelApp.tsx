@@ -88,7 +88,8 @@ function App() {
       }
       case 'dependencyCheck': {
         console.log('depCheck', message);
-        console.log('patternMatchPanelState', patternMatchPanelState);
+        patternMatchExtensionObj[message.displayName].depVulns =
+          message.depVulns;
         break;
       }
       case 'error': {
