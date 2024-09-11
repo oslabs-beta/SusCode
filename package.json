@@ -1,6 +1,6 @@
 {
   "name": "suscode",
-  "displayName": "Suscode",
+  "displayName": "SusCode",
   "description": "Extension scanning application",
   "version": "0.0.1",
   "engines": {
@@ -12,12 +12,21 @@
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "suscode-extensions-list",
+          "title": "SusCode",
+          "icon": "src/assets/magnifying-glass.png"
+        }
+      ]
+    },
     "views": {
-      "explorer": [
+      "suscode-extensions-list": [
         {
           "type": "webview",
           "id": "ExtensionsSidebarViewProvider",
-          "name": "Suscode"
+          "name": "Extension Selector"
         }
       ]
     },
