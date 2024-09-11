@@ -153,7 +153,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 <!-- CONTACT -->
 ## Contact
- X(Twitter): [@suscode_](https://x.com/suscode_) | Email: suscodeapp@gmail.com
+ X(Twitter): [@suscode_](https://x.com/suscode_) | [Email Us](mailto:8d7c2b895ad44f9eb6646a4ecad2c949@domainsbyproxy.com?subject=[GitHub]%20Source%20Han%20Sans)
 
  GitHub: https://github.com/oslabs-beta/SusCode/
 
