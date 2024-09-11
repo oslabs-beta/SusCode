@@ -6,6 +6,8 @@ import Box from '@mui/material/Box';
 import ReadMeDiv from './readMeDiv';
 import PatternInfo from './patternInfo';
 import DependencyChecker from './dependencyChecker';
+import Divider from '@mui/material/Divider';
+import Chip from '@mui/material/Chip';
 
 export default function TabPanels(props: any) {
   const { displayNames, patternMatchPanelState, telemetryPanelState, readMe } =
@@ -38,8 +40,17 @@ export default function TabPanels(props: any) {
           patternMatchPanelResults={patternMatchPanel.results}
           telemetryMatchPanelResults={telemetryMatchPanel.results}
         />
-
+        <Divider sx={{ marginTop: '8px', marginBottom: '8px' }}>
+          <Chip
+            label='INFORMATION ON FOUND PATTERNS'
+            variant='outlined'
+            color='primary'
+          />
+        </Divider>
         <PatternInfo patternNames={patternNames} />
+        <Divider sx={{ marginTop: '8px', marginBottom: '8px' }}>
+          <Chip label='DEPENDENCIES FOUND' variant='outlined' color='primary' />
+        </Divider>
         <DependencyChecker depResults={patternMatchPanel.depVulns} />
       </TabPanel>
     );

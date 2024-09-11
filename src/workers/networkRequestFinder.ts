@@ -45,7 +45,7 @@ async function analyzeFilesForNetworkRequests(
     const detailedResults = await detailedAnalysis(file, potentialRequests);
     // const results: AnalysisResult[] = await mapResultsToOriginal(file, detailedResults);
     const results: any = await mapResultsToOriginal(file, detailedResults);
-    console.log('yoyo', results);
+    // console.log('yoyo', results);
 
     if (results.length) {
       if (verbose) {
@@ -61,7 +61,7 @@ async function analyzeFilesForNetworkRequests(
     // let parsedResult = JSON.stringify(result, null, 2);
     // panel.webview.postMessage({ type: 'update', text: parsedResult });
     if (finalResults.length) {
-      console.log('finalResults', finalResults);
+      // console.log('finalResults', finalResults);
       panel.webview.postMessage({
         type: 'telemetryMatchUpdate',
         resultObjArr: finalResults,
@@ -279,16 +279,16 @@ async function detailedAnalysis(
   // Filter results based on potential requests from initial scan
   // part of me feels this is completely useless
 
-  console.log(
-    'passed in potentialRequests',
-    potentialRequests.length,
-    potentialRequests
-  );
-  console.log('detailed analysis results', results.length, results);
+  // console.log(
+  //   'passed in potentialRequests',
+  //   potentialRequests.length,
+  //   potentialRequests
+  // );
+  // console.log('detailed analysis results', results.length, results);
   let ho = results.filter((result) =>
     potentialRequests.some((req) => req.line === result.line)
   );
-  console.log('the intersection', ho.length, ho);
+  // console.log('the intersection', ho.length, ho);
   return ho;
 }
 
@@ -315,7 +315,7 @@ async function mapResultsToOriginal(
   // Fix up some of these types later
   const mappedResults: any = results.map((result) => {
     if (consumer) {
-      console.log('creating a consumer??');
+      // console.log('creating a consumer??');
       const original = consumer.originalPositionFor({
         line: result.line,
         column: result.column,
