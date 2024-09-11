@@ -78,7 +78,7 @@ When you download an extension for VScode, that extension’s source code is sto
 - Once downloading and installing the extension from Visual Studio Marketplace, you're good to go.
 
   <p align="start">
-  <img src="src/assets/demo_activate.png" height= "250" width= "auto"/>
+  <img src="src/assets/demo_activate.png" height= "auto" width= "100%"/>
   </p>
 
 - SusCode will appear as a magnifying glass icon in your activity bar:
