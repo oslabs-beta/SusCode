@@ -76,7 +76,6 @@ export function activate(context: vscode.ExtensionContext) {
           retainContextWhenHidden: true,
         }
       );
-      panel.onDidChangeViewState;
       function getPanelHTML() {
         const htmlPath = path.join(
           context.extensionUri.fsPath,
