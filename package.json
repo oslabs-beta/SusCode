@@ -16,6 +16,18 @@
   },
   "activationEvents": [],
   "main": "./dist/extension.js",
+  "icon": "suscode.png",
+  "keywords": [
+        "suscode",
+        "security",
+        "oslabs",
+        "safety",
+        "vulnerability",
+        "scan",
+        "malicious",
+        "virus",
+        "permissions"
+    ],
   "contributes": {
     "viewsContainers": {
       "activitybar": [
