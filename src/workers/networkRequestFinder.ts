@@ -34,18 +34,13 @@ interface ParserOptions {
 // async function analyzeFilesForNetworkRequests(filePath: string): Promise<AnalysisResult[]> {
 async function analyzeFilesForNetworkRequests(filePaths: string[], panel: vscode.WebviewPanel, name: string, verbose: boolean | undefined) {
     const finalResults: any = [];
-    console.log('******* passed in filepaths here: *******', filePaths)
     for (let file of filePaths) {
-        console.log('////******** scanning ********///////', file)
         // Can I explain the actual use of doing this inital scan? For now all it does is just slims down the
         // number of matches we get, however it's still a complete scan in it of itself. I slim the most down
         // trying to look for a specific "http" text inside a retrieved URL. For now, I'll just keep it there
         const potentialRequests = await initialScan(file);
         const detailedResults = await detailedAnalysis(file, potentialRequests);
-        // const results: AnalysisResult[] = await mapResultsToOriginal(file, detailedResults);
         const results: any = await mapResultsToOriginal(file, detailedResults);
-        console.log('scanned', file, results)
-        console.log('yoyo', results)
 
         if (results.length) {
             if (verbose) {
@@ -61,7 +56,6 @@ async function analyzeFilesForNetworkRequests(filePaths: string[], panel: vscode
         // let parsedResult = JSON.stringify(result, null, 2);
         // panel.webview.postMessage({ type: 'update', text: parsedResult });
         if (finalResults.length) {
-            // console.log('finalResults', finalResults);
             panel.webview.postMessage({
                 type: 'telemetryMatchUpdate',
                 resultObjArr: finalResults,
@@ -251,14 +245,9 @@ async function detailedAnalysis(filePath: string, potentialRequests: PotentialRe
     });
 
     // Filter results based on potential requests from initial scan
-    // part of me feels this is completely useless
-
-    console.log('passed in potentialRequests', potentialRequests.length, potentialRequests)
-    console.log('detailed analysis results', results.length, results);
     const intersected_results = results.filter(result =>
         potentialRequests.some(req => req.line === result.line)
     );
-    console.log('the intersection', intersected_results.length, intersected_results)
     return intersected_results;
 }
 
@@ -271,7 +260,6 @@ async function mapResultsToOriginal(
 
     try {
         if (fs.existsSync(sourceMapPath)) {
-            // console.log('inside sourceMapPath, found a map file to read reference');
             const sourceMapContent = await fs.promises.readFile(
                 sourceMapPath,
                 'utf8'
@@ -285,7 +273,6 @@ async function mapResultsToOriginal(
     // Fix up some of these types later
     const mappedResults: any = results.map((result) => {
         if (consumer) {
-            // console.log('creating a consumer??');
             const original = consumer.originalPositionFor({
                 line: result.line,
                 column: result.column,
@@ -299,7 +286,6 @@ async function mapResultsToOriginal(
                 };
             }
         }
-        // console.log('inside mappedResults')
         return result;
     });
 
