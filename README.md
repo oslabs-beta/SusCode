@@ -92,15 +92,15 @@ When you download an extension for VS Code, that extension’s source code is st
 
   <p align="start">
   <img src="src/assets/demo_sidebar.png" height= "250" width= "auto"/>
-  <img src="src/assets/SusCode_Demo_2.gif" height= "auto" width= "100%" loop=infinite/>  
+  <img src="src/assets/SusCode_Demo_2.gif" height= "auto" width= "100%" loop="infinite"/>  
 
   </p>
 
 - A window will open and display the results for each extension in its own tab.
 
   <div display="flex" flex-direction="row" align="start" >  
-    <img src="src/assets/SusCode_Demo_dependencies.gif" height= "auto" width= "100%" loop=infinite/> 
-    <img src="src/assets/SusCode_Demo_network_requests.gif" height= "auto" width= "100%" loop=infinite/> 
+    <img src="src/assets/SusCode_Demo_dependencies.gif" height= "auto" width= "100%" loop="infinite"/> 
+    <img src="src/assets/SusCode_Demo_network_requests.gif" height= "auto" width= "100%" loop="infinite"/> 
   </div>
 
 <!-- FEATURES -->
