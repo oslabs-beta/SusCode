@@ -13,7 +13,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/oslabs-beta/SusCode"
-},
+  },
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
@@ -47,7 +47,7 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish": "npm run package",
+    "vscode:prepublish": "npm run compile",
     "compile": "webpack",
     "watch": "webpack --watch",
     "package": "webpack --mode production --devtool hidden-source-map",
