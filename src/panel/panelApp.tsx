@@ -87,7 +87,6 @@ function App() {
         break;
       }
       case 'dependencyCheck': {
-        console.log('depCheck', message);
         patternMatchExtensionObj[message.displayName].depVulns =
           message.depVulns;
         break;
@@ -109,7 +108,6 @@ function App() {
 
   let telemetryExtensionObj: panelCache | undefined = telemetryPanelState;
   window.addEventListener('message', (event) => {
-    // console.log('content inside telemetryaddEventListener', event)
     const message = event.data;
     let disName = message.displayName;
 
@@ -117,7 +115,6 @@ function App() {
       // This may be overwriting results as they come in
       case 'telemetryMatchUpdate': {
         // this is the data that comes in from networkRequestFinder
-        // console.log('content inside telemetryMatchUpdate', message.resultObjArr)
 
         // Here we're trying to build up what will be the state object that's associated with
         // holding the telemetry data
@@ -136,8 +133,6 @@ function App() {
         }
         // Instead of pushing we can just refresh
         telemetryExtensionObj[disName].results = message.resultObjArr;
-
-        // console.log('setting the telepanel state', telemetryExtensionObj);
         setTelemetryPanelState(telemetryExtensionObj);
         break;
       }

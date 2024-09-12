@@ -50,7 +50,6 @@ function getTheResults(fileId: string, myApi: string) {
     })
             // .then((response) => response.json())
     .then((response) => {
-        // console.log("Do what you will with these here results: ", response.data.data.attributes.results);
         //perhaps ... 
         //
     })
@@ -66,7 +65,6 @@ axios.post<FileUploadResponse>("https://www.virustotal.com/api/v3/files", formda
     },
     })
     .then((result) => {
-        // console.log("yo, they did it", result.data)
         const fileId = result.data.data.id
         if(fileId) {
             setTimeout(() => getTheResults(fileId, myApi), 30000)
