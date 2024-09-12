@@ -12,6 +12,7 @@ and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - MAJOR database option with login to save scan history
 - MINOR select all option
 - MINOR single scan window with additional scans
+- MINOR additional scan patterns
 
 ### Change
 - PATCH visual loading for scans in progress
