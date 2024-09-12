@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sidebar</title>
+  </head>
+  <body>
+    <style>
+      body, #root {
+        background-color: var(--vscode-editor-background, #1e1e1e);
+      }
+    </style>
+    <div id="root"></div>
+    <script nonce="${nonce}" src="${scriptUri}"></script>
+    <script>
+      window.vscode = acquireVsCodeApi();
+    </script>
+  </body>
+</html>
