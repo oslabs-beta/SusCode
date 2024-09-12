@@ -2,7 +2,7 @@
 <a id="readme-top"></a>
 
   <p align="center">
-  <a href="www.suscode.dev">
+  <a href="https://www.suscode.dev">
   <img src="src/assets/suscode.png" height="230px" width="230px"/>
   </a>
   </p>
