@@ -68,7 +68,6 @@ export default function packageChecker(JSONFile: string, panel: WebviewPanel, na
         depVulns.push([queries[index], vulnObj]);
       }
     }
-    // console.log('depVulns', depVulns)
     // give info to frontend to handle
     panel.webview.postMessage({
       type: 'dependencyCheck',

@@ -43,10 +43,6 @@ export default function streamFilesInDirectory(
           // return to the user? Line number, file location, etc
 
           function counter(array: string[]): { name: string; count: number } {
-            console.log(
-              'within fileReader.ts showing pattern name: ',
-              array[0]
-            );
             return {
               name: array[0],
               count: array.length,

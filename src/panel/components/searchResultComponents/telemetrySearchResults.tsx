@@ -25,7 +25,6 @@ export default function TelemetrySearchResults(props: any) {
     return Math.random() * 100;
   }
 
-  // console.log('inside the tele tsx file!', results)
   if (!results.length) {
     return (
       <Typography
