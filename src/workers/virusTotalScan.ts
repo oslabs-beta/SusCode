@@ -34,14 +34,14 @@ const myApi: string = ''; // temporary placeholder - passed in from input or gra
 
 
 
-const sample: string = '/Users/kennyolson/.vscode/extensions/esbenp.prettier-vscode-11.0.0/dist/extension.js'
+const sample: string = ''
 const fileStream: fs.ReadStream = fs.createReadStream(sample);
 
 const formdata = new FormData(); // good stuff I need here******************************** * * * * *
 formdata.append("file", fileStream, {filename: 'extension.js'});
 
-function getTheGoddamnResults(fileId: string, myApi: string) {
-    // const fileId = 'YmY3NmYyMmYzMjg4YzQ2NzgyZjFiZGE0OWQ5NWZmMjg6MTcyNjAxNDYyMA=='
+function getTheResults(fileId: string, myApi: string) {
+   
     axios.get<AnalysisResponse>(`https://www.virustotal.com/api/v3/analyses/${fileId}`, {
     headers: {
         'accept': 'application/json',
@@ -50,7 +50,7 @@ function getTheGoddamnResults(fileId: string, myApi: string) {
     })
             // .then((response) => response.json())
     .then((response) => {
-        console.log("Do what you will with these here results: ", response.data.data.attributes.results);
+        // console.log("Do what you will with these here results: ", response.data.data.attributes.results);
         //perhaps ... 
         //
     })
@@ -66,10 +66,10 @@ axios.post<FileUploadResponse>("https://www.virustotal.com/api/v3/files", formda
     },
     })
     .then((result) => {
-        console.log("yo, they did it", result.data)
+        // console.log("yo, they did it", result.data)
         const fileId = result.data.data.id
         if(fileId) {
-            setTimeout(() => getTheGoddamnResults(fileId, myApi), 30000)
+            setTimeout(() => getTheResults(fileId, myApi), 30000)
         } else {
             console.error('fileId is undefined')
             }  
