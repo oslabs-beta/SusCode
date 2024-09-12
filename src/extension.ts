@@ -79,8 +79,8 @@ export function activate(context: vscode.ExtensionContext) {
       function getPanelHTML() {
         const htmlPath = path.join(
           context.extensionUri.fsPath,
-          'src',
-          'panel',
+          'dist',
+          'webviews',
           'panelIndex.html'
         );
         let htmlContent = fs.readFileSync(htmlPath, 'utf8');
@@ -201,8 +201,8 @@ class ExtensionsSidebarViewProvider implements vscode.WebviewViewProvider {
   private getWebviewHTML(webview: vscode.Webview) {
     const htmlPath = path.join(
       this._extensionUri.fsPath,
-      'src',
-      'sidebar',
+      'dist',
+      'webviews',
       'sidebarIndex.html'
     );
     let htmlContent = fs.readFileSync(htmlPath, 'utf8');

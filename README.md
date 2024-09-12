@@ -55,13 +55,13 @@ Although it's best practice for developers to adhere to the principle of least p
 
 ### Our Solution
 
-SusCode is a VScode extension built to help users take the security of their extensions into their own hands. SusCode counteracts both the lack of an extensive permissions protocol and the low threshold for extension security in Microsoft’s Visual Studio Marketplace by searching through your already downloaded extensions and making you aware of patterns, packages, and requests that could increase an extension’s vulnerability to malicious attacks or an extension's own potential malicious activity. SusCode stands out as the first application meeting this need within the VScode community.
+SusCode is a VS Code extension built to help users take the security of their extensions into their own hands. SusCode counteracts both the lack of an extensive permissions protocol and the low threshold for extension security in Microsoft’s Visual Studio Marketplace by searching through your already downloaded extensions and making you aware of patterns, packages, and requests that could increase an extension’s vulnerability to malicious attacks or an extension's own potential malicious activity. SusCode stands out as the first application meeting this need within the VS Code community.
 
 <!-- HOW IT WORKS -->
 
 ## How it Works
 
-When you download an extension for VScode, that extension’s source code is stored on your local device. SusCode then does the following to bring potential vulnerabilities to your attention:
+When you download an extension for VS Code, that extension’s source code is stored on your local device. SusCode then does the following to bring potential vulnerabilities to your attention:
 
 - Provides a list of your installed extensions, you can then choose which extension(s) you want to scan.
 - Reads the files in the locally stored extension and scans for certain code patterns. SusCode searches specifically for patterns that can introduce vulnerabilities or are traditionally associated with malicious activity because they often allow the execution of arbitrary code or the insertion of content in a way that is hard to control.
@@ -84,7 +84,7 @@ When you download an extension for VScode, that extension’s source code is sto
 - SusCode will appear as a magnifying glass icon in your activity bar:
 
   <p align="start">
-  <img src="src/assets/magnifying-glass.png" height= "50" width= "50"/>
+  <img src="magnifying-glass.png" height= "50" width= "50"/>
 
 - To activate the extension, simply click on that icon. This icon was provided by [icons8](https://icons8.com/).
 
@@ -92,15 +92,15 @@ When you download an extension for VScode, that extension’s source code is sto
 
   <p align="start">
   <img src="src/assets/demo_sidebar.png" height= "250" width= "auto"/>
-  <img src="src/assets/SusCode_Demo_2.gif" height= "auto" width= "100%" loop=infinite/>  
+  <img src="src/assets/SusCode_Demo_2.gif" height= "auto" width= "100%" loop="infinite"/>  
 
   </p>
 
 - A window will open and display the results for each extension in its own tab.
 
   <div display="flex" flex-direction="row" align="start" >  
-    <img src="src/assets/SusCode_Demo_dependencies.gif" height= "auto" width= "100%" loop=infinite/> 
-    <img src="src/assets/SusCode_Demo_network_requests.gif" height= "auto" width= "100%" loop=infinite/> 
+    <img src="src/assets/SusCode_Demo_dependencies.gif" height= "auto" width= "100%" loop="infinite"/> 
+    <img src="src/assets/SusCode_Demo_network_requests.gif" height= "auto" width= "100%" loop="infinite"/> 
   </div>
 
 <!-- FEATURES -->
