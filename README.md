@@ -2,7 +2,9 @@
 <a id="readme-top"></a>
 
   <p align="center">
+  <a href="www.suscode.dev">
   <img src="src/assets/suscode.png" height="230px" width="230px"/>
+  </a>
   </p>
   <div display="flex" align="center" margin-bottom="50px">
     <a href="https://github.com/oslabs-beta/SusCode/issues/new?assignees=&labels=bug%2Cpending+triage&projects=&template=1_bug_report.yml"> Report Bug</a>
@@ -29,7 +31,6 @@
       <a href="#about-the-extension">About The Extension</a>
       <ul>
         <li><a href="#background-info">Background Info</a></li>
-        <li><a href="#our-solution">Our Solution</a></li>
       </ul>
     </li>
     <li><a href="#how-it-works">How it Works</a></li>
@@ -47,15 +48,13 @@
 
 ## About The Extension
 
+SusCode is a VS Code extension built to help users take the security of their extensions into their own hands. SusCode counteracts both the lack of an extensive permissions protocol and the low threshold for extension security in Microsoft’s Visual Studio Marketplace by searching through your already downloaded extensions and making you aware of patterns, packages, and requests that could increase an extension’s vulnerability to malicious attacks or an extension's own potential malicious activity. SusCode stands out as the first application meeting this need within the VS Code community.
+
 ### Background Info
 
 VS Code extensions should come with varying levels of access depending on their functionality. For example, ones designed for thematic purposes should have minimal access, while others that analyze files to assist developers might require more extensive permissions. Thus extensions are granted a broad range of permissions.
 
 Although it's best practice for developers to adhere to the principle of least privilege when building extensions, some may exploit these permissions to access sensitive data from users who install malicious extensions unknowingly. This risk is compounded by the fact that extensions can update their codebase without notifying users. As a result, an extension that was initially benign could later become malicious after an update.
-
-### Our Solution
-
-SusCode is a VS Code extension built to help users take the security of their extensions into their own hands. SusCode counteracts both the lack of an extensive permissions protocol and the low threshold for extension security in Microsoft’s Visual Studio Marketplace by searching through your already downloaded extensions and making you aware of patterns, packages, and requests that could increase an extension’s vulnerability to malicious attacks or an extension's own potential malicious activity. SusCode stands out as the first application meeting this need within the VS Code community.
 
 <!-- HOW IT WORKS -->
 
