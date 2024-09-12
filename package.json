@@ -22,7 +22,7 @@
         {
           "id": "suscode-extensions-list",
           "title": "SusCode",
-          "icon": "src/assets/magnifying-glass.png"
+          "icon": "magnifying-glass.png"
         }
       ]
     },
