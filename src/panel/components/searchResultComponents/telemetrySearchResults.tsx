@@ -1,5 +1,6 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 
 interface ClickableLinkProps {
   file: string;
@@ -20,15 +21,20 @@ const ClickableLink: React.FC<ClickableLinkProps> = ({
 
 export default function TelemetrySearchResults(props: any) {
   const { results } = props;
-  // function getRandom() {
-  //   return Math.random() * 100;
-  // }
+  function getRandom() {
+    return Math.random() * 100;
+  }
 
   // console.log('inside the tele tsx file!', results)
   if (!results.length) {
     return (
-      //'No potential network requests found.'
-      <div>{results[0]}</div>
+      <Typography
+        key={getRandom()}
+        variant='subtitle1'
+        sx={{ marginLeft: '8px', color: '#b3b3b5' }}
+      >
+        No potential network requests found.
+      </Typography>
     );
   }
 
@@ -58,6 +64,8 @@ export default function TelemetrySearchResults(props: any) {
             />
           </div>
           <div>URL: {result.url}</div>
+          <div>Line Number: {result.line}</div>
+          <div>Column: {result.column}</div>
         </Box>
       ))}
     </Box>
