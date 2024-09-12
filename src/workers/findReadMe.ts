@@ -31,7 +31,7 @@ function findReadMe(
   myReadStream.on('data', (chunk: string) => {
     const arr: string[] = chunk.split('\n');
     arr.every((streamBit) => {
-      if (streamBit.length > 70 && streamBit[1] !== '!') {
+      if (streamBit.length > 70 && streamBit[1] !== '!' && streamBit[0] !== '<' && streamBit[0] !== '>') {
         description = streamBit;
         return false;
       }
