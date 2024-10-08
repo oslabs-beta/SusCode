@@ -54,7 +54,7 @@ function getTheResults(fileId: string, myApi: string) {
         //
     })
     .catch((err: string) => {
-        console.error('error fetching the analysis: ',err)
+        console.error('error fetching the analysis: ',err);
     });
 }
 
@@ -67,9 +67,9 @@ axios.post<FileUploadResponse>("https://www.virustotal.com/api/v3/files", formda
     .then((result) => {
         const fileId = result.data.data.id
         if(fileId) {
-            setTimeout(() => getTheResults(fileId, myApi), 30000)
+            setTimeout(() => getTheResults(fileId, myApi), 30000);
         } else {
-            console.error('fileId is undefined')
+            console.error('fileId is undefined');
             }  
     })
     .catch((error) => console.error(error));

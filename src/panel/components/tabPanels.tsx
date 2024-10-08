@@ -8,18 +8,28 @@ import PatternInfo from './patternInfo';
 import DependencyChecker from './dependencyChecker';
 import Divider from '@mui/material/Divider';
 import Chip from '@mui/material/Chip';
-
+import Button from '@mui/material/Button';
 import PatternSearchResults from './searchResultComponents/patternSearchResults';
 import TelemetrySearchResults from './searchResultComponents/telemetrySearchResults';
 import Paper from '@mui/material/Paper';
 
 export default function TabPanels(props: any) {
-  const { displayNames, patternMatchPanelState, telemetryPanelState, readMe } =
+  const { displayNames, patternMatchPanelState, telemetryPanelState, readMe, virusTotal, setVirusTotal} =
     props;
+
+  
 
   function getRandom() {
     return Math.random() * 100;
   }
+  // function handleClicking () {
+  //   if (function doesn't find api) {
+  //      setOpen to true to open the model
+  //   }
+  //   else {
+  //     setVirusTotal - run scan essentially
+  //   }
+  // }
   const tabPanels = displayNames.map((extensionName: string, i: number) => {
     let value = i.toString();
     let content = `panelFor${extensionName}`;
@@ -40,7 +50,7 @@ export default function TabPanels(props: any) {
     return (
       <TabPanel value={value} key={getRandom()} id={content}>
         <ReadMeDiv readMe={readMe} extensionName={extensionName} />
-
+               
         {/* <Results
           patternMatchPanelResults={patternMatchPanel.results}
           telemetryMatchPanelResults={telemetryMatchPanel.results}
@@ -111,6 +121,13 @@ export default function TabPanels(props: any) {
         >
         <DependencyChecker depResults={patternMatchPanel.depVulns} />
         </Paper>
+        <Box sx={{
+                    height: "150px",
+                    width: "150px",              
+                    mt: "30px",
+                }}>
+        <Button variant="contained" >Run VirusTotal Scan</Button>
+        </Box>
       </TabPanel>
     );
   });

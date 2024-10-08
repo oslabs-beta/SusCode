@@ -55,7 +55,18 @@
         "command": "suscode.openResultPanel",
         "title": "Open webview panel to show scan results"
       }
-    ]
+    ],
+    "configuration": {
+        "type": "object",
+        "title": "SusCode Settings",
+        "properties": {
+          "suscode.apiKey": {
+            "type": "string",
+            "default": "",
+            "description": "VirusTotal api key for external scans with virusTotal" 
+          }
+        }
+      }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
@@ -98,4 +109,6 @@
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.1"
   }
+  
+
 }
