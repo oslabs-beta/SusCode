@@ -1,6 +1,7 @@
 import * as React from 'react';
 import TabPanel from '@mui/lab/TabPanel';
 import { scanResult } from '../../types';
+import HorizontalLinearAlternativeLabelStepper from './virusTotalHowToModel';
 // import Results from './results';
 import Box from '@mui/material/Box';
 import ReadMeDiv from './readMeDiv';
@@ -121,13 +122,16 @@ export default function TabPanels(props: any) {
         >
         <DependencyChecker depResults={patternMatchPanel.depVulns} />
         </Paper>
-        <Box sx={{
+        {/* <Box sx={{
                     height: "150px",
                     width: "150px",              
                     mt: "30px",
                 }}>
-        <Button variant="contained" >Run VirusTotal Scan</Button>
-        </Box>
+        <Button variant="contained" onClick={() => {
+          console.log('the button got clicked');
+          HorizontalLinearAlternativeLabelStepper(); //this might actually need to be a boolean to open the div...?
+        }} >Run VirusTotal Scan</Button>
+        </Box> */}
       </TabPanel>
     );
   });

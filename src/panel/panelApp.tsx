@@ -152,8 +152,8 @@ function App() {
         patternMatchPanelState={patternMatchPanelState}
         telemetryPanelState={telemetryPanelState}
         //add state for displaying virus total
-        virusTotal={virusTotal} //<----'
-        setVirusTotal={setVirusTotal}
+        // virusTotal={virusTotal} //<----'
+        // setVirusTotal={setVirusTotal}
         readMe={readMe}
       />
     </Box>
