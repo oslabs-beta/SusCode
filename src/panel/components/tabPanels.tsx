@@ -13,24 +13,32 @@ import Button from '@mui/material/Button';
 import PatternSearchResults from './searchResultComponents/patternSearchResults';
 import TelemetrySearchResults from './searchResultComponents/telemetrySearchResults';
 import Paper from '@mui/material/Paper';
+import virusTotalScan from '../workers/virusTotalScan'
+import * as vscode from 'vscode'
 
 export default function TabPanels(props: any) {
   const { displayNames, patternMatchPanelState, telemetryPanelState, readMe, virusTotal, setVirusTotal} =
     props;
 
-  
+  async function getApiKey(): Promise<string | undefined> {
+    const secretStorage = vscode.workspace.getConfiguration().getSecretStorage();
+    return await secretStorage.get('myExtension.apiKey');
+  }
 
   function getRandom() {
     return Math.random() * 100;
   }
-  // function handleClicking () {
-  //   if (function doesn't find api) {
-  //      setOpen to true to open the model
-  //   }
-  //   else {
-  //     setVirusTotal - run scan essentially
-  //   }
-  // }
+  function handleClicking () {
+    const apiKey = getApiKey()
+
+    if (apiKey === undefined) {
+      HorizontalLinearAlternativeLabelStepper();
+    }
+    else {
+
+      setVirusTotal - //run scan essentially
+    }
+  }
   const tabPanels = displayNames.map((extensionName: string, i: number) => {
     let value = i.toString();
     let content = `panelFor${extensionName}`;

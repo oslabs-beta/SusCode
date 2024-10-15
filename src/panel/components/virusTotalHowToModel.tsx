@@ -5,24 +5,47 @@ import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import { FormControl } from '@mui/base/FormControl';
+import * as vscode from 'vscode';
+
+export async function storeApiKey(apiKey: string) {
+    const secretStorage = vscode.workspace.getConfiguration().getSecretStorage();
+    await secretStorage.store('myExtension.apiKey', apiKey);
+}
+
+// export async function getApiKey(): Promise<string | undefined> {
+//     const secretStorage = vscode.workspace.getConfiguration().getSecretStorage();
+//     return await secretStorage.get('myExtension.apiKey');
+// }
+
+
 
 const steps = [
   {
     'text': 'Go to https://www.virustotal.com/gui/sign-in and sign up for an account',
-    'box': '',
-    'button': ''
+    'box': <div/>,
+    // 'button': ''
   },
   {
     'text':`Once you've verified your account and are logged in to virusTotal, `,
     'box': <img src="../assets/Get_The_API_Key.gif" height= "auto" width= "100%"/>,
-    'button': ''
+    // 'button': ''
   },
   {
     'text': 'Create an ad',
-    'box': <Box sx={{ width: 500, maxWidth: '100%' }}>
-      <TextField fullWidth label="fullWidth" id="fullWidth" />
-    </Box>,
-    'button': <Button variant="contained" >Store Key</Button>
+    'box': 
+      (<Box sx={{ width: 500, maxWidth: '100%' }}>
+      {/* <TextField fullWidth label="fullWidth" id="fullWidth" /> */}
+        <FormControl>
+            <input id='apiKeyVal'/>
+            <button onClick={() => {
+              const inputVal = (document.getElementById('apiKeyVal') as HTMLInputElement)?.value;
+              storeApiKey(inputVal);
+            }}>Submit</button>
+        </FormControl>
+
+    </Box>),
+    // 'button': <Button variant="contained" >Store Key</Button>
   },
 ];
 
@@ -32,11 +55,12 @@ export default function HorizontalLinearAlternativeLabelStepper() {
   return (
     <Box sx={{ width: '100%' }}>
       <Stepper activeStep={1} alternativeLabel>
-        {steps.map((label) => (
-          <Step key={label.text}>
+        {steps.map((label, index) => (
+          <Step key={index}>
             <StepLabel>{label.text}</StepLabel>
-            <StepLabel>{label.box}</StepLabel>
-            <StepLabel>{label.button}</StepLabel>
+            <Box>
+              {label.box}
+            </Box>
           </Step>
         ))}
       </Stepper>
