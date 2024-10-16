@@ -15,8 +15,11 @@ import TelemetrySearchResults from './searchResultComponents/telemetrySearchResu
 import Paper from '@mui/material/Paper';
 import virusTotalScan from '../workers/virusTotalScan'
 import * as vscode from 'vscode'
+import { useState } from 'react'
 
 export default function TabPanels(props: any) {
+  const [modalOpen, setModelOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { displayNames, patternMatchPanelState, telemetryPanelState, readMe, virusTotal, setVirusTotal} =
     props;
 
@@ -28,15 +31,23 @@ export default function TabPanels(props: any) {
   function getRandom() {
     return Math.random() * 100;
   }
-  function handleClicking () {
-    const apiKey = getApiKey()
-
-    if (apiKey === undefined) {
-      HorizontalLinearAlternativeLabelStepper();
+  async function handleClicking () {
+    const apiKey = await getApiKey()
+    try {
+      if (!apiKey) {
+        setModelOpen(true)
+        // HorizontalLinearAlternativeLabelStepper();
+      }
+      else {
+        setLoading(true)
+        virusTotalScan(apiKey)
+        //run scan to return div? 
+        // add loading thing
+        // setVirusTotal - //run scan essentially
+      }
     }
-    else {
-
-      setVirusTotal - //run scan essentially
+    catch (error) {
+        console.error('Flippin! Error running scan:', error)
     }
   }
   const tabPanels = displayNames.map((extensionName: string, i: number) => {
@@ -130,6 +141,8 @@ export default function TabPanels(props: any) {
         >
         <DependencyChecker depResults={patternMatchPanel.depVulns} />
         </Paper>
+        <Box>
+          
         {/* <Box sx={{
                     height: "150px",
                     width: "150px",              
@@ -140,6 +153,11 @@ export default function TabPanels(props: any) {
           HorizontalLinearAlternativeLabelStepper(); //this might actually need to be a boolean to open the div...?
         }} >Run VirusTotal Scan</Button>
         </Box> */}
+        {loading && <Box>Running Scan</Box> }
+        { virusTotal && <Box>
+          go through virusTotal result to display each scan ran and results
+        </Box> }
+        </Box>
       </TabPanel>
     );
   });

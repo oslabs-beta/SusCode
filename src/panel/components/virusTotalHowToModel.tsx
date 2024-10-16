@@ -7,16 +7,17 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { FormControl } from '@mui/base/FormControl';
 import * as vscode from 'vscode';
+import { useEffect, useState } from 'react';
 
 export async function storeApiKey(apiKey: string) {
     const secretStorage = vscode.workspace.getConfiguration().getSecretStorage();
     await secretStorage.store('myExtension.apiKey', apiKey);
 }
 
-// export async function getApiKey(): Promise<string | undefined> {
-//     const secretStorage = vscode.workspace.getConfiguration().getSecretStorage();
-//     return await secretStorage.get('myExtension.apiKey');
-// }
+export async function getApiKey(): Promise<string | undefined> {
+    const secretStorage = vscode.workspace.getConfiguration().getSecretStorage();
+    return await secretStorage.get('myExtension.apiKey');
+}
 
 
 
@@ -52,9 +53,11 @@ const steps = [
 
 
 export default function HorizontalLinearAlternativeLabelStepper() {
+  const [activeStep, setActiveStep ] = useState(0)
+  
   return (
     <Box sx={{ width: '100%' }}>
-      <Stepper activeStep={1} alternativeLabel>
+      <Stepper activeStep={activeStep} alternativeLabel>
         {steps.map((label, index) => (
           <Step key={index}>
             <StepLabel>{label.text}</StepLabel>

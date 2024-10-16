@@ -3,13 +3,13 @@ import * as path from 'path';
 import  axios from 'axios';
 import FormData from 'form-data';
 import { AnalysisResponse, FileUploadResponse } from '../types';
-import { setVirusTotal } from '../workers/virusTotalScan';
+// import { setVirusTotal } from '../workers/virusTotalScan';
 // import * as vscode from 'vscode';
-export function virusTotalScan() {
+export function virusTotalScan(apiKey: string) {
     interface FileAppendOptions {
         filename: string;
     }
-    const myApi: string = ''; // temporary placeholder - passed in from input or grabbing from vscode settings
+    // const myApi: string = ''; // temporary placeholder - passed in from input or grabbing from vscode settings
     // store in settings.json as "myExtension.apiKey": "your-api-key-goes-here"
         //then import vscode from vscode
         //const apiKey = vscode.workspace.getConfiguration('myExtension').get<string>('apiKey')
