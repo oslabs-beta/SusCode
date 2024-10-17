@@ -3,7 +3,7 @@ import * as path from 'path';
 import  axios from 'axios';
 import FormData from 'form-data';
 import { AnalysisResponse, FileUploadResponse } from '../types';
-// import { setVirusTotal } from '../workers/virusTotalScan';
+// import { setVirusTotal } from '../workers/virusTotalScan'; // this needs to be props, not passed completely
 // import * as vscode from 'vscode';
 export function virusTotalScan(apiKey: string) {
     interface FileAppendOptions {
@@ -41,17 +41,17 @@ export function virusTotalScan(apiKey: string) {
     const formdata = new FormData(); // good stuff I need here******************************** * * * * *
     formdata.append("file", fileStream, {filename: 'extension.js'});
 
-    function getTheResults(fileId: string, myApi: string) {
+    function getTheResults(fileId: string, apiKey: string) {
     
         axios.get<AnalysisResponse>(`https://www.virustotal.com/api/v3/analyses/${fileId}`, {
         headers: {
             'accept': 'application/json',
-            'x-apikey': myApi,
+            'x-apikey': apiKey,
             }
         })
                 // .then((response) => response.json())
         .then((response) => {
-            setVirusTotal(response);
+            // setVirusTotal(response);
         })
         .catch((err: string) => {
             console.error('error fetching the analysis: ',err);
@@ -60,14 +60,14 @@ export function virusTotalScan(apiKey: string) {
 
     axios.post<FileUploadResponse>("https://www.virustotal.com/api/v3/files", formdata, {
         headers: {
-            "x-apikey": myApi,
+            "x-apikey": apiKey,
             ...formdata.getHeaders()
         },
         })
         .then((result) => {
             const fileId = result.data.data.id
             if(fileId) {
-                setTimeout(() => getTheResults(fileId, myApi), 30000);
+                setTimeout(() => getTheResults(fileId, apiKey), 30000);
             } else {
                 console.error('fileId is undefined');
                 }  

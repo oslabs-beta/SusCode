@@ -13,6 +13,7 @@ import { Button } from '@mui/material';
 
 export default function TabContextDiv(props: any) {
   const [value, setValue] = useState<number>(0);
+  const [modalOpen, setModelOpen] = useState(false);
   const { displayNames, patternMatchPanelState, telemetryPanelState, readMe, virusTotal, setVirusTotal } =
     props;
 
@@ -36,6 +37,8 @@ export default function TabContextDiv(props: any) {
         virsuTotal={virusTotal} /////<----'
         setVirusTotal={setVirusTotal}
         readMe={readMe}
+        modalOpen={modalOpen}
+        setModelOpen={setModelOpen}
       />
     </TabContext>
   );

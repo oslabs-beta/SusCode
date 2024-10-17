@@ -9,51 +9,53 @@ import { FormControl } from '@mui/base/FormControl';
 import * as vscode from 'vscode';
 import { useEffect, useState } from 'react';
 
-export async function storeApiKey(apiKey: string) {
+
+
+
+
+
+export default function HorizontalLinearAlternativeLabelStepper(props: any) {
+  const {modalOpen,  setModelOpen} = props
+  const [activeStep, setActiveStep ] = useState(0)
+
+  const steps = [
+    {
+      'text': 'Go to https://www.virustotal.com/gui/sign-in and sign up for an account',
+      'box': <div/>,
+      // 'button': ''
+    },
+    {
+      'text':`Once you've verified your account and are logged in to virusTotal, `,
+      'box': <img src="../assets/Get_The_API_Key.gif" height= "auto" width= "100%"/>,
+      // 'button': ''
+    },
+    {
+      'text': 'Create an ad',
+      'box': 
+        (<Box sx={{ width: 500, maxWidth: '100%' }}>
+        {/* <TextField fullWidth label="fullWidth" id="fullWidth" /> */}
+          <FormControl>
+              <input id='apiKeyVal'/>
+              <button onClick={() => {
+                const inputVal = (document.getElementById('apiKeyVal') as HTMLInputElement)?.value;
+                storeApiKey(inputVal);
+              }}>Submit</button>
+          </FormControl>
+  
+      </Box>),
+      // 'button': <Button variant="contained" >Store Key</Button>
+    },
+  ];
+
+  async function storeApiKey(apiKey: string) {
     const secretStorage = vscode.workspace.getConfiguration().getSecretStorage();
     await secretStorage.store('myExtension.apiKey', apiKey);
-}
+  }
 
-export async function getApiKey(): Promise<string | undefined> {
+  async function getApiKey(): Promise<string | undefined> {
     const secretStorage = vscode.workspace.getConfiguration().getSecretStorage();
     return await secretStorage.get('myExtension.apiKey');
-}
-
-
-
-const steps = [
-  {
-    'text': 'Go to https://www.virustotal.com/gui/sign-in and sign up for an account',
-    'box': <div/>,
-    // 'button': ''
-  },
-  {
-    'text':`Once you've verified your account and are logged in to virusTotal, `,
-    'box': <img src="../assets/Get_The_API_Key.gif" height= "auto" width= "100%"/>,
-    // 'button': ''
-  },
-  {
-    'text': 'Create an ad',
-    'box': 
-      (<Box sx={{ width: 500, maxWidth: '100%' }}>
-      {/* <TextField fullWidth label="fullWidth" id="fullWidth" /> */}
-        <FormControl>
-            <input id='apiKeyVal'/>
-            <button onClick={() => {
-              const inputVal = (document.getElementById('apiKeyVal') as HTMLInputElement)?.value;
-              storeApiKey(inputVal);
-            }}>Submit</button>
-        </FormControl>
-
-    </Box>),
-    // 'button': <Button variant="contained" >Store Key</Button>
-  },
-];
-
-
-
-export default function HorizontalLinearAlternativeLabelStepper() {
-  const [activeStep, setActiveStep ] = useState(0)
+  }
   
   return (
     <Box sx={{ width: '100%' }}>
