@@ -11,35 +11,64 @@ import Chip from '@mui/material/Chip';
 import Button from '@mui/material/Button';
 import PatternSearchResults from './searchResultComponents/patternSearchResults';
 import TelemetrySearchResults from './searchResultComponents/telemetrySearchResults';
-// import { HorizontalLinearAlternativeLabelStepper } from './virusTotalHowToModel';
+import VirusTotalHowToModal from './virusTotalHowToModal';
 import Paper from '@mui/material/Paper';
 // import virusTotalScan from '../workers/virusTotalScan'
-import * as vscode from 'vscode';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+const vscode = acquireVsCodeApi();
 
 export default function TabPanels(props: any) {
-
-  const [loading, setLoading] = useState(false);
-  const { displayNames, patternMatchPanelState, telemetryPanelState, readMe, virusTotal, setVirusTotal, modalOpen, setModelOpen } =
+  const [modalOpen, setModalOpen] = useState(false);
+  const [ config, setConfig ] = useState(null);
+  // const [loading, setLoading] = useState(false); // this is also stuff for virusTotal
+  const { displayNames, patternMatchPanelState, telemetryPanelState, readMe, virusTotal, setVirusTotal } =
     props;
 
-    //below is the functionality to get the api key from secret storage but it's also in the virusTotalHowtoModal
-  // async function getApiKey(): Promise<string | undefined> {
-  //   const secretStorage = vscode.workspace.getConfiguration().getSecretStorage();
-  //   return await secretStorage.get('myExtension.apiKey');
-  // }
+
+  //Below didn't work
+  // useEffect(() => {
+  //   const fetchConfig = async () => {
+  //     const secretStorage = vscode.workspace.getConfiguration().getSecretStorage();
+  //     const storedApiKey = await secretStorage.get('myExtension.apiKey');
+  //     setConfig(storedApiKey);
+  //   };
+  //   fetchConfig();
+  // }, []);
+
+
+
+  //   below is the functionality to get the api key from secret storage but it's also in the virusTotalHowtoModal
+  async function getApiKey(){
+    // const secretStorage = vscode.workspace.getConfiguration().getSecretStorage();
+    // return await secretStorage.get('myExtension.apiKey');
+    vscode.postMessage({command: 'getApiKey '});
+  }
+
+  window.addEventListener('message', event => {
+    const message = event.data
+
+    if (message.apiKey) {
+      console.log('This is the API Key:  ', message.apiKey);
+    }
+    else {
+      console.log('there was no api key and I am in the event listener');
+      setModalOpen(true);
+    }
+  });
 
   function getRandom() {
     return Math.random() * 100;
   }
 
-  function handleClicking () {
-    // const apiKey = await getApiKey();
+  async function handleClicking () {
+    // const apiKey = ''; //await getApiKey();
     // try {
-    //   if (!apiKey) {
-        setModelOpen(true);
+    //   if (apiKey === undefined) {
+        await setModalOpen(true);
+
         console.log('checking if the modal is open: ', modalOpen);
-    //     // HorizontalLinearAlternativeLabelStepper();
+
+        // HorizontalLinearAlternativeLabelStepper();
     //     console.log(modalOpen);
     //   }
     //   else {
@@ -52,7 +81,7 @@ export default function TabPanels(props: any) {
     //   }
     // }
     // catch (error) {
-    //     console.error('Flippin! Error running scan:', error)
+    //     console.error('Flippin! Error running scan:', error);
     // }
   }
   
@@ -156,11 +185,14 @@ export default function TabPanels(props: any) {
                 }}>
         <Button variant="contained" onClick={() => {
           console.log('the button got clicked');
-          handleClicking();
-          // setModelOpen(true); //this might actually need to be a boolean to open the div...?
+          // setModalOpen(true);
+          handleClicking();          
         }} >Run VirusTotal Scan</Button>
         </Box>
-        {/* {modalOpen && <HorizontalLinearAlternativeLabelStepper modalOpen={modalOpen} setModelOpen={setModelOpen} />} */}
+        <Paper>       
+           <VirusTotalHowToModal modalOpen={modalOpen} setModalOpen={setModalOpen} />
+           Hey  why isn't this working
+        </Paper>
         {/* {loading && <Box>Running Scan</Box> }
         { virusTotal && <Box>
           go through virusTotal result to display each scan ran and results

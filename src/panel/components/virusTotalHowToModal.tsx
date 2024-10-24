@@ -6,17 +6,16 @@ import StepLabel from '@mui/material/StepLabel';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { FormControl } from '@mui/base/FormControl';
-import * as vscode from 'vscode';
 import { useEffect, useState } from 'react';
+// import apiGif from "../assets/Get_The_API_Key.gif";
+const vscode = acquireVsCodeApi();
 
 
+export default function VirusTotalHowToModal(props: any) {
 
-
-
-
-export default function HorizontalLinearAlternativeLabelStepper(props: any) {
-  const {modalOpen,  setModelOpen} = props
-  const [activeStep, setActiveStep ] = useState(0)
+  console.log('inside HowToModal right now.... ');
+  const { modalOpen,  setModalOpen } = props;
+  const [ activeStep, setActiveStep ] = useState(0);
 
   const steps = [
     {
@@ -38,7 +37,8 @@ export default function HorizontalLinearAlternativeLabelStepper(props: any) {
               <input id='apiKeyVal'/>
               <button onClick={() => {
                 const inputVal = (document.getElementById('apiKeyVal') as HTMLInputElement)?.value;
-                storeApiKey(inputVal);
+                // storeApiKey(inputVal);
+                console.log('the button in the third step was clicked')
               }}>Submit</button>
           </FormControl>
   
@@ -47,18 +47,32 @@ export default function HorizontalLinearAlternativeLabelStepper(props: any) {
     },
   ];
 
-  async function storeApiKey(apiKey: string) {
-    const secretStorage = vscode.workspace.getConfiguration().getSecretStorage();
-    await secretStorage.store('myExtension.apiKey', apiKey);
-  }
+  //It was a compiler issue. Annoying. SO.... 
+//Below is chatgpt's solution 1 example. Another option is mocking vscode by defining it how it's used (i.e. const vscode = {blah: {etc: etc}})
+  // async function storeApiKey(apiKey: string) {
+  //   if (!vscode.workspace || !vscode.workspace.getConfiguration) {
+  //     console.error('VS Code API is not available');
+  //     return;
+  //   }
+  //   const secretStorage = vscode.workspace.getConfiguration().getSecretStorage();
+  //   await secretStorage.store('myExtension.apiKey', apiKey);
+  // }
 
-  async function getApiKey(): Promise<string | undefined> {
-    const secretStorage = vscode.workspace.getConfiguration().getSecretStorage();
-    return await secretStorage.get('myExtension.apiKey');
+  // async function getApiKey(): Promise<string | undefined> {
+  //   const secretStorage = vscode.workspace.getConfiguration().getSecretStorage();
+  //   return await secretStorage.get('myExtension.apiKey');
+  // }
+
+  function storeApiKey(apiKey: string) {
+    vscode.postMessage({command: 'storeApiKey'});
   }
   
+  if (!modalOpen) {
+    return null; 
+  };
   return (
-    <Box sx={{ width: '100%' }}>
+    <div> dldskjfl;sdjfa;lksjfd
+    <Box sx={{ width: '100%' }}>Bubble butt
       <Stepper activeStep={activeStep} alternativeLabel>
         {steps.map((label, index) => (
           <Step key={index}>
@@ -70,5 +84,6 @@ export default function HorizontalLinearAlternativeLabelStepper(props: any) {
         ))}
       </Stepper>
     </Box>
+    </div>
   );
 }

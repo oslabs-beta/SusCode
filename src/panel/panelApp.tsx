@@ -1,15 +1,19 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { resultsObj, panelCache } from '../types';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import NavBar from './components/navBar';
 import TabContextDiv from './components/tabContext';
+const vscode = acquireVsCodeApi();
+
 
 function App() {
+
   // initialize state for the read me description
   const [readMe, setReadMe] = useState<object>({});
-  const [virusTotal, setVirusTotal] = useState<object>({})
+  const [virusTotal, setVirusTotal] = useState<object>({});
+  const [ virsuTotalApiKey, setVirsuTotalApiKey ] = useState<string>('');
   const [displayNames, setDisplayNames] = useState<string[]>([]);
   // Adding unique state for each search that appears in a panel for an app
   const [patternMatchPanelState, setPatternMatchPanelState] =
@@ -42,6 +46,21 @@ function App() {
       }
     }
   });
+  //====================   LISTENING FOR MESSAGES FROM VirusTotalScan Stuff WITHIN virusTotalHowToModal.tsx   =====================//
+  useEffect(() => {
+    window.addEventListener('message', (event) => {
+      const message = event.data;
+      switch (message.type) {
+        case 'storeApiKey': {
+          async function getApiKey(): Promise<string | undefined> {
+              const secretStorage = vscode.workspace.getConfiguration().getSecretStorage();
+              return await secretStorage.get('myExtension.apiKey');
+            }
+        }
+      }
+    });
+  });
+
 
   //====================   LISTENING FOR MESSAGES FROM streamFilesInDirectory() WITHIN fileReader.ts   =====================//
   //grabbing html element with id: 'content'
