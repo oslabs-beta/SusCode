@@ -3,6 +3,7 @@ import path from 'path';
 import fs from 'fs';
 import { reader } from './workers/fileFinder';
 import findReadMe from './workers/findReadMe';
+import { VirusTotalHowToModal } from './panel/components/virusTotalHowToModal';
 
 // generates a unique key used for script security
 function getNonce() {
@@ -67,6 +68,7 @@ export function activate(context: vscode.ExtensionContext) {
       const panel = vscode.window.createWebviewPanel(
         'resultPanel',
         'SusCode Results',
+        //virustotalhowtomodal???
         vscode.ViewColumn.One,
         {
           enableScripts: true,
@@ -107,7 +109,7 @@ export function activate(context: vscode.ExtensionContext) {
         let trimmedFilepath = filepaths[i].slice(1, -1);
         reader(trimmedFilepath, panel, names[i]);
       }
-
+      
       filepaths.forEach((el: string, i: number) => {
         el = el.slice(1, -1);
         findReadMe(
@@ -128,6 +130,22 @@ export function activate(context: vscode.ExtensionContext) {
             }
           }
         );
+      });
+      //This is VirusTotal's apikey functionality messages I'm listening for
+      panel.webview.onDidReceiveMessage( async (message) => {
+        switch (message.command) {
+          case 'storeApiKey': {
+            const secretStorage = context.secrets;
+            await secretStorage.store('myExtension.apiKey in extensionts message from input', message.value);
+            vscode.window.showInformationMessage('API key stored successfully!');
+            break;
+          }
+          case 'getApiKey': {
+            const apiKey = await context.secrets.get('myExtension.apiKey');
+            panel.webview.postMessage({ command: 'returnApiKey', value: apiKey });
+            break;
+          }
+        }
       });
     }
   );

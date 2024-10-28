@@ -15,6 +15,7 @@ import VirusTotalHowToModal from './virusTotalHowToModal';
 import Paper from '@mui/material/Paper';
 // import virusTotalScan from '../workers/virusTotalScan'
 import { useState, useEffect } from 'react';
+
 const vscode = acquireVsCodeApi();
 
 export default function TabPanels(props: any) {
@@ -23,7 +24,6 @@ export default function TabPanels(props: any) {
   // const [loading, setLoading] = useState(false); // this is also stuff for virusTotal
   const { displayNames, patternMatchPanelState, telemetryPanelState, readMe, virusTotal, setVirusTotal } =
     props;
-
 
   //Below didn't work
   // useEffect(() => {
@@ -38,23 +38,29 @@ export default function TabPanels(props: any) {
 
 
   //   below is the functionality to get the api key from secret storage but it's also in the virusTotalHowtoModal
-  async function getApiKey(){
-    // const secretStorage = vscode.workspace.getConfiguration().getSecretStorage();
-    // return await secretStorage.get('myExtension.apiKey');
-    vscode.postMessage({command: 'getApiKey '});
+  // async function getApiKey(){
+  //   // const secretStorage = vscode.workspace.getConfiguration().getSecretStorage();
+  //   // return await secretStorage.get('myExtension.apiKey');
+  //   vscode.postMessage({command: 'getApiKey '});
+  // }
+
+  function getApiKey() {
+    console.log('In the getApiKey function definition/ where it posts the message to extension.ts');
+    vscode.postMessage({command: 'getApiKey'});
   }
+  // I put the below functionality inside
+  // window.addEventListener('message', (event) => {
+  //   const message = event.data; // The message from the extension
+  //   //Note for tomorrow. This is getting triggered on load a bunch of times for anytime a message is being sent. For example, it's console logging when patternmatchupdate and readme. Might need to add steps in extension.ts. My guess is there is one step/message being sent that I'm missing when I think about the findReadMe functionality
+  //   console.log('This is message in message back from getApiKey:  ', message);
+  //   if (message.value === undefined || message.value === null) {
+  //     setModalOpen(true);
+  //   }
+  //   if (message.command === 'returnApiKey') {
+  //     console.log('API Key:', message.value);
 
-  window.addEventListener('message', event => {
-    const message = event.data
-
-    if (message.apiKey) {
-      console.log('This is the API Key:  ', message.apiKey);
-    }
-    else {
-      console.log('there was no api key and I am in the event listener');
-      setModalOpen(true);
-    }
-  });
+  //   }
+  // });
 
   function getRandom() {
     return Math.random() * 100;
@@ -64,10 +70,21 @@ export default function TabPanels(props: any) {
     // const apiKey = ''; //await getApiKey();
     // try {
     //   if (apiKey === undefined) {
-        await setModalOpen(true);
-
+        // await setModalOpen(true);
+        window.addEventListener('message', (event) => {
+          const message = event.data; // The message from the extension
+          //Note for tomorrow. This is getting triggered on load a bunch of times for anytime a message is being sent. For example, it's console logging when patternmatchupdate and readme. Might need to add steps in extension.ts. My guess is there is one step/message being sent that I'm missing when I think about the findReadMe functionality
+          console.log('This is message in message back from getApiKey:  ', message);
+          if (message.value === undefined || message.value === null) {
+            setModalOpen(true);
+          }
+          if (message.command === 'returnApiKey') {
+            console.log('API Key:', message.value);
+      
+          }
+        });
         console.log('checking if the modal is open: ', modalOpen);
-
+        getApiKey();
         // HorizontalLinearAlternativeLabelStepper();
     //     console.log(modalOpen);
     //   }
@@ -183,14 +200,14 @@ export default function TabPanels(props: any) {
                     width: "150px",              
                     mt: "30px",
                 }}>
-        <Button variant="contained" onClick={() => {
+        <Button variant="contained" id='virusScanBtn' onClick={() => {
           console.log('the button got clicked');
           // setModalOpen(true);
           handleClicking();          
         }} >Run VirusTotal Scan</Button>
         </Box>
         <Paper>       
-           <VirusTotalHowToModal modalOpen={modalOpen} setModalOpen={setModalOpen} />
+           <VirusTotalHowToModal modalOpen={modalOpen} setModalOpen={setModalOpen} vscode={vscode} />
            Hey  why isn't this working
         </Paper>
         {/* {loading && <Box>Running Scan</Box> }
