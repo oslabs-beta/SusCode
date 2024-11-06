@@ -5,7 +5,7 @@ import FormData from 'form-data';
 import { AnalysisResponse, FileUploadResponse } from '../types';
 // import { setVirusTotal } from '../workers/virusTotalScan'; // this needs to be props, not passed completely
 // import * as vscode from 'vscode';
-export function virusTotalScan(apiKey: string) {
+export function virusTotalScan(apiKey: string, filepath: string) {
     interface FileAppendOptions {
         filename: string;
     }
@@ -35,8 +35,8 @@ export function virusTotalScan(apiKey: string) {
 
 
 
-    const sample: string = '';
-    const fileStream: fs.ReadStream = fs.createReadStream(sample);
+    const sample: string = '';//this is the filepath?
+    const fileStream: fs.ReadStream = fs.createReadStream(filepath); //this was sample until I just changed it on Nov 5th;
 
     const formdata = new FormData(); // good stuff I need here******************************** * * * * *
     formdata.append("file", fileStream, {filename: 'extension.js'});
@@ -65,7 +65,7 @@ export function virusTotalScan(apiKey: string) {
         },
         })
         .then((result) => {
-            const fileId = result.data.data.id
+            const fileId = result.data.data.id;
             if(fileId) {
                 setTimeout(() => getTheResults(fileId, apiKey), 30000);
             } else {

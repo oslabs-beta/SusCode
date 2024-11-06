@@ -14,12 +14,14 @@ import TelemetrySearchResults from './searchResultComponents/telemetrySearchResu
 import VirusTotalHowToModal from './virusTotalHowToModal';
 import Paper from '@mui/material/Paper';
 // import virusTotalScan from '../workers/virusTotalScan'
-import { useState, useEffect } from 'react';
+import { useState, useEffect, FormEvent } from 'react';
+import { Input } from '@mui/material';
 
 const vscode = acquireVsCodeApi();
 
 export default function TabPanels(props: any) {
   const [modalOpen, setModalOpen] = useState(false);
+  // const [keyObtained, setKeyObtained] = useState(false);
   const [ config, setConfig ] = useState(null);
   // const [loading, setLoading] = useState(false); // this is also stuff for virusTotal
   const { displayNames, patternMatchPanelState, telemetryPanelState, readMe, virusTotal, setVirusTotal } =
@@ -44,9 +46,16 @@ export default function TabPanels(props: any) {
   //   vscode.postMessage({command: 'getApiKey '});
   // }
 
+  // function submitNewKey(event: FormEvent<HTMLFormElement>)  {
+  //   event.preventDefault();
+  //   const newKey = (event.currentTarget.elements.namedItem('newKey') as HTMLInputElement).value; // Get the input value
+  //   vscode.postMessage({type: 'storeApiKey', value: newKey});
+  //   //then add functionality to actually use the key to run the scan
+  // }
+
   function getApiKey() {
     console.log('In the getApiKey function definition/ where it posts the message to extension.ts');
-    vscode.postMessage({command: 'getApiKey'});
+    vscode.postMessage({type: 'getApiKey'});
   }
   // I put the below functionality inside
   // window.addEventListener('message', (event) => {
@@ -71,18 +80,7 @@ export default function TabPanels(props: any) {
     // try {
     //   if (apiKey === undefined) {
         // await setModalOpen(true);
-        window.addEventListener('message', (event) => {
-          const message = event.data; // The message from the extension
-          //Note for tomorrow. This is getting triggered on load a bunch of times for anytime a message is being sent. For example, it's console logging when patternmatchupdate and readme. Might need to add steps in extension.ts. My guess is there is one step/message being sent that I'm missing when I think about the findReadMe functionality
-          console.log('This is message in message back from getApiKey:  ', message);
-          if (message.value === undefined || message.value === null) {
-            setModalOpen(true);
-          }
-          if (message.command === 'returnApiKey') {
-            console.log('API Key:', message.value);
-      
-          }
-        });
+        
         console.log('checking if the modal is open: ', modalOpen);
         getApiKey();
         // HorizontalLinearAlternativeLabelStepper();
@@ -101,6 +99,49 @@ export default function TabPanels(props: any) {
     //     console.error('Flippin! Error running scan:', error);
     // }
   }
+  useEffect(() => {
+    const handleMessage = (event: any) => {
+      const message = event.data;
+      if (message.type === 'returnApiKey') {
+        if (message.value) {
+          console.log('API Key received:', message.value);
+          // return (
+          //   <Box>
+          //   <Box>API Key found. Would you like to use or enter new key?</Box>
+          //   <Button onClick={() => {
+          //     console.log('button to use current api key clicked and here is where scan functionality starts')
+          //   }} >Use</Button>
+          //   <Button onClick={() => {
+          //     console.log(`here is where you enter a new key??`);
+          //     return (
+          //       <form onSubmit={submitNewKey} >
+          //         <Input id='newKey' ></Input>
+          //         <Button type='submit'>Submit new key</Button>
+          //       </form>
+          //     )
+          //   }} >Enter New Key</Button>
+          //   </Box>
+          // )
+        } else {
+          setModalOpen(true);
+        }
+      }
+    };
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, []);
+  // window.addEventListener('message', (event) => {
+  //   const message = event.data; // The message from the extension
+  //   //Note for tomorrow. This is getting triggered on load a bunch of times for anytime a message is being sent. For example, it's console logging when patternmatchupdate and readme. Might need to add steps in extension.ts. My guess is there is one step/message being sent that I'm missing when I think about the findReadMe functionality
+  //   console.log('This is message in message back from getApiKey:  ', message);
+  //   if (message.value === undefined || message.value === null) {
+  //     setModalOpen(true);
+  //   }
+  //   if (message.command === 'returnApiKey') {
+  //     console.log('API Key in eventlistener in handle click :', message.value);
+
+  //   }
+  // });
   
   const tabPanels = displayNames.map((extensionName: string, i: number) => {
     let value = i.toString();

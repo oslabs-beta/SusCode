@@ -20,27 +20,6 @@ export default function VirusTotalHowToModal(props: any) {
   console.log('inside HowToModal right now.... ');
   const { modalOpen,  setModalOpen, vscode } = props;
   const [ activeStep, setActiveStep ] = useState(0);
-
-  // const steps = [
-  //   {
-  //     label: 'Select campaign settings',
-  //     description: `For each ad campaign that you create, you can control how much
-  //               you're willing to spend on clicks and conversions, which networks
-  //               and geographical locations you want your ads to show on, and more.`,
-  //   },
-  //   {
-  //     label: 'Create an ad group',
-  //     description:
-  //       'An ad group contains one or more ads which target a shared set of keywords.',
-  //   },
-  //   {
-  //     label: 'Create an ad',
-  //     description: `Try out different ad text to see what brings in the most customers,
-  //               and learn how to enhance your ads using features like ad extensions.
-  //               If you run into any problems with your ads, find out how to tell if
-  //               they're running and how to resolve approval issues.`,
-  //   },
-  // ];
   
   // export default function VerticalLinearStepper() {
   //   const [activeStep, setActiveStep] = React.useState(0);
@@ -67,15 +46,15 @@ export default function VirusTotalHowToModal(props: any) {
       // 'button': ''
     },
     {
-      'label': 'Create an ad group',
+      'label': 'Get API Key',
       'text':`Once you've verified your account and are logged in to virusTotal, `,
       'box': <div>Pic that's not working</div> ,
       // 'box': <img src={apiGif} height= "auto" width= "100%"/>,
       // 'button': ''
     },
     {
-      'label': 'Create an ad',
-      'text': 'Create an ad',
+      'label': 'Enter API Key',
+      'text': 'Paste and Submit API Key Here',
       'box': 
         (<Box sx={{ width: 500, maxWidth: '100%' }}>
         {/* <TextField fullWidth label="fullWidth" id="fullWidth" /> */}
@@ -96,13 +75,33 @@ export default function VirusTotalHowToModal(props: any) {
   ];
 
 
-  function storeApiKey(apiKey: string) {
-    vscode.postMessage({command: 'storeApiKey'});
+  function storeApiKey(apiKey: any) {
+    vscode.postMessage({type: 'storeApiKey', value: apiKey});
   }
   
   if (!modalOpen) {
     return null; 
   };
+  // if(keyObtained) {
+  //   return (
+  //     <Box>
+  //       <Box>API Key found. Would you like to use or enter new key?</Box>
+  //       <Button onClick={() => {
+  //         console.log('button to use current api key clicked and here is where scan functionality starts')
+  //         }} >Use</Button>
+  //       <Button onClick={() => {
+  //         console.log(`here is where you enter a new key??`);
+  //         return (
+  //           <form onSubmit={submitNewKey} >
+  //             <TextField id="newKey" label="Outlined" variant="outlined" />
+  //             <Button type='submit'>Submit new key</Button>
+  //           </form>
+  //         );
+  //         }} >Enter New Key</Button>
+  //     </Box>
+  //   ); 
+  // }
+  if (modalOpen) {
     return (
       <Box sx={{ maxWidth: 400 }}>
         <Stepper activeStep={activeStep} orientation="vertical">
@@ -118,8 +117,9 @@ export default function VirusTotalHowToModal(props: any) {
                 {step.label}
               </StepLabel>
               <StepContent>
-                <Box>{step.box}</Box>
+                
                 <Typography>{step.text}</Typography>
+                <Box>{step.box}</Box>
                 <Box sx={{ mb: 2 }}>
                   <Button
                     variant="contained"
@@ -151,22 +151,4 @@ export default function VirusTotalHowToModal(props: any) {
       </Box>
     );
   }
-  // return (
-  //   <div> dldskjfl;sdjfa;lksjfd
-  //   <Box sx={{ width: '100%' }}>Bubble butt
-  //     <Stepper activeStep={activeStep} alternativeLabel>
-  //       {steps.map((label, index) => (
-  //         <Step key={index}>
-  //           <StepLabel>{label.text}</StepLabel>
-  //           <Box>
-  //             {label.box}
-  //           </Box>
-  //         </Step>
-  //       ))}
-  //     </Stepper>
-  //   </Box>
-  //   </div>
-  // );
-}
-
-//export createVirusTotalHowToModal function?
+  }

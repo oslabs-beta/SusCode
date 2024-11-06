@@ -3,7 +3,7 @@ import path from 'path';
 import fs from 'fs';
 import { reader } from './workers/fileFinder';
 import findReadMe from './workers/findReadMe';
-import { VirusTotalHowToModal } from './panel/components/virusTotalHowToModal';
+import VirusTotalHowToModal from './panel/components/virusTotalHowToModal';
 
 // generates a unique key used for script security
 function getNonce() {
@@ -68,7 +68,6 @@ export function activate(context: vscode.ExtensionContext) {
       const panel = vscode.window.createWebviewPanel(
         'resultPanel',
         'SusCode Results',
-        //virustotalhowtomodal???
         vscode.ViewColumn.One,
         {
           enableScripts: true,
@@ -133,16 +132,18 @@ export function activate(context: vscode.ExtensionContext) {
       });
       //This is VirusTotal's apikey functionality messages I'm listening for
       panel.webview.onDidReceiveMessage( async (message) => {
-        switch (message.command) {
+        console.log(`In ext.ts, in the panelwebviewondidreceivemessage which recieved a message: `, message.type);
+        switch (message.type) {
           case 'storeApiKey': {
             const secretStorage = context.secrets;
-            await secretStorage.store('myExtension.apiKey in extensionts message from input', message.value);
+            await secretStorage.store('myExtension.apiKey', message.value);
             vscode.window.showInformationMessage('API key stored successfully!');
             break;
           }
           case 'getApiKey': {
             const apiKey = await context.secrets.get('myExtension.apiKey');
-            panel.webview.postMessage({ command: 'returnApiKey', value: apiKey });
+            console.log(`In the getApiKey functionality in ext.ts after the context.secrets.get. Here is the stored api key:  `, apiKey);
+            panel.webview.postMessage({ type: 'returnApiKey', value: apiKey });
             break;
           }
         }
