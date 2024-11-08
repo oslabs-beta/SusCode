@@ -3,9 +3,15 @@ import * as path from 'path';
 import  axios from 'axios';
 import FormData from 'form-data';
 import { AnalysisResponse, FileUploadResponse } from '../types';
+import { scanPaths } from './fileFinder';//need to acces this inputting the name to find the files to scan... with a for each? Does it return a giant object?
 // import { setVirusTotal } from '../workers/virusTotalScan'; // this needs to be props, not passed completely
-// import * as vscode from 'vscode';
-export function virusTotalScan(apiKey: string, filepath: string) {
+import * as vscode from 'vscode';
+export function virusTotalScan(apiKey: string, extName: string) {
+//  const extArr: string[] = fs.readdirSync(trail);
+//  const theFile: string[] = extArr.filter((file: string) =>
+//     file.match(/readme.md?$/i)
+//   );
+    console.log('in virusTotalScan func');
     interface FileAppendOptions {
         filename: string;
     }
@@ -35,8 +41,8 @@ export function virusTotalScan(apiKey: string, filepath: string) {
 
 
 
-    const sample: string = '';//this is the filepath?
-    const fileStream: fs.ReadStream = fs.createReadStream(filepath); //this was sample until I just changed it on Nov 5th;
+    const sample: string = scanPaths[extName] && scanPaths[extName][0];//this is the filepath?
+    const fileStream: fs.ReadStream = fs.createReadStream(sample); //this was sample until I just changed it on Nov 5th;
 
     const formdata = new FormData(); // good stuff I need here******************************** * * * * *
     formdata.append("file", fileStream, {filename: 'extension.js'});
@@ -51,6 +57,7 @@ export function virusTotalScan(apiKey: string, filepath: string) {
         })
                 // .then((response) => response.json())
         .then((response) => {
+            console.log( 'within virusTotalScan in the getResults func:', response);
             // setVirusTotal(response);
         })
         .catch((err: string) => {
@@ -72,6 +79,9 @@ export function virusTotalScan(apiKey: string, filepath: string) {
                 console.error('fileId is undefined');
                 }  
         })
-        .catch((error) => console.error(error));
-
+        .catch((error) => {
+            console.error(error);
+            window.postMessage({type: 'modalOpen', message: 'Error in the scan'})
+            // setModalOpen(true) this doesnt work here... figure it out
+        });
 }

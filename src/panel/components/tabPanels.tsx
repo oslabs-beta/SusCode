@@ -13,7 +13,7 @@ import PatternSearchResults from './searchResultComponents/patternSearchResults'
 import TelemetrySearchResults from './searchResultComponents/telemetrySearchResults';
 import VirusTotalHowToModal from './virusTotalHowToModal';
 import Paper from '@mui/material/Paper';
-// import virusTotalScan from '../workers/virusTotalScan'
+import { virusTotalScan } from '../../workers/virusTotalScan';
 import { useState, useEffect, FormEvent } from 'react';
 import { Input } from '@mui/material';
 
@@ -23,35 +23,10 @@ export default function TabPanels(props: any) {
   const [modalOpen, setModalOpen] = useState(false);
   // const [keyObtained, setKeyObtained] = useState(false);
   const [ config, setConfig ] = useState(null);
+  const [ theName, setTheName ] = useState('');
   // const [loading, setLoading] = useState(false); // this is also stuff for virusTotal
   const { displayNames, patternMatchPanelState, telemetryPanelState, readMe, virusTotal, setVirusTotal } =
     props;
-
-  //Below didn't work
-  // useEffect(() => {
-  //   const fetchConfig = async () => {
-  //     const secretStorage = vscode.workspace.getConfiguration().getSecretStorage();
-  //     const storedApiKey = await secretStorage.get('myExtension.apiKey');
-  //     setConfig(storedApiKey);
-  //   };
-  //   fetchConfig();
-  // }, []);
-
-
-
-  //   below is the functionality to get the api key from secret storage but it's also in the virusTotalHowtoModal
-  // async function getApiKey(){
-  //   // const secretStorage = vscode.workspace.getConfiguration().getSecretStorage();
-  //   // return await secretStorage.get('myExtension.apiKey');
-  //   vscode.postMessage({command: 'getApiKey '});
-  // }
-
-  // function submitNewKey(event: FormEvent<HTMLFormElement>)  {
-  //   event.preventDefault();
-  //   const newKey = (event.currentTarget.elements.namedItem('newKey') as HTMLInputElement).value; // Get the input value
-  //   vscode.postMessage({type: 'storeApiKey', value: newKey});
-  //   //then add functionality to actually use the key to run the scan
-  // }
 
   function getApiKey() {
     console.log('In the getApiKey function definition/ where it posts the message to extension.ts');
@@ -75,61 +50,11 @@ export default function TabPanels(props: any) {
     return Math.random() * 100;
   }
 
-  async function handleClicking () {
-    // const apiKey = ''; //await getApiKey();
-    // try {
-    //   if (apiKey === undefined) {
-        // await setModalOpen(true);
-        
+  async function handleClicking () {       
         console.log('checking if the modal is open: ', modalOpen);
         getApiKey();
-        // HorizontalLinearAlternativeLabelStepper();
-    //     console.log(modalOpen);
-    //   }
-    //   else {
-    //     console.log('apparently have an apikey? could not be');
-    //     // setLoading(true)
-    //     // virusTotalScan(apiKey)
-    //     //run scan to return div? 
-    //     // add loading thing
-    //     // setVirusTotal - //run scan essentially
-    //   }
-    // }
-    // catch (error) {
-    //     console.error('Flippin! Error running scan:', error);
-    // }
   }
-  useEffect(() => {
-    const handleMessage = (event: any) => {
-      const message = event.data;
-      if (message.type === 'returnApiKey') {
-        if (message.value) {
-          console.log('API Key received:', message.value);
-          // return (
-          //   <Box>
-          //   <Box>API Key found. Would you like to use or enter new key?</Box>
-          //   <Button onClick={() => {
-          //     console.log('button to use current api key clicked and here is where scan functionality starts')
-          //   }} >Use</Button>
-          //   <Button onClick={() => {
-          //     console.log(`here is where you enter a new key??`);
-          //     return (
-          //       <form onSubmit={submitNewKey} >
-          //         <Input id='newKey' ></Input>
-          //         <Button type='submit'>Submit new key</Button>
-          //       </form>
-          //     )
-          //   }} >Enter New Key</Button>
-          //   </Box>
-          // )
-        } else {
-          setModalOpen(true);
-        }
-      }
-    };
-    window.addEventListener('message', handleMessage);
-    return () => window.removeEventListener('message', handleMessage);
-  }, []);
+  
   // window.addEventListener('message', (event) => {
   //   const message = event.data; // The message from the extension
   //   //Note for tomorrow. This is getting triggered on load a bunch of times for anytime a message is being sent. For example, it's console logging when patternmatchupdate and readme. Might need to add steps in extension.ts. My guess is there is one step/message being sent that I'm missing when I think about the findReadMe functionality
@@ -142,6 +67,59 @@ export default function TabPanels(props: any) {
 
   //   }
   // });
+  useEffect(() => {
+    const handleMessage = async (event: any) => {
+      const message = event.data;
+      switch (message.type){
+        case 'returnApiKey' : 
+          if (message.value) {
+            try {
+              console.log('API Key received:', message.value);
+              // await virusTotalScan(message.value, 'booger'
+              //   // extensionName
+              // );
+            } 
+            catch(error) {
+              setModalOpen(true);
+            }
+          }  
+          else {
+            setModalOpen(true);
+          } 
+          break;
+        case 'modalOpen':
+          setModalOpen(true);
+          break;
+
+    }  
+  //   switch (message.type) {
+  //     case 'returnApiKey':
+  //         if (message.value) {
+  //             try {
+  //                 // Trigger the VirusTotal scan
+  //                 virusTotalScan(message.value, extensionName);
+  //             } catch (error) {
+  //                 console.error("Error in virusTotalScan:", error);
+  //                 // This should also trigger a modal if needed
+  //             }
+  //         } else {
+  //             setModalOpen(true);
+  //         }
+  //         break;
+
+  //     case 'openModal':
+  //         // Handle error case by opening the modal
+  //         setModalOpen(true);
+  //         break;
+
+  //     // Add more cases as needed
+  //     default:
+  //         console.warn(`Unhandled message type: ${message.type}`);
+  // }    
+    };
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, []);
   
   const tabPanels = displayNames.map((extensionName: string, i: number) => {
     let value = i.toString();
@@ -159,6 +137,8 @@ export default function TabPanels(props: any) {
     ] || {
       results: [],
     };
+
+    
 
     return (
       <TabPanel value={value} key={getRandom()} id={content}>
@@ -248,7 +228,7 @@ export default function TabPanels(props: any) {
         }} >Run VirusTotal Scan</Button>
         </Box>
         <Paper>       
-           <VirusTotalHowToModal modalOpen={modalOpen} setModalOpen={setModalOpen} vscode={vscode} />
+           <VirusTotalHowToModal modalOpen={modalOpen} setModalOpen={setModalOpen} vscode={vscode} extensionName={extensionName} />
            Hey  why isn't this working
         </Paper>
         {/* {loading && <Box>Running Scan</Box> }

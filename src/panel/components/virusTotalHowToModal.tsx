@@ -65,7 +65,7 @@ export default function VirusTotalHowToModal(props: any) {
                 storeApiKey(inputVal);
                 console.log('the button in the third step was clicked: ', inputVal);
 
-                setModalOpen(false)
+                setModalOpen(false);
               }}>Submit</button>
           </FormControl>
   
