@@ -2,16 +2,19 @@ import * as fs from 'fs';
 import * as path from 'path';
 import  axios from 'axios';
 import FormData from 'form-data';
+// import { WebviewPanel } from 'vscode';
 import { AnalysisResponse, FileUploadResponse } from '../types';
 import { scanPaths } from './fileFinder';//need to acces this inputting the name to find the files to scan... with a for each? Does it return a giant object?
 // import { setVirusTotal } from '../workers/virusTotalScan'; // this needs to be props, not passed completely
 import * as vscode from 'vscode';
-export function virusTotalScan(apiKey: string, extName: string) {
+export function virusTotalScan(apiKey: string, extName: string, panel: vscode.WebviewPanel
+    // , setModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+) {
 //  const extArr: string[] = fs.readdirSync(trail);
 //  const theFile: string[] = extArr.filter((file: string) =>
 //     file.match(/readme.md?$/i)
 //   );
-    console.log('in virusTotalScan func');
+    console.log('in virusTotalScan func poooooooooooooooop');
     interface FileAppendOptions {
         filename: string;
     }
@@ -42,12 +45,17 @@ export function virusTotalScan(apiKey: string, extName: string) {
 
 
     const sample: string = scanPaths[extName] && scanPaths[extName][0];//this is the filepath?
+    if (!sample) {
+        console.log('there is no sample')
+    } else {
+        console.log('sample: ', sample);
+    }
     const fileStream: fs.ReadStream = fs.createReadStream(sample); //this was sample until I just changed it on Nov 5th;
 
     const formdata = new FormData(); // good stuff I need here******************************** * * * * *
     formdata.append("file", fileStream, {filename: 'extension.js'});
 
-    function getTheResults(fileId: string, apiKey: string) {
+    function getTheResults(fileId: string, apiKey: string, count = 8) {
     
         axios.get<AnalysisResponse>(`https://www.virustotal.com/api/v3/analyses/${fileId}`, {
         headers: {
@@ -57,8 +65,20 @@ export function virusTotalScan(apiKey: string, extName: string) {
         })
                 // .then((response) => response.json())
         .then((response) => {
-            console.log( 'within virusTotalScan in the getResults func:', response);
-            // setVirusTotal(response);
+            const status = response.data.data.attributes.status;
+
+            if (status === 'completed') {
+                panel.webview.postMessage({type: 'vtResults', value: response.data.data.attributes.results});
+            } else if (count > 0) {
+                setTimeout(() => {
+                    getTheResults(fileId, apiKey, count -= 1);
+                }, 15000);     
+            } else {
+                panel.webview.postMessage({ type: 'vtResultsTimedOut', message: 'Getting the VirusTotal results timed out'});
+            }
+
+            console.log( 'within virusTotalScan in the getResults func:', response.data);
+            
         })
         .catch((err: string) => {
             console.error('error fetching the analysis: ',err);
@@ -74,14 +94,14 @@ export function virusTotalScan(apiKey: string, extName: string) {
         .then((result) => {
             const fileId = result.data.data.id;
             if(fileId) {
-                setTimeout(() => getTheResults(fileId, apiKey), 30000);
+                setTimeout(() => getTheResults(fileId, apiKey), 20000);
             } else {
                 console.error('fileId is undefined');
                 }  
         })
         .catch((error) => {
-            console.error(error);
-            window.postMessage({type: 'modalOpen', message: 'Error in the scan'})
-            // setModalOpen(true) this doesnt work here... figure it out
+            console.error(`I'm in virusTotalScan worker and been an error running the api req scan: ${error}`);
+            panel.webview.postMessage({type: 'modalOpen', message: 'Error in the scan'});
+            throw error;
         });
 }

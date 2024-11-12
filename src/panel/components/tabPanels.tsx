@@ -15,22 +15,20 @@ import VirusTotalHowToModal from './virusTotalHowToModal';
 import Paper from '@mui/material/Paper';
 import { virusTotalScan } from '../../workers/virusTotalScan';
 import { useState, useEffect, FormEvent } from 'react';
-import { Input } from '@mui/material';
+// import { Input } from '@mui/material';
 
 const vscode = acquireVsCodeApi();
 
 export default function TabPanels(props: any) {
   const [modalOpen, setModalOpen] = useState(false);
-  // const [keyObtained, setKeyObtained] = useState(false);
-  const [ config, setConfig ] = useState(null);
-  const [ theName, setTheName ] = useState('');
+
   // const [loading, setLoading] = useState(false); // this is also stuff for virusTotal
   const { displayNames, patternMatchPanelState, telemetryPanelState, readMe, virusTotal, setVirusTotal } =
     props;
 
-  function getApiKey() {
+  function getApiKey(extensionName: string) {
     console.log('In the getApiKey function definition/ where it posts the message to extension.ts');
-    vscode.postMessage({type: 'getApiKey'});
+    vscode.postMessage({type: 'getApiKey', extensionName: extensionName});
   }
   // I put the below functionality inside
   // window.addEventListener('message', (event) => {
@@ -50,9 +48,10 @@ export default function TabPanels(props: any) {
     return Math.random() * 100;
   }
 
-  async function handleClicking () {       
+  async function  handleClicking (extensionName: string) {       
         console.log('checking if the modal is open: ', modalOpen);
-        getApiKey();
+        console.log('here is the extension name hopefully within the handleClicking: ', extensionName);
+        getApiKey(extensionName);
   }
   
   // window.addEventListener('message', (event) => {
@@ -67,55 +66,45 @@ export default function TabPanels(props: any) {
 
   //   }
   // });
+  //adding this listener just to make sure certain (modalOpen) messages are being recieved
+  // window.addEventListener('message', (event) => {
+  //   console.log('Global message listener received:', event.data);
+  // });
+
   useEffect(() => {
-    const handleMessage = async (event: any) => {
+    const handleMessage = (event: any) => {
       const message = event.data;
+      console.log('message recieved in useEffect: ', message);
       switch (message.type){
         case 'returnApiKey' : 
           if (message.value) {
+            const { value: apiKey, extensionName } = message; // Destructure extensionName from message
             try {
+              
               console.log('API Key received:', message.value);
-              // await virusTotalScan(message.value, 'booger'
-              //   // extensionName
-              // );
-            } 
+              vscode.postMessage({ type: 'runVirusTotalScan', value: apiKey, extensionName: extensionName,
+                //  func: setModalOpen
+                });
+              // virusTotalScan(apiKey, extensionName);
+              console.log('the extensionName parameter in the try of useeffect:  ', extensionName);
+            }
             catch(error) {
               setModalOpen(true);
             }
-          }  
+          }
           else {
             setModalOpen(true);
-          } 
+          }
           break;
+        case 'vtResults':
+          console.log('This is the message.value back in tabPanels in case vtResults: ', message.value);
+          break;
+
         case 'modalOpen':
+          console.log('back in tabPanels in useEffect handleessage and recieved modalOpen message.');
           setModalOpen(true);
           break;
-
     }  
-  //   switch (message.type) {
-  //     case 'returnApiKey':
-  //         if (message.value) {
-  //             try {
-  //                 // Trigger the VirusTotal scan
-  //                 virusTotalScan(message.value, extensionName);
-  //             } catch (error) {
-  //                 console.error("Error in virusTotalScan:", error);
-  //                 // This should also trigger a modal if needed
-  //             }
-  //         } else {
-  //             setModalOpen(true);
-  //         }
-  //         break;
-
-  //     case 'openModal':
-  //         // Handle error case by opening the modal
-  //         setModalOpen(true);
-  //         break;
-
-  //     // Add more cases as needed
-  //     default:
-  //         console.warn(`Unhandled message type: ${message.type}`);
-  // }    
     };
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
@@ -137,8 +126,6 @@ export default function TabPanels(props: any) {
     ] || {
       results: [],
     };
-
-    
 
     return (
       <TabPanel value={value} key={getRandom()} id={content}>
@@ -224,7 +211,7 @@ export default function TabPanels(props: any) {
         <Button variant="contained" id='virusScanBtn' onClick={() => {
           console.log('the button got clicked');
           // setModalOpen(true);
-          handleClicking();          
+          handleClicking(extensionName);          
         }} >Run VirusTotal Scan</Button>
         </Box>
         <Paper>       

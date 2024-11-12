@@ -3,7 +3,9 @@ import path from 'path';
 import fs from 'fs';
 import { reader } from './workers/fileFinder';
 import findReadMe from './workers/findReadMe';
+import { virusTotalScan } from './workers/virusTotalScan';
 import VirusTotalHowToModal from './panel/components/virusTotalHowToModal';
+import { error } from 'console';
 
 // generates a unique key used for script security
 function getNonce() {
@@ -142,9 +144,24 @@ export function activate(context: vscode.ExtensionContext) {
           }
           case 'getApiKey': {
             const apiKey = await context.secrets.get('myExtension.apiKey');
+            const extensionName = message.extensionName;
             console.log(`In the getApiKey functionality in ext.ts after the context.secrets.get. Here is the stored api key:  `, apiKey);
-            panel.webview.postMessage({ type: 'returnApiKey', value: apiKey });
+            panel.webview.postMessage({ type: 'returnApiKey', value: apiKey, extensionName: extensionName });
             break;
+          }
+          case 'runVirusTotalScan': {
+            const {value: apiKey, extensionName, 
+              // setModalOpen
+             } = message;
+            console.log('In ext.ts in the runVirusTOtalScan didRecieveMessage and this shoudl be the apikey and ext name: ' + apiKey + ' name: ' + extensionName)
+           
+            virusTotalScan(apiKey, extensionName, panel
+              // , setModalOpen
+            );           
+            break;
+          }
+          case 'vtResultsTimedOut': {
+            vscode.window.showInformationMessage(message.message);
           }
         }
       });
