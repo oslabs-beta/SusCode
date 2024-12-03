@@ -93,7 +93,7 @@ export default function TabPanels(props: any) {
               vscode.postMessage({ type: 'runVirusTotalScan', value: apiKey, extensionName: extensionName,
                 //  func: setModalOpen
                 });
-                // setModalOpen(true);
+                setModalOpen(true);
               // virusTotalScan(apiKey, extensionName);
               console.log('the extensionName parameter in the try of useEffect:  ', extensionName);
             }
