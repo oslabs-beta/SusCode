@@ -150,14 +150,9 @@ export function activate(context: vscode.ExtensionContext) {
             break;
           }
           case 'runVirusTotalScan': {
-            const {value: apiKey, extensionName, 
-              // setModalOpen
-             } = message;
-            console.log('In ext.ts in the runVirusTOtalScan didRecieveMessage and this shoudl be the apikey and ext name: ' + apiKey + ' name: ' + extensionName)
-           
-            virusTotalScan(apiKey, extensionName, panel
-              // , setModalOpen
-            );           
+            const {value: apiKey, extensionName } = message;
+            console.log('In ext.ts in the runVirusTOtalScan didRecieveMessage and this shoudl be the apikey and ext name: ' + apiKey + ' name: ' + extensionName);
+            virusTotalScan(apiKey, extensionName, panel);           
             break;
           }
           case 'vtResultsTimedOut': {

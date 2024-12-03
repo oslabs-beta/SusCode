@@ -7,10 +7,12 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { FormControl } from '@mui/base/FormControl';
 import { useEffect, useState } from 'react';
-// import apiGif from "../assets/Get_The_API_Key.gif";
+import apiGif from "../../assets/Get_The_API_Key.gif";
 import StepContent from '@mui/material/StepContent';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
+import Link from '@mui/material/Link';
+import Modal from '@mui/material/Modal';
 // const vscode = acquireVsCodeApi();
 
 
@@ -20,7 +22,49 @@ export default function VirusTotalHowToModal(props: any) {
   console.log('inside HowToModal right now.... ');
   const { modalOpen,  setModalOpen, vscode } = props;
   const [ activeStep, setActiveStep ] = useState(0);
+
+  const handleOpen = () => setModalOpen(true);
+  const handleClose = () => setModalOpen(false);
+
+  const style = {
+    position: 'absolute' as 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 600,
+    bgcolor:'background.paper',
+    color: 'inherit',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+    backdropFilter: 'blur(5px)',
+  };
   
+ 
+
+  // a:link {
+  //   color: green;
+  //   background-color: transparent;
+  //   text-decoration: none;
+  // }
+  
+  // a:visited {
+  //   color: pink;
+  //   background-color: transparent;
+  //   text-decoration: none;
+  // }
+  
+  // a:hover {
+  //   color: red;
+  //   background-color: transparent;
+  //   text-decoration: underline;
+  // }
+  
+  // a:active {
+  //   color: yellow;
+  //   background-color: transparent;
+  //   text-decoration: underline;
+  // }
   // export default function VerticalLinearStepper() {
   //   const [activeStep, setActiveStep] = React.useState(0);
   
@@ -41,15 +85,19 @@ export default function VirusTotalHowToModal(props: any) {
   const steps = [
     {
       'label': 'Select campaign settings',
-      'text': 'Go to https://www.virustotal.com/gui/sign-in and sign up for an account',
+      'text': (
+        <>You need an API key to run this. Don't freaking panic! It's SUPER easy to get one. 
+      Go  <Link href="https://www.virustotal.com/gui/sign-in">HERE</Link>  
+        and sign up for an account or sign in if you have an account.
+      </>),
       'box': <div/>,
       // 'button': ''
     },
     {
       'label': 'Get API Key',
       'text':`Once you've verified your account and are logged in to virusTotal, `,
-      'box': <div>Pic that's not working</div> ,
-      // 'box': <img src={apiGif} height= "auto" width= "100%"/>,
+      // 'box': <div>Pic that's not working</div> ,
+      'box': <><img src={apiGif} height= "auto" width= "100%"/></>,
       // 'button': ''
     },
     {
@@ -73,6 +121,8 @@ export default function VirusTotalHowToModal(props: any) {
       // 'button': <Button variant="contained" >Store Key</Button>
     },
   ];
+
+
 
 
   function storeApiKey(apiKey: any) {
@@ -103,8 +153,9 @@ export default function VirusTotalHowToModal(props: any) {
   // }
   if (modalOpen) {
     return (
-      <Box sx={{ maxWidth: 400 }}>
-        <Stepper activeStep={activeStep} orientation="vertical">
+      <Modal open={modalOpen} onClose={handleClose}>
+      <Box sx={style}>
+        <Stepper activeStep={activeStep} orientation="vertical" >
           {steps.map((step, index) => (
             <Step key={step.label}>
               <StepLabel
@@ -149,6 +200,7 @@ export default function VirusTotalHowToModal(props: any) {
           </Paper>
         )}
       </Box>
+      </Modal>
     );
   }
   }

@@ -13,7 +13,7 @@ import { Button } from '@mui/material';
 
 export default function TabContextDiv(props: any) {
   const [value, setValue] = useState<number>(0);
-  const { displayNames, patternMatchPanelState, telemetryPanelState, readMe, virusTotal, setVirusTotal } =
+  const { displayNames, patternMatchPanelState, telemetryPanelState, readMe} =
     props;
 
   return (
@@ -33,8 +33,6 @@ export default function TabContextDiv(props: any) {
         patternMatchPanelState={patternMatchPanelState}
         telemetryPanelState={telemetryPanelState}
         //////////////////add virus total state
-        virsuTotal={virusTotal} /////<----'
-        setVirusTotal={setVirusTotal}
         readMe={readMe}
       />
     </TabContext>

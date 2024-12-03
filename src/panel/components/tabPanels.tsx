@@ -12,20 +12,34 @@ import Button from '@mui/material/Button';
 import PatternSearchResults from './searchResultComponents/patternSearchResults';
 import TelemetrySearchResults from './searchResultComponents/telemetrySearchResults';
 import VirusTotalHowToModal from './virusTotalHowToModal';
+import VirusTotalResults from './searchResultComponents/virusTotalSearchResults';
 import Paper from '@mui/material/Paper';
 import { virusTotalScan } from '../../workers/virusTotalScan';
 import { useState, useEffect, FormEvent } from 'react';
+import {  AnalysisResponse } from '../../types';
 // import { Input } from '@mui/material';
 
 const vscode = acquireVsCodeApi();
 
 export default function TabPanels(props: any) {
   const [modalOpen, setModalOpen] = useState(false);
+  const [ keyError, setKeyError ] = useState(false);
+  const [clicked, setClicked] = useState(false);
 
-  // const [loading, setLoading] = useState(false); // this is also stuff for virusTotal
-  const { displayNames, patternMatchPanelState, telemetryPanelState, readMe, virusTotal, setVirusTotal } =
+  type VirusTotalState = {
+    [extensionName:string]: {[filename: string]: AnalysisResponse['data']['attributes']['results']};
+  }; 
+  const [virusTotal, setVirusTotal] = useState<VirusTotalState>({});
+
+  const [loading, setLoading] = useState(false); // this is also stuff for virusTotal
+  const { displayNames, patternMatchPanelState, telemetryPanelState, readMe} =
     props;
 
+  async function  handleClicking (extensionName: string) {       
+    console.log('checking if the modal is open: ', modalOpen);
+    console.log('here is the extension name hopefully within the handleClicking: ', extensionName);
+    getApiKey(extensionName);
+  }
   function getApiKey(extensionName: string) {
     console.log('In the getApiKey function definition/ where it posts the message to extension.ts');
     vscode.postMessage({type: 'getApiKey', extensionName: extensionName});
@@ -47,13 +61,7 @@ export default function TabPanels(props: any) {
   function getRandom() {
     return Math.random() * 100;
   }
-
-  async function  handleClicking (extensionName: string) {       
-        console.log('checking if the modal is open: ', modalOpen);
-        console.log('here is the extension name hopefully within the handleClicking: ', extensionName);
-        getApiKey(extensionName);
-  }
-  
+ 
   // window.addEventListener('message', (event) => {
   //   const message = event.data; // The message from the extension
   //   //Note for tomorrow. This is getting triggered on load a bunch of times for anytime a message is being sent. For example, it's console logging when patternmatchupdate and readme. Might need to add steps in extension.ts. My guess is there is one step/message being sent that I'm missing when I think about the findReadMe functionality
@@ -63,9 +71,9 @@ export default function TabPanels(props: any) {
   //   }
   //   if (message.command === 'returnApiKey') {
   //     console.log('API Key in eventlistener in handle click :', message.value);
-
   //   }
   // });
+
   //adding this listener just to make sure certain (modalOpen) messages are being recieved
   // window.addEventListener('message', (event) => {
   //   console.log('Global message listener received:', event.data);
@@ -74,7 +82,7 @@ export default function TabPanels(props: any) {
   useEffect(() => {
     const handleMessage = (event: any) => {
       const message = event.data;
-      console.log('message recieved in useEffect: ', message);
+      // console.log('message recieved in useEffect: ', message);
       switch (message.type){
         case 'returnApiKey' : 
           if (message.value) {
@@ -85,8 +93,9 @@ export default function TabPanels(props: any) {
               vscode.postMessage({ type: 'runVirusTotalScan', value: apiKey, extensionName: extensionName,
                 //  func: setModalOpen
                 });
+                // setModalOpen(true);
               // virusTotalScan(apiKey, extensionName);
-              console.log('the extensionName parameter in the try of useeffect:  ', extensionName);
+              console.log('the extensionName parameter in the try of useEffect:  ', extensionName);
             }
             catch(error) {
               setModalOpen(true);
@@ -96,8 +105,45 @@ export default function TabPanels(props: any) {
             setModalOpen(true);
           }
           break;
+
+        case 'keyError':
+          console.log('Error with API key');
+          setKeyError(true);
+          break;
+        
+        case 'keyIsGood':
+          console.log('Key checks out');
+          setKeyError(false);
+          break;
+
+        case 'vtResultsLoading':
+          console.log('loading');
+          if(keyError === false){
+            message.value.forEach((el: string) => {
+              setVirusTotal((prevState: any) => ({
+                ...prevState,
+                [message.extName]: {
+                  ...prevState[message.extName], 
+                  [el]: 'loading',
+                },
+              }));
+            });
+            setLoading(true);
+          }
+          break;
+
         case 'vtResults':
-          console.log('This is the message.value back in tabPanels in case vtResults: ', message.value);
+          console.log('This is the results back in tabPanels ->  File Name: ' + message.filename);
+          console.log('this is the extName that is being passed:  ', message.extName);
+          console.log(message.value);
+          setLoading(false);
+          setVirusTotal((prevState) => ({
+            ...prevState,
+            [message.extName]: {
+              ...prevState[message.extName],
+              [message.filename]: message.value,
+            },
+          }));
           break;
 
         case 'modalOpen':
@@ -111,8 +157,10 @@ export default function TabPanels(props: any) {
   }, []);
   
   const tabPanels = displayNames.map((extensionName: string, i: number) => {
+
     let value = i.toString();
     let content = `panelFor${extensionName}`;
+
     const patternMatchPanel: scanResult = patternMatchPanelState[
       extensionName
     ] || {
@@ -204,24 +252,29 @@ export default function TabPanels(props: any) {
         <Box>
           
         <Box sx={{
-                    height: "150px",
+                    // height: "150px",
                     width: "150px",              
                     mt: "30px",
+                    marginBottom: '-3px',
+                    // bgcolor: "purple"
                 }}>
-        <Button variant="contained" id='virusScanBtn' onClick={() => {
+        <Button sx={{
+          bgcolor: clicked ? '#3D3D3D' : '#97D8C4', color: clicked ? '#b3b3b5' : 'black', boxShadow: clicked ? 'none' : 1, width: '220px','&:hover': {
+          bgcolor: '#1F6F66',
+          color: '#cccccc', 
+          },
+        }} variant="contained" id='virusScanBtn' onClick={() => {
           console.log('the button got clicked');
+          setClicked(true);
           // setModalOpen(true);
           handleClicking(extensionName);          
         }} >Run VirusTotal Scan</Button>
         </Box>
-        <Paper>       
+        <Paper sx={{marginTop: 0, paddingTop: 0, marginBottom: 0}} >       
            <VirusTotalHowToModal modalOpen={modalOpen} setModalOpen={setModalOpen} vscode={vscode} extensionName={extensionName} />
-           Hey  why isn't this working
+           <VirusTotalResults keyError={keyError} modalOpen={modalOpen} VTResults={virusTotal[extensionName] || {}} loading={loading} />
         </Paper>
-        {/* {loading && <Box>Running Scan</Box> }
-        { virusTotal && <Box>
-          go through virusTotal result to display each scan ran and results
-        </Box> } */}
+        <Box sx={{height: '200px'}}></Box>
         </Box>
       </TabPanel>
     );
