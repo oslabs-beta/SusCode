@@ -44,40 +44,10 @@ export default function TabPanels(props: any) {
     console.log('In the getApiKey function definition/ where it posts the message to extension.ts');
     vscode.postMessage({type: 'getApiKey', extensionName: extensionName});
   }
-  // I put the below functionality inside
-  // window.addEventListener('message', (event) => {
-  //   const message = event.data; // The message from the extension
-  //   //Note for tomorrow. This is getting triggered on load a bunch of times for anytime a message is being sent. For example, it's console logging when patternmatchupdate and readme. Might need to add steps in extension.ts. My guess is there is one step/message being sent that I'm missing when I think about the findReadMe functionality
-  //   console.log('This is message in message back from getApiKey:  ', message);
-  //   if (message.value === undefined || message.value === null) {
-  //     setModalOpen(true);
-  //   }
-  //   if (message.command === 'returnApiKey') {
-  //     console.log('API Key:', message.value);
-
-  //   }
-  // });
 
   function getRandom() {
     return Math.random() * 100;
   }
- 
-  // window.addEventListener('message', (event) => {
-  //   const message = event.data; // The message from the extension
-  //   //Note for tomorrow. This is getting triggered on load a bunch of times for anytime a message is being sent. For example, it's console logging when patternmatchupdate and readme. Might need to add steps in extension.ts. My guess is there is one step/message being sent that I'm missing when I think about the findReadMe functionality
-  //   console.log('This is message in message back from getApiKey:  ', message);
-  //   if (message.value === undefined || message.value === null) {
-  //     setModalOpen(true);
-  //   }
-  //   if (message.command === 'returnApiKey') {
-  //     console.log('API Key in eventlistener in handle click :', message.value);
-  //   }
-  // });
-
-  //adding this listener just to make sure certain (modalOpen) messages are being recieved
-  // window.addEventListener('message', (event) => {
-  //   console.log('Global message listener received:', event.data);
-  // });
 
   useEffect(() => {
     const handleMessage = (event: any) => {
@@ -93,7 +63,7 @@ export default function TabPanels(props: any) {
               vscode.postMessage({ type: 'runVirusTotalScan', value: apiKey, extensionName: extensionName,
                 //  func: setModalOpen
                 });
-                setModalOpen(true);
+                // setModalOpen(true);
               // virusTotalScan(apiKey, extensionName);
               console.log('the extensionName parameter in the try of useEffect:  ', extensionName);
             }
@@ -259,9 +229,9 @@ export default function TabPanels(props: any) {
                     // bgcolor: "purple"
                 }}>
         <Button sx={{
-          bgcolor: clicked ? '#3D3D3D' : '#97D8C4', color: clicked ? '#b3b3b5' : 'black', boxShadow: clicked ? 'none' : 1, width: '220px','&:hover': {
-          bgcolor: '#1F6F66',
-          color: '#cccccc', 
+          bgcolor: clicked ? '#3D3D3D' : '#33ab9f', color: clicked ? '#33ab9f' : 'black', boxShadow: clicked ? 'none' : 1, width: '220px','&:hover': {
+          bgcolor: '#1769aa',
+          color: '#b3b3b5', 
           },
         }} variant="contained" id='virusScanBtn' onClick={() => {
           console.log('the button got clicked');

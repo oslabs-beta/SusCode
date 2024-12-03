@@ -13,6 +13,7 @@ import Paper from '@mui/material/Paper';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import CircularProgress from '@mui/material/CircularProgress';
+import Chip from '@mui/material/Chip';
 
 function createRow(file: any, name: string, i: number) {
   const [open, setOpen] = React.useState(false);
@@ -22,9 +23,9 @@ function createRow(file: any, name: string, i: number) {
   return (
       <React.Fragment key={i}>
     <TableRow sx={{borderBottom: 'none', paddingBottom: '2px'}}>
-      <TableCell sx={{color: '#97D8C4', fontSize: '16px', borderBottom: 'none', paddingBottom: '3px'}} >{name}</TableCell>
-      <TableCell align='left' sx={{color: file?.status === 'completed' ? '#97D8C4' : '#b3b3b5', borderBottom: 'none', paddingBottom: '3px',marginBottom: 'none', fontSize: '14px'}} >{file?.status || 'Scanning...'}</TableCell>
-      <TableCell align='left' sx={{color: mali > 0 ? '#F56960' : '#97D8C4' , borderBottom: 'none', paddingBottom: '3px', width: 'auto', fontSize: '14px'}} >{mali}</TableCell>
+      <TableCell sx={{color: '#b3b3b5', fontSize: '16px', borderBottom: 'none', paddingBottom: '3px'}} >{name}</TableCell>
+      <TableCell align='left' sx={{color: file?.status === 'completed' ? '#2196f3' : '#b3b3b5', borderBottom: 'none', paddingBottom: '3px',marginBottom: 'none', fontSize: '14px'}} >{file?.status || 'Scanning...'}</TableCell>
+      <TableCell align='left' sx={{color: mali > 0 ? '#F56960' : '#2196f3' , borderBottom: 'none', paddingBottom: '3px', width: 'auto', fontSize: '14px'}} >{mali}</TableCell>
       <TableCell sx={{borderBottom: 'none', paddingBottom: '3px'}}>
         {/* perhaps this below can be conditional if I find any errors. */}
         <IconButton onClick={() => setOpen(!open)}>
@@ -79,9 +80,15 @@ export default function VirusTotalResults(props: any) {
           <TableHead>
             <TableRow >
               {/* <TableCell /> */}
-              <TableCell sx={{color: '#97D8C4', fontWeight: 'bold', fontSize: '20px'}}>File Name</TableCell>
-              <TableCell sx={{color: '#97D8C4', fontWeight: 'bold', marginTop: '0px', fontSize: '20px'}} align="left">Status</TableCell>
-              <TableCell sx={{color: '#97D8C4', fontWeight: 'bold', fontSize: '20px'}} align="left">Potential Threats Found</TableCell>
+              <TableCell sx={{color: '#b3b3b5', fontSize: '16px'}}>FILE NAME</TableCell>
+              <TableCell sx={{color: '#b3b3b5', marginTop: '0px', fontSize: '16px'}} align="left">STATUS</TableCell>
+              <TableCell align="left"><Chip
+            label='POTENTIAL THREATS FOUND'
+            variant='outlined'
+            sx={{color: '#2196f3'}}
+            color='primary'
+            
+          /></TableCell>
               {/* <TableCell align="right">Carbs&nbsp;(g)</TableCell>
               <TableCell align="right">Protein&nbsp;(g)</TableCell> */}
             </TableRow>

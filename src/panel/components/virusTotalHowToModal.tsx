@@ -32,8 +32,8 @@ export default function VirusTotalHowToModal(props: any) {
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: 600,
-    bgcolor:'background.paper',
-    color: 'inherit',
+    bgcolor:'#b3b3b5',
+    color: 'Black',
     border: '2px solid #000',
     boxShadow: 24,
     p: 4,
@@ -85,17 +85,16 @@ export default function VirusTotalHowToModal(props: any) {
   const steps = [
     {
       'label': 'Select campaign settings',
-      'text': (
-        <>You need an API key to run this. Don't freaking panic! It's SUPER easy to get one. 
-      Go  <Link href="https://www.virustotal.com/gui/sign-in">HERE</Link>  
-        and sign up for an account or sign in if you have an account.
-      </>),
+      'text': 
+        (<>You need an API key to use VirusTotal. Don't freaking panic! It's SUPER easy to get one. 
+      Go   <Link href="https://www.virustotal.com/gui/sign-in">HERE</Link>{' '}
+       and sign up for an account or sign in if you have an account.</>),
       'box': <div/>,
       // 'button': ''
     },
     {
       'label': 'Get API Key',
-      'text':`Once you've verified your account and are logged in to virusTotal, `,
+      'text':`Once you've verified your account and are logged in to virusTotal, copy the API key like so...`,
       // 'box': <div>Pic that's not working</div> ,
       'box': <><img src={apiGif} height= "auto" width= "100%"/></>,
       // 'button': ''
