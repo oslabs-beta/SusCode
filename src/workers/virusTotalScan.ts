@@ -29,7 +29,7 @@ export function virusTotalScan(apiKey: string, extName: string, panel: vscode.We
         });
         currentIndex += 4;
         if (trails.length > 0) {
-            setTimeout(() => scanFilesWithRateLimit(files, apiKey, panel), 15000); // Wait before the next batch
+            setTimeout(() => scanFilesWithRateLimit(files, apiKey, panel), 18000); // Wait before the next batch
         }
     }  
         

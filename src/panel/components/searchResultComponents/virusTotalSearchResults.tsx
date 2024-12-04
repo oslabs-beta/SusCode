@@ -24,9 +24,9 @@ function createRow(file: any, name: string, i: number) {
       <React.Fragment key={i}>
     <TableRow sx={{borderBottom: 'none', paddingBottom: '2px'}}>
       <TableCell sx={{color: '#b3b3b5', fontSize: '16px', borderBottom: 'none', paddingBottom: '3px'}} >{name}</TableCell>
-      <TableCell align='left' sx={{color: file?.status === 'completed' ? '#2196f3' : '#b3b3b5', borderBottom: 'none', paddingBottom: '3px',marginBottom: 'none', fontSize: '14px'}} >{file?.status || 'Scanning...'}</TableCell>
+      <TableCell align='left' sx={{color: file?.status === 'completed' ? '#b3b3b5' : '#2196f3', borderBottom: 'none', paddingBottom: '3px',marginBottom: 'none', fontSize: '14px'}} >{file?.status || 'Scanning...'}</TableCell>
       <TableCell align='left' sx={{color: mali > 0 ? '#F56960' : '#2196f3' , borderBottom: 'none', paddingBottom: '3px', width: 'auto', fontSize: '14px'}} >{mali}</TableCell>
-      <TableCell sx={{borderBottom: 'none', paddingBottom: '3px'}}>
+      <TableCell align='center' sx={{borderBottom: 'none', paddingBottom: '3px'}}>
         {/* perhaps this below can be conditional if I find any errors. */}
         <IconButton onClick={() => setOpen(!open)}>
           {open ? <KeyboardArrowUpIcon sx={{color: '#b3b3b5'}} /> : <KeyboardArrowDownIcon sx={{color: mali > 0 ? '#F56960' : '#b3b3b5'}} />}
@@ -56,7 +56,7 @@ function createRow(file: any, name: string, i: number) {
                 return <Box key={index}><strong>{scan.engine_name}</strong> found {scan.category}: {scan.result}</Box>;
               })
           ) : (
-            <Typography sx={{color: '#b3b3b5', fontSize: '14px', marginTop: 'none', paddingLeft: '20px', paddingTop: '0px'}}>No threats found</Typography> 
+            <Typography sx={{color: '#2196f3', fontSize: '14px', marginTop: 'none', paddingLeft: '20px', paddingTop: '0px'}}>No threats found</Typography> 
           )}
         </Collapse>
       </TableCell>

@@ -171,13 +171,15 @@ export default function VirusTotalHowToModal(props: any) {
                 <Typography>{step.text}</Typography>
                 <Box>{step.box}</Box>
                 <Box sx={{ mb: 2 }}>
+                  {activeStep < steps.length - 1 && ( 
                   <Button
                     variant="contained"
                     onClick={handleNext}
                     sx={{ mt: 1, mr: 1 }}
                   >
-                    {index === steps.length - 1 ? 'Finish' : 'Continue'}
+                    Continue
                   </Button>
+                  )}
                   <Button
                     disabled={index === 0}
                     onClick={handleBack}
@@ -193,9 +195,9 @@ export default function VirusTotalHowToModal(props: any) {
         {activeStep === steps.length && (
           <Paper square elevation={0} sx={{ p: 3 }}>
             <Typography>All steps completed - you&apos;re finished</Typography>
-            <Button onClick={handleReset} sx={{ mt: 1, mr: 1 }}>
+            {/* <Button onClick={handleReset} sx={{ mt: 1, mr: 1 }}>
               Reset
-            </Button>
+            </Button> */}
           </Paper>
         )}
       </Box>

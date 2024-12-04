@@ -24,7 +24,7 @@ const vscode = acquireVsCodeApi();
 export default function TabPanels(props: any) {
   const [modalOpen, setModalOpen] = useState(false);
   const [ keyError, setKeyError ] = useState(false);
-  const [clicked, setClicked] = useState(false);
+  // const [clicked, setClicked] = useState(false);
 
   type VirusTotalState = {
     [extensionName:string]: {[filename: string]: AnalysisResponse['data']['attributes']['results']};
@@ -229,14 +229,14 @@ export default function TabPanels(props: any) {
                     // bgcolor: "purple"
                 }}>
         <Button sx={{
-          bgcolor: clicked ? '#3D3D3D' : '#33ab9f', color: clicked ? '#33ab9f' : 'black', boxShadow: clicked ? 'none' : 1, width: '220px','&:hover': {
-          bgcolor: '#1769aa',
-          color: '#b3b3b5', 
+          bgcolor: virusTotal[extensionName] !== undefined ? '#3D3D3D' : '#1769aa', color: virusTotal[extensionName] !== undefined ? '#33ab9f' : '#b3b3b5', boxShadow: virusTotal[extensionName] !== undefined ? 'none' : 1, width: '220px','&:hover': {
+          bgcolor: '#33ab9f',
+          color: 'black', 
           },
         }} variant="contained" id='virusScanBtn' onClick={() => {
           console.log('the button got clicked');
-          setClicked(true);
-          // setModalOpen(true);
+          // setClicked(true);
+          setModalOpen(true);
           handleClicking(extensionName);          
         }} >Run VirusTotal Scan</Button>
         </Box>
