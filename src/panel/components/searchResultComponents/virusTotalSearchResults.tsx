@@ -24,8 +24,8 @@ function createRow(file: any, name: string, i: number) {
       <React.Fragment key={i}>
     <TableRow sx={{borderBottom: 'none', paddingBottom: '2px'}}>
       <TableCell sx={{color: '#b3b3b5', fontSize: '16px', borderBottom: 'none', paddingBottom: '3px'}} >{name}</TableCell>
-      <TableCell align='left' sx={{color: file?.status === 'completed' ? '#b3b3b5' : '#2196f3', borderBottom: 'none', paddingBottom: '3px',marginBottom: 'none', fontSize: '14px'}} >{file?.status || 'Scanning...'}</TableCell>
-      <TableCell align='left' sx={{color: mali > 0 ? '#F56960' : '#2196f3' , borderBottom: 'none', paddingBottom: '3px', width: 'auto', fontSize: '14px'}} >{mali}</TableCell>
+      <TableCell align='left' sx={{color: file?.status === 'completed' ? '#b3b3b5' : '#33ab9f', borderBottom: 'none', paddingBottom: '3px',marginBottom: 'none', fontSize: '14px'}} >{file?.status || 'Scanning...'}</TableCell>
+      <TableCell align='left' sx={{color: mali > 0 ? '#F56960' : '#33ab9f' , borderBottom: 'none', paddingBottom: '3px', width: 'auto', fontSize: '14px'}} >{mali}</TableCell>
       <TableCell align='center' sx={{borderBottom: 'none', paddingBottom: '3px'}}>
         {/* perhaps this below can be conditional if I find any errors. */}
         <IconButton onClick={() => setOpen(!open)}>
@@ -56,7 +56,7 @@ function createRow(file: any, name: string, i: number) {
                 return <Box key={index}><strong>{scan.engine_name}</strong> found {scan.category}: {scan.result}</Box>;
               })
           ) : (
-            <Typography sx={{color: '#2196f3', fontSize: '14px', marginTop: 'none', paddingLeft: '20px', paddingTop: '0px'}}>No threats found</Typography> 
+            <Typography sx={{color: '#33ab9f', fontSize: '14px', marginTop: 'none', paddingLeft: '20px', paddingTop: '0px'}}>No threats found</Typography> 
           )}
         </Collapse>
       </TableCell>
@@ -82,13 +82,7 @@ export default function VirusTotalResults(props: any) {
               {/* <TableCell /> */}
               <TableCell sx={{color: '#b3b3b5', fontSize: '16px'}}>FILE NAME</TableCell>
               <TableCell sx={{color: '#b3b3b5', marginTop: '0px', fontSize: '16px'}} align="left">STATUS</TableCell>
-              <TableCell align="left"><Chip
-            label='POTENTIAL THREATS FOUND'
-            variant='outlined'
-            sx={{color: '#2196f3'}}
-            color='primary'
-            
-          /></TableCell>
+              <TableCell sx={{color: '#b3b3b5', fontSize: '16px'}} align="left">POTENTIAL THREATS FOUND</TableCell>
               {/* <TableCell align="right">Carbs&nbsp;(g)</TableCell>
               <TableCell align="right">Protein&nbsp;(g)</TableCell> */}
             </TableRow>

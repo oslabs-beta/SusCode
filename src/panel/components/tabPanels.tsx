@@ -8,6 +8,7 @@ import PatternInfo from './patternInfo';
 import DependencyChecker from './dependencyChecker';
 import Divider from '@mui/material/Divider';
 import Chip from '@mui/material/Chip';
+import Link from '@mui/material/Link';
 import Button from '@mui/material/Button';
 import PatternSearchResults from './searchResultComponents/patternSearchResults';
 import TelemetrySearchResults from './searchResultComponents/telemetrySearchResults';
@@ -17,6 +18,7 @@ import Paper from '@mui/material/Paper';
 import { virusTotalScan } from '../../workers/virusTotalScan';
 import { useState, useEffect, FormEvent } from 'react';
 import {  AnalysisResponse } from '../../types';
+import { Typography } from '@mui/material';
 // import { Input } from '@mui/material';
 
 const vscode = acquireVsCodeApi();
@@ -219,33 +221,53 @@ export default function TabPanels(props: any) {
         >
         <DependencyChecker depResults={patternMatchPanel.depVulns} />
         </Paper>
-        <Box>
-          
-        <Box sx={{
-                    // height: "150px",
-                    width: "150px",              
-                    mt: "30px",
-                    marginBottom: '-3px',
-                    // bgcolor: "purple"
-                }}>
-        <Button sx={{
-          bgcolor: virusTotal[extensionName] !== undefined ? '#3D3D3D' : '#1769aa', color: virusTotal[extensionName] !== undefined ? '#33ab9f' : '#b3b3b5', boxShadow: virusTotal[extensionName] !== undefined ? 'none' : 1, width: '220px','&:hover': {
-          bgcolor: '#33ab9f',
-          color: 'black', 
-          },
-        }} variant="contained" id='virusScanBtn' onClick={() => {
-          console.log('the button got clicked');
-          // setClicked(true);
-          setModalOpen(true);
-          handleClicking(extensionName);          
-        }} >Run VirusTotal Scan</Button>
+        {/* <Box> */}
+        <Divider sx={{ marginTop: '8px', marginBottom: '8px' }}>
+          <Chip label='EXTERNAL SCANS' variant='outlined' color='primary' />
+        </Divider>
+        <Paper
+          style={{
+            maxHeight: virusTotal[extensionName] === undefined ? 50 : 500,
+            overflow: virusTotal[extensionName] === undefined ? 'hidden' : 'auto',
+            background: 'inherit',
+            padding: 20,
+          }}
+          elevation={4}
+        >
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: '20px', border: 'none', marginBottom: virusTotal[extensionName] !== undefined ? '-7px' : '10px'}} >
+          <Button sx={{
+            bgcolor: virusTotal[extensionName] !== undefined ? '#3D3D3D' : '#1769aa', 
+            color: virusTotal[extensionName] !== undefined ? '#33ab9f' : '#b3b3b5', 
+            boxShadow: virusTotal[extensionName] !== undefined ? 'none' : 1, 
+            marginBottom: '-3px', 
+            width: '220px','&:hover': {
+              bgcolor: '#33ab9f',
+              color: 'black'},
+            
+          }} variant="contained" id='virusScanBtn' onClick={() => {
+            console.log('the button got clicked');
+            // setClicked(true);
+            // setModalOpen(true);
+            handleClicking(extensionName);          
+          }} >Run VirusTotal Scan</Button>
+          <Typography sx={{ visibility: virusTotal[extensionName] !== undefined ? 'hidden' : 'visible', 
+            color: '#b3b3b5', 
+            fontSize: '16px',
+            maxWidth: 1000,
+            }} >VirusTotal is an external resource that 
+            "...inspects items with over 70 antivirus scanners and URL/domain blocklisting services, 
+            in addition to a myriad of tools to extract signals from the studied content."
+             If you's like to sus them out yourself, click {' '}
+             <Link href="https://www.virustotal.com/gui/home/upload">HERE</Link>.</Typography>
+
         </Box>
-        <Paper sx={{marginTop: 0, paddingTop: 0, marginBottom: 0}} >       
+        <Paper sx={{marginTop: 0, paddingTop: 0, marginBottom: 2}} >       
            <VirusTotalHowToModal modalOpen={modalOpen} setModalOpen={setModalOpen} vscode={vscode} extensionName={extensionName} />
            <VirusTotalResults keyError={keyError} modalOpen={modalOpen} VTResults={virusTotal[extensionName] || {}} loading={loading} />
         </Paper>
+        </Paper>
         <Box sx={{height: '200px'}}></Box>
-        </Box>
+        {/* </Box> */}
       </TabPanel>
     );
   });
