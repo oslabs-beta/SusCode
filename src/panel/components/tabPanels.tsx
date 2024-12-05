@@ -227,20 +227,20 @@ export default function TabPanels(props: any) {
         </Divider>
         <Paper
           style={{
-            maxHeight: virusTotal[extensionName] === undefined ? 50 : 500,
-            overflow: virusTotal[extensionName] === undefined ? 'hidden' : 'auto',
+            maxHeight: virusTotal[extensionName] === undefined ? 200 : 500,
+            overflow: 'auto',
             background: 'inherit',
             padding: 20,
           }}
           elevation={4}
         >
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: '20px', border: 'none', marginBottom: virusTotal[extensionName] !== undefined ? '-8px' : '10px'}} >
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: '20px', border: 'none', marginBottom: virusTotal[extensionName] !== undefined ? '-8px' : '5px'}} >
           <Button sx={{
             bgcolor: virusTotal[extensionName] !== undefined ? '#3D3D3D' : '#1769aa', 
             color: virusTotal[extensionName] !== undefined ? '#33ab9f' : '#b3b3b5', 
             boxShadow: virusTotal[extensionName] !== undefined ? 'none' : 1, 
             marginBottom: '-3px', 
-            width: '220px','&:hover': {
+            width: '220px', minWidth: '220px','&:hover': {
               bgcolor: '#33ab9f',
               color: 'black'},
             

@@ -13,7 +13,9 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
 import Modal from '@mui/material/Modal';
+// import HelpIcon from '@mui/icons-material/Help';
 // const vscode = acquireVsCodeApi();
+// import ApiTransparencyModal from './apiTransparencyModal';
 
 
 
@@ -101,7 +103,15 @@ export default function VirusTotalHowToModal(props: any) {
     },
     {
       'label': 'Enter API Key',
-      'text': <>Paste and submit your{' '}<span style={{ color: 'black', fontWeight: 'bold' }}>VirusTotal</span>{' '}API Key here so we can store it in your VSCode secret storage</>,
+      'text': <>
+      Paste and submit your{' '}
+      <span style={{ color: 'black', fontWeight: 'bold' }}>VirusTotal</span>
+      {' '}API Key here so we can safely store it.
+      {/* <HelpIcon onClick={() => {
+        console.log('helpIcon hath been clickerthed');
+        <ApiTransparencyModal/>;
+      }}  sx={{color: 'purple'}} /> */}
+      </>,
       'box': 
         (<Box sx={{ width: 500, maxWidth: '100%' }}>
         {/* <TextField fullWidth label="fullWidth" id="fullWidth" /> */}
