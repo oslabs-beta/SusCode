@@ -32,12 +32,12 @@ export default function VirusTotalHowToModal(props: any) {
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: 600,
-    bgcolor:'#b3b3b5',
+    bgcolor:'background.paper',
     color: 'Black',
     border: '2px solid #000',
     boxShadow: 24,
     p: 4,
-    backdropFilter: 'blur(5px)',
+    backdropFilter: 'blur(25px)',
   };
   
  
@@ -101,19 +101,84 @@ export default function VirusTotalHowToModal(props: any) {
     },
     {
       'label': 'Enter API Key',
-      'text': 'Paste and Submit API Key Here',
+      'text': <>Paste and submit your{' '}<span style={{ color: 'black', fontWeight: 'bold' }}>VirusTotal</span>{' '}API Key here so we can store it in your VSCode secret storage</>,
       'box': 
         (<Box sx={{ width: 500, maxWidth: '100%' }}>
         {/* <TextField fullWidth label="fullWidth" id="fullWidth" /> */}
-          <FormControl>
-              <input id='apiKeyVal'/>
-              <button onClick={() => {
+          <FormControl style={{display: 'inline-block', backgroundColor: 'background.paper'}} >
+            
+            {/* <Typography variant='subtitle1' sx={{color: '#1769aa', marginBottom: 0}} >
+              
+                <span style={{ color: '#33ab9f' }}>VirusTotal</span>
+                <span style={{ color: '#1769aa' }}> API Key</span>
+            </Typography> */}
+            {/* <label style={{color: '#1769aa'}}><b>API Key</b></label>
+            <input id='apiKeyVal' style={{width: 400, height: 30, color: 'black', fontSize: '14px', backgroundColor: '#33ab9f', borderRadius: '6px'}} /> */}
+            <TextField
+              id="apiKeyVal"
+              variant="outlined"
+              placeholder="Enter your API key"
+              inputProps={{
+                
+                sx: {
+                  '&::placeholder': {
+                    color: '#1769aa',
+                    opacity: 3,
+                  },
+                  color: '#33ab9f',
+                  
+                },
+              }}
+              sx={{
+                
+                width: 400,
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: '6px',
+                  backgroundColor: '#3D3D3D',
+                  // color: '#33ab9f',
+                  fontSize: '14px',
+                  '& input': { padding: '8px 12px' },
+                  '&:hover fieldset': {
+                    borderColor: '#1769aa',
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: '#1769aa',
+                  },
+                },
+              }}
+            />
+            <Box sx={{ mb: 2 }}>
+            
+              <Button variant='contained' onClick={() => {
                 const inputVal = (document.getElementById('apiKeyVal') as HTMLInputElement)?.value;
                 storeApiKey(inputVal);
                 console.log('the button in the third step was clicked: ', inputVal);
 
                 setModalOpen(false);
-              }}>Submit</button>
+              }} sx={{
+                mt: 1, mr: 1
+                // marginTop: 2,
+                // bgcolor: '#1769aa',
+                // color: '#fff',
+                // '&:hover': {
+                //   bgcolor: '#33ab9f',
+                // },
+              }}>Submit</Button>
+              <Button
+                onClick={handleBack}
+                sx={{ mt: 1, mr: 1 }}
+              >
+              Back
+              </Button>
+            </Box>
+            {/* <button onClick={() => {
+              const inputVal = (document.getElementById('apiKeyVal') as HTMLInputElement)?.value;
+              storeApiKey(inputVal);
+              console.log('the button in the third step was clicked: ', inputVal);
+
+              setModalOpen(false);
+              }}>Submit</button> */}
+           
           </FormControl>
   
       </Box>),
@@ -180,13 +245,16 @@ export default function VirusTotalHowToModal(props: any) {
                     Continue
                   </Button>
                   )}
-                  <Button
+                  {activeStep !== 2 && (
+                    <Button
                     disabled={index === 0}
                     onClick={handleBack}
                     sx={{ mt: 1, mr: 1 }}
                   >
                     Back
                   </Button>
+                  )}
+                  
                 </Box>
               </StepContent>
             </Step>
