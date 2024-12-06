@@ -32,7 +32,11 @@ export function reader(
       for (let file of toBeTested) {
         pathFoundFiles.push(path.join(extenPath, file));
       }
-      scanPaths[name] = pathFoundFiles;
+      if (scanPaths[name]) {
+        scanPaths[name] = [...scanPaths[name], ...pathFoundFiles];
+      } else {
+        scanPaths[name] = pathFoundFiles;
+      }
 
       // Running the file search
       analyzeFilesForNetworkRequests(pathFoundFiles, panel, name, true);

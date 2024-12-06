@@ -11,7 +11,7 @@ import * as vscode from 'vscode';
 // let timeoutId: NodeJS.Timeout | null = null;
 
 export function virusTotalScan(apiKey: string, extName: string, panel: vscode.WebviewPanel) {
-
+    console.log('In the virusTotalScan looking at value of scanPaths[extName]: ', scanPaths[extName]);
     interface FileAppendOptions {
         filename: string;
     }
