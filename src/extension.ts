@@ -132,10 +132,9 @@ export function activate(context: vscode.ExtensionContext) {
           }
         );
       });
-      //This is VirusTotal's apikey functionality messages I'm listening for
       panel.webview.onDidReceiveMessage( async (message) => {
-        console.log(`In ext.ts, in the panelwebviewondidreceivemessage which recieved a message: `, message.type);
         switch (message.type) {
+          //This is VirusTotal's apikey functionality messages I'm listening for
           case 'storeApiKey': {
             const secretStorage = context.secrets;
             await secretStorage.store('myExtension.apiKey', message.value);
@@ -145,16 +144,16 @@ export function activate(context: vscode.ExtensionContext) {
           case 'getApiKey': {
             const apiKey = await context.secrets.get('myExtension.apiKey');
             const extensionName = message.extensionName;
-            console.log(`In the getApiKey functionality in ext.ts after the context.secrets.get. Here is the stored api key:  `, apiKey);
             panel.webview.postMessage({ type: 'returnApiKey', value: apiKey, extensionName: extensionName });
             break;
           }
+          //This is the invocation of the VirusTotal scan
           case 'runVirusTotalScan': {
             const {value: apiKey, extensionName } = message;
-            console.log('In ext.ts in the runVirusTOtalScan didRecieveMessage and this shoudl be the apikey and ext name: ' + apiKey + ' name: ' + extensionName);
             virusTotalScan(apiKey, extensionName, panel);           
             break;
           }
+          //Error handling
           case 'vtResultsTimedOut': {
             vscode.window.showInformationMessage(message.message);
           }

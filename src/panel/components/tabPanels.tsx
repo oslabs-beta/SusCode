@@ -24,26 +24,27 @@ import { Typography } from '@mui/material';
 const vscode = acquireVsCodeApi();
 
 export default function TabPanels(props: any) {
-  const [modalOpen, setModalOpen] = useState(false);
-  const [ keyError, setKeyError ] = useState(false);
-  // const [clicked, setClicked] = useState(false);
 
   type VirusTotalState = {
     [extensionName:string]: {[filename: string]: AnalysisResponse['data']['attributes']['results']};
   }; 
-  const [virusTotal, setVirusTotal] = useState<VirusTotalState>({});
 
+  //States for VirusTotal scan 
+  const [ modalOpen, setModalOpen ] = useState(false);
+  const [ keyError, setKeyError ] = useState(false);
+  const [virusTotal, setVirusTotal] = useState<VirusTotalState>({});
   const [loading, setLoading] = useState(false); // this is also stuff for virusTotal
+
+
+
   const { displayNames, patternMatchPanelState, telemetryPanelState, readMe} =
     props;
 
   async function  handleClicking (extensionName: string) {       
-    console.log('checking if the modal is open: ', modalOpen);
-    console.log('here is the extension name hopefully within the handleClicking: ', extensionName);
     getApiKey(extensionName);
   }
+  //Getting API Key for VirusTotal from VSCode secret storage
   function getApiKey(extensionName: string) {
-    console.log('In the getApiKey function definition/ where it posts the message to extension.ts');
     vscode.postMessage({type: 'getApiKey', extensionName: extensionName});
   }
 
@@ -51,6 +52,7 @@ export default function TabPanels(props: any) {
     return Math.random() * 100;
   }
 
+  // useEffect for message handling with regards to VirusTotal scan
   useEffect(() => {
     const handleMessage = (event: any) => {
       const message = event.data;
@@ -60,14 +62,8 @@ export default function TabPanels(props: any) {
           if (message.value) {
             const { value: apiKey, extensionName } = message; // Destructure extensionName from message
             try {
-              
-              console.log('API Key received:', message.value);
               vscode.postMessage({ type: 'runVirusTotalScan', value: apiKey, extensionName: extensionName,
-                //  func: setModalOpen
                 });
-                // setModalOpen(true);
-              // virusTotalScan(apiKey, extensionName);
-              console.log('the extensionName parameter in the try of useEffect:  ', extensionName);
             }
             catch(error) {
               setModalOpen(true);
@@ -84,7 +80,6 @@ export default function TabPanels(props: any) {
           break;
         
         case 'keyIsGood':
-          console.log('Key checks out');
           setKeyError(false);
           break;
 
@@ -105,9 +100,6 @@ export default function TabPanels(props: any) {
           break;
 
         case 'vtResults':
-          console.log('This is the results back in tabPanels ->  File Name: ' + message.filename);
-          console.log('this is the extName that is being passed:  ', message.extName);
-          console.log(message.value);
           setLoading(false);
           setVirusTotal((prevState) => ({
             ...prevState,
@@ -119,7 +111,6 @@ export default function TabPanels(props: any) {
           break;
 
         case 'modalOpen':
-          console.log('back in tabPanels in useEffect handleessage and recieved modalOpen message.');
           setModalOpen(true);
           break;
     }  
@@ -244,10 +235,7 @@ export default function TabPanels(props: any) {
               bgcolor: '#33ab9f',
               color: 'black'},
             
-          }} variant="contained" id='virusScanBtn' onClick={() => {
-            console.log('the button got clicked');
-            // setClicked(true);
-            // setModalOpen(true);
+          }} variant="contained" id='virusScanBtn' onClick={() => { 
             handleClicking(extensionName);          
           }} >Run VirusTotal Scan</Button>
           <Typography sx={{ visibility: virusTotal[extensionName] !== undefined ? 'hidden' : 'visible', 
@@ -257,9 +245,8 @@ export default function TabPanels(props: any) {
             }} >VirusTotal is an external resource that 
             "...inspects items with over 70 antivirus scanners and URL/domain blocklisting services, 
             in addition to a myriad of tools to extract signals from the studied content."
-             If you's like to sus them out yourself, click {' '}
+             If you'd like to Sus them out yourself, click {' '}
              <Link href="https://www.virustotal.com/gui/home/upload">HERE</Link>.</Typography>
-
         </Box>
         <Paper sx={{marginTop: 0, paddingTop: 0, marginBottom: 2}} >       
            <VirusTotalHowToModal modalOpen={modalOpen} setModalOpen={setModalOpen} vscode={vscode} extensionName={extensionName} />

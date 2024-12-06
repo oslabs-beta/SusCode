@@ -65,6 +65,5 @@ export function reader(
       );
     }
   };
-  console.log('scanPatths in file finder at end of fileFinder:  ', scanPaths);
   findingExtension(dirArr, extPath);
 }

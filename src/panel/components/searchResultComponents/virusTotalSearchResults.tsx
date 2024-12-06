@@ -13,7 +13,7 @@ import Paper from '@mui/material/Paper';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import CircularProgress from '@mui/material/CircularProgress';
-import Chip from '@mui/material/Chip';
+// import Chip from '@mui/material/Chip';
 
 function createRow(file: any, name: string, i: number) {
   const [open, setOpen] = React.useState(false);
@@ -27,7 +27,6 @@ function createRow(file: any, name: string, i: number) {
       <TableCell align='left' sx={{color: file?.status === 'completed' ? '#b3b3b5' : '#33ab9f', borderBottom: 'none', paddingBottom: '3px',marginBottom: 'none', fontSize: '14px'}} >{file?.status || 'Scanning...'}</TableCell>
       <TableCell align='left' sx={{color: mali > 0 ? '#F56960' : '#33ab9f' , borderBottom: 'none', paddingBottom: '3px', width: 'auto', fontSize: '14px'}} >{mali}</TableCell>
       <TableCell align='center' sx={{borderBottom: 'none', paddingBottom: '3px'}}>
-        {/* perhaps this below can be conditional if I find any errors. */}
         <IconButton onClick={() => setOpen(!open)}>
           {open ? <KeyboardArrowUpIcon sx={{color: '#b3b3b5'}} /> : <KeyboardArrowDownIcon sx={{color: mali > 0 ? '#F56960' : '#b3b3b5'}} />}
         </IconButton>
@@ -35,7 +34,6 @@ function createRow(file: any, name: string, i: number) {
     </TableRow>
     <TableRow>
       <TableCell colSpan={3} sx={{
-              // bgcolor: 'purple', 
               height: open ? 'auto' : '0',
               padding: open ? '8px' : '0',
               paddingTop: '0',
@@ -47,7 +45,6 @@ function createRow(file: any, name: string, i: number) {
         <Collapse in={open} sx={{
               margin: '0',
               borderBottom: 'none',
-              // bgcolor: 'purple',
               padding: '1px',
             }}>
           {file?.stats?.malicious > 0 ? (            
@@ -66,25 +63,18 @@ function createRow(file: any, name: string, i: number) {
 }
 export default function VirusTotalResults(props: any) { 
   const { VTResults, keyError } = props;
-  console.log('these are the VTResults in virus total results: ', VTResults);
 
   if (!VTResults || Object.keys(VTResults).length === 0 || keyError === true) {
     return null;
   } else if (VTResults) {
     return (
       <TableContainer component={Paper} sx={{bgcolor: '#3D3D3D'}} >
-        <Table aria-label="collapsible table" sx={{
-            // '& .MuiTableRow-root': { height: '36px', margin: '0px'},
-            // '& .MuiTableCell-root': { padding: '0px 4px', margin: '0px' },
-          }}>
+        <Table aria-label="collapsible table">
           <TableHead>
             <TableRow >
-              {/* <TableCell /> */}
               <TableCell sx={{color: '#b3b3b5', fontSize: '16px'}}>FILE NAME</TableCell>
               <TableCell sx={{color: '#b3b3b5', marginTop: '0px', fontSize: '16px'}} align="left">STATUS</TableCell>
               <TableCell sx={{color: '#b3b3b5', fontSize: '16px'}} align="left">POTENTIAL THREATS FOUND</TableCell>
-              {/* <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-              <TableCell align="right">Protein&nbsp;(g)</TableCell> */}
             </TableRow>
           </TableHead>
           <TableBody >

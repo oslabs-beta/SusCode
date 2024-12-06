@@ -11,17 +11,18 @@ import * as vscode from 'vscode';
 // let timeoutId: NodeJS.Timeout | null = null;
 
 export function virusTotalScan(apiKey: string, extName: string, panel: vscode.WebviewPanel) {
-    console.log('in virusTotalScan func poooooooooooooooop');
+
     interface FileAppendOptions {
         filename: string;
     }
-    const trails: string[] = scanPaths[extName];//this is the filepath?
+    const trails: string[] = scanPaths[extName]; //scanPaths is an object with the file paths for each extension chosen
     const filenameArray = trails.map((trail) => {
         return path.basename(trail);
     });
     panel.webview.postMessage({type: 'vtResultsLoading', value: filenameArray, extName});
     let currentIndex: number = 0;
-    console.log('these are the trails passed in to the virusTotalScan: ', trails);
+    
+    //VirusTotal only allows 4 scans per minute
     function scanFilesWithRateLimit (files: string[], apiKey: string, panel: vscode.WebviewPanel) {
         const round = trails.slice(currentIndex, currentIndex + 4);
         round.forEach((trail) => {
@@ -36,9 +37,9 @@ export function virusTotalScan(apiKey: string, extName: string, panel: vscode.We
     function scanOneFile (filePath: string, apiKey: string, panel: vscode.WebviewPanel){
         const fileStream: fs.ReadStream = fs.createReadStream(filePath); //this was sample until I just changed it on Nov 5th;
 
-        const formdata = new FormData(); // good stuff I need here******************************** * * * * *
+        const formdata = new FormData(); 
         const filename = path.basename(filePath);
-        formdata.append("file", fileStream, {filename: filename}); ///this needs to be updated!!
+        formdata.append("file", fileStream, {filename: filename}); 
 
         function getTheResults(fileId: string, apiKey: string, count = 30) {    
             axios.get<AnalysisResponse>(`https://www.virustotal.com/api/v3/analyses/${fileId}`, {
@@ -57,13 +58,10 @@ export function virusTotalScan(apiKey: string, extName: string, panel: vscode.We
                         getTheResults(fileId, apiKey, count -= 1);
                     }, 15000);     
                 } else {
-                    console.log('time reached 0 from 12. why? who knows.');
                     panel.webview.postMessage({ type: 'vtResultsTimedOut', message: 'Getting the VirusTotal results timed out'});
-                }
-                console.log( 'within virusTotalScan in the getResults func:', response.data);               
+                }           
             })
-            .catch((err: string) => {
-                
+            .catch((err: string) => {   
                 console.error('error fetching the analysis: ',err);
             });
         }
@@ -85,12 +83,14 @@ export function virusTotalScan(apiKey: string, extName: string, panel: vscode.We
                     }  
             })
             .catch((error) => {
+                //Would like to add a more dynamic approach to error handling based off of error code sent back
                 console.error(`I'm in virusTotalScan worker and been an error running the api req scan: ${error}`);
                 panel.webview.postMessage({type: 'modalOpen', message: 'Error in the scan'});
                 panel.webview.postMessage({type: 'keyError', message: 'The API key is wrong or missing'});
-                // if (timeoutId) {
-                //     clearTimeout(timeoutId);
-                // }
+                //Might want to add to assure timeout doesn't run if error
+                    // if (timeoutId) {
+                    //     clearTimeout(timeoutId);
+                    // }
                 throw error;
             });
         }

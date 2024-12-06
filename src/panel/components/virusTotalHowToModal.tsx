@@ -13,20 +13,22 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
 import Modal from '@mui/material/Modal';
+import path from 'path'
 // import HelpIcon from '@mui/icons-material/Help';
-// const vscode = acquireVsCodeApi();
-// import ApiTransparencyModal from './apiTransparencyModal';
-
-
-
 export default function VirusTotalHowToModal(props: any) {
 
-  console.log('inside HowToModal right now.... ');
   const { modalOpen,  setModalOpen, vscode } = props;
+
   const [ activeStep, setActiveStep ] = useState(0);
 
   const handleOpen = () => setModalOpen(true);
   const handleClose = () => setModalOpen(false);
+
+  const handleSubmit = () => {
+    const inputVal = (document.getElementById('apiKeyVal') as HTMLInputElement)?.value;
+    storeApiKey(inputVal);
+    setModalOpen(false);
+  };
 
   const style = {
     position: 'absolute' as 'absolute',
@@ -41,95 +43,57 @@ export default function VirusTotalHowToModal(props: any) {
     p: 4,
     backdropFilter: 'blur(25px)',
   };
-  
- 
 
-  // a:link {
-  //   color: green;
-  //   background-color: transparent;
-  //   text-decoration: none;
-  // }
-  
-  // a:visited {
-  //   color: pink;
-  //   background-color: transparent;
-  //   text-decoration: none;
-  // }
-  
-  // a:hover {
-  //   color: red;
-  //   background-color: transparent;
-  //   text-decoration: underline;
-  // }
-  
-  // a:active {
-  //   color: yellow;
-  //   background-color: transparent;
-  //   text-decoration: underline;
-  // }
-  // export default function VerticalLinearStepper() {
-  //   const [activeStep, setActiveStep] = React.useState(0);
-  
-    const handleNext = () => {
-      setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    };
-  
-    const handleBack = () => {
-      setActiveStep((prevActiveStep) => prevActiveStep - 1);
-    };
-  
-    const handleReset = () => {
-      setActiveStep(0);
-    };
-  
-  
+  const handleNext = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  };
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+  const handleReset = () => {
+    setActiveStep(0);
+  };
 
+  //Steps for HowToModal Stepper
   const steps = [
     {
       'label': 'Select campaign settings',
       'text': 
-        (<>You need an API key to use VirusTotal. Don't freaking panic! It's SUPER easy to get one. 
-      Go   <Link href="https://www.virustotal.com/gui/sign-in">HERE</Link>{' '}
-       and sign up for an account or sign in if you have an account.</>),
+        (<h4 style={{ marginTop: 3 }}>You need an API key to use VirusTotal. Don't freaking panic! It's SUPER easy to get one. 
+          Go   <Link href="https://www.virustotal.com/gui/sign-in">HERE</Link>{' '}
+          and sign up for an account or sign in if you have an account.</h4>),
       'box': <div/>,
-      // 'button': ''
+
     },
     {
       'label': 'Get API Key',
-      'text':`Once you've verified your account and are logged in to virusTotal, copy the API key like so...`,
-      // 'box': <div>Pic that's not working</div> ,
-      'box': <><img src={apiGif} height= "auto" width= "100%"/></>,
-      // 'button': ''
+      'text':(<>
+              <h4 style={{ marginTop: 3, marginBottom: 1 }}>Once you've verified your account and are logged in to virusTotal: </h4>
+              <ol style={{ marginTop: 2}}>
+                <li>Click your name at the top-right corner for a drop down menu</li> 
+                <li>Click 'API Key'</li>
+                <li>Click the copy symbol in next to the blurred out API key</li>
+              </ol>
+              </>),
+      'box': <div/>, //Would love to add a gif instead of an explanation
     },
     {
-      'label': 'Enter API Key',
-      'text': <>
-      Paste and submit your{' '}
+      'label': 'Store API Key',
+      'text': (<h4 style={{marginBottom: 2, marginTop: 4}} >
+      Submit your{' '}
       <span style={{ color: 'black', fontWeight: 'bold' }}>VirusTotal</span>
       {' '}API Key here so we can safely store it.
-      {/* <HelpIcon onClick={() => {
-        console.log('helpIcon hath been clickerthed');
-        <ApiTransparencyModal/>;
-      }}  sx={{color: 'purple'}} /> */}
-      </>,
+      {/* <HelpIcon onClick={() => {  console.log('HelpIcon clicked')  }} /> */}
+      </h4>),
+      //Would like to add the HelpIcon above to explain how we are safely storing their API Key bringing in another Modal
       'box': 
         (<Box sx={{ width: 500, maxWidth: '100%' }}>
-        {/* <TextField fullWidth label="fullWidth" id="fullWidth" /> */}
           <FormControl style={{display: 'inline-block', backgroundColor: 'background.paper'}} >
-            
-            {/* <Typography variant='subtitle1' sx={{color: '#1769aa', marginBottom: 0}} >
-              
-                <span style={{ color: '#33ab9f' }}>VirusTotal</span>
-                <span style={{ color: '#1769aa' }}> API Key</span>
-            </Typography> */}
-            {/* <label style={{color: '#1769aa'}}><b>API Key</b></label>
-            <input id='apiKeyVal' style={{width: 400, height: 30, color: 'black', fontSize: '14px', backgroundColor: '#33ab9f', borderRadius: '6px'}} /> */}
             <TextField
               id="apiKeyVal"
               variant="outlined"
-              placeholder="Enter your API key"
+              placeholder="Paste your API key"
               inputProps={{
-                
                 sx: {
                   '&::placeholder': {
                     color: '#1769aa',
@@ -140,8 +104,8 @@ export default function VirusTotalHowToModal(props: any) {
                 },
               }}
               sx={{
-                
-                width: 400,
+                marginBottom: 3,
+                width: 500,
                 '& .MuiOutlinedInput-root': {
                   borderRadius: '6px',
                   backgroundColor: '#3D3D3D',
@@ -155,50 +119,22 @@ export default function VirusTotalHowToModal(props: any) {
                     borderColor: '#1769aa',
                   },
                 },
+              }} 
+              onKeyDown={(event) => {
+                if (event.key === 'Enter'){
+                event.preventDefault();
+                handleSubmit();
+                }
               }}
             />
             <Box sx={{ mb: 2 }}>
-            
-              <Button variant='contained' onClick={() => {
-                const inputVal = (document.getElementById('apiKeyVal') as HTMLInputElement)?.value;
-                storeApiKey(inputVal);
-                console.log('the button in the third step was clicked: ', inputVal);
-
-                setModalOpen(false);
-              }} sx={{
-                mt: 1, mr: 1
-                // marginTop: 2,
-                // bgcolor: '#1769aa',
-                // color: '#fff',
-                // '&:hover': {
-                //   bgcolor: '#33ab9f',
-                // },
-              }}>Submit</Button>
-              <Button
-                onClick={handleBack}
-                sx={{ mt: 1, mr: 1 }}
-              >
-              Back
-              </Button>
+              <Button variant='contained' onClick={handleSubmit} sx={{ mt: 1, mr: 1 }}>Submit</Button>
+              <Button onClick={handleBack} sx={{ mt: 1, mr: 1 }} >Back</Button>
             </Box>
-            {/* <button onClick={() => {
-              const inputVal = (document.getElementById('apiKeyVal') as HTMLInputElement)?.value;
-              storeApiKey(inputVal);
-              console.log('the button in the third step was clicked: ', inputVal);
-
-              setModalOpen(false);
-              }}>Submit</button> */}
-           
           </FormControl>
-  
       </Box>),
-      // 'button': <Button variant="contained" >Store Key</Button>
     },
   ];
-
-
-
-
   function storeApiKey(apiKey: any) {
     vscode.postMessage({type: 'storeApiKey', value: apiKey});
   }
@@ -206,25 +142,6 @@ export default function VirusTotalHowToModal(props: any) {
   if (!modalOpen) {
     return null; 
   };
-  // if(keyObtained) {
-  //   return (
-  //     <Box>
-  //       <Box>API Key found. Would you like to use or enter new key?</Box>
-  //       <Button onClick={() => {
-  //         console.log('button to use current api key clicked and here is where scan functionality starts')
-  //         }} >Use</Button>
-  //       <Button onClick={() => {
-  //         console.log(`here is where you enter a new key??`);
-  //         return (
-  //           <form onSubmit={submitNewKey} >
-  //             <TextField id="newKey" label="Outlined" variant="outlined" />
-  //             <Button type='submit'>Submit new key</Button>
-  //           </form>
-  //         );
-  //         }} >Enter New Key</Button>
-  //     </Box>
-  //   ); 
-  // }
   if (modalOpen) {
     return (
       <Modal open={modalOpen} onClose={handleClose}>
@@ -273,9 +190,6 @@ export default function VirusTotalHowToModal(props: any) {
         {activeStep === steps.length && (
           <Paper square elevation={0} sx={{ p: 3 }}>
             <Typography>All steps completed - you&apos;re finished</Typography>
-            {/* <Button onClick={handleReset} sx={{ mt: 1, mr: 1 }}>
-              Reset
-            </Button> */}
           </Paper>
         )}
       </Box>
