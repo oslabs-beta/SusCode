@@ -5,25 +5,6 @@ All notable changes to the "suscode" extension will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file
 and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.2.0] - 2025-01-13
-
-### Add
-
-- **PATCH** VirusTotal API integration to scan and retrieve results.
-- Loading state for ongoing VirusTotal scans.
-
-### Change
-
-- External scans category.
-- Button to initialize scan.
-- Stepper to help one get a VirusTotal API key.
-- Visual feedback for scans in progress, including loading indicators.
-
-### Fix
-
-- Minor bugs in-scan progress display.
-- Minor bug in recursive fileFinder call to find files
-
 ## [Unreleased] 2024-08-29
 
 ### Add
@@ -40,6 +21,25 @@ and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - PATCH visual loading for scans in progress
 
 ### Fix
+
+## [1.2.0] - 2025-01-13
+
+### Added
+
+- VirusTotal API integration to scan and retrieve results.
+- Loading state for ongoing VirusTotal scans.
+
+### Changed
+
+- External scans category.
+- Button to initialize scan.
+- Stepper to help one get a VirusTotal API key.
+- Visual feedback for scans in progress, including loading indicators.
+
+### Fixed
+
+- Minor bugs in-scan progress display.
+- Minor bug in recursive fileFinder call to find files
 
 ## [1.0.0] - 2024-09-12
 
