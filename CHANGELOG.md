@@ -9,7 +9,6 @@ and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Add
 
-- PATCH VirusTotal API
 - MAJOR database option with login to save scan history
 - MAJOR add more testing
 - MINOR select all option
