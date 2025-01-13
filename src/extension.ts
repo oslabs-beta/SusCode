@@ -4,8 +4,7 @@ import fs from 'fs';
 import { reader } from './workers/fileFinder';
 import findReadMe from './workers/findReadMe';
 import { virusTotalScan } from './workers/virusTotalScan';
-import VirusTotalHowToModal from './panel/components/virusTotalHowToModal';
-import { error } from 'console';
+
 
 // generates a unique key used for script security
 function getNonce() {

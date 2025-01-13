@@ -4,14 +4,12 @@ import  axios from 'axios';
 import FormData from 'form-data';
 // import { WebviewPanel } from 'vscode';
 import { AnalysisResponse, FileUploadResponse } from '../types';
-import { scanPaths } from './fileFinder';//need to acces this inputting the name to find the files to scan... with a for each? Does it return a giant object?
-// import { setVirusTotal } from '../workers/virusTotalScan'; // this needs to be props, not passed completely
+import { scanPaths } from './fileFinder';
 import * as vscode from 'vscode';
-
+// Below is a timeout that might be used to optimize scan times in the future. 
 // let timeoutId: NodeJS.Timeout | null = null;
 
 export function virusTotalScan(apiKey: string, extName: string, panel: vscode.WebviewPanel) {
-    console.log('In the virusTotalScan looking at value of scanPaths[extName]: ', scanPaths[extName]);
     interface FileAppendOptions {
         filename: string;
     }
@@ -75,7 +73,6 @@ export function virusTotalScan(apiKey: string, extName: string, panel: vscode.We
             .then((result) => {
                 const fileId = result.data.data.id;
                 if(fileId) {
-                    // console.log('I think successful in the axios post request as I got a file ID: ', fileId);
                     setTimeout(() => getTheResults(fileId, apiKey), 20000);
                     panel.webview.postMessage({type: 'keyIsGood', message: 'The API key is good and scan is running'});
                 } else {

@@ -15,7 +15,6 @@ import TelemetrySearchResults from './searchResultComponents/telemetrySearchResu
 import VirusTotalHowToModal from './virusTotalHowToModal';
 import VirusTotalResults from './searchResultComponents/virusTotalSearchResults';
 import Paper from '@mui/material/Paper';
-import { virusTotalScan } from '../../workers/virusTotalScan';
 import { useState, useEffect, FormEvent } from 'react';
 import {  AnalysisResponse } from '../../types';
 import { Typography } from '@mui/material';

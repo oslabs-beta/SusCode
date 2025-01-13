@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import TabContext from '@mui/lab/TabContext';
 import Tabs from './tabs';
 import TabPanels from './tabPanels';
-import { Button } from '@mui/material';
+
 
 //=================TabContextDive COMPONENT==========================//
 // * This is the container for the Tabs and TabPanels
@@ -32,7 +32,6 @@ export default function TabContextDiv(props: any) {
         displayNames={displayNames}
         patternMatchPanelState={patternMatchPanelState}
         telemetryPanelState={telemetryPanelState}
-        //////////////////add virus total state
         readMe={readMe}
       />
     </TabContext>

@@ -45,21 +45,6 @@ function App() {
       }
     }
   });
-  //====================   LISTENING FOR MESSAGES FROM VirusTotalScan Stuff WITHIN virusTotalHowToModal.tsx   =====================//
-  // useEffect(() => {
-  //   window.addEventListener('message', (event) => {
-  //     const message = event.data;
-  //     switch (message.type) {
-  //       case 'storeApiKey': {
-  //         async function getApiKey(): Promise<string | undefined> {
-  //             const secretStorage = vscode.workspace.getConfiguration().getSecretStorage();
-  //             return await secretStorage.get('myExtension.apiKey');
-  //           }
-  //       }
-  //     }
-  //   });
-  // });
-
 
   //====================   LISTENING FOR MESSAGES FROM streamFilesInDirectory() WITHIN fileReader.ts   =====================//
   //grabbing html element with id: 'content'
