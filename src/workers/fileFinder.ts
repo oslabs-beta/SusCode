@@ -5,6 +5,8 @@ import { WebviewPanel } from 'vscode';
 import { analyzeFilesForNetworkRequests, AnalysisResult } from './networkRequestFinder';
 import packageChecker from './dependencyChecker';
 
+export const scanPaths: Record<string, string[]> = {};
+
 export function reader(
   extPath: string,
   panel: WebviewPanel,
@@ -30,7 +32,12 @@ export function reader(
       for (let file of toBeTested) {
         pathFoundFiles.push(path.join(extenPath, file));
       }
-      
+      if (scanPaths[name]) {
+        scanPaths[name] = [...scanPaths[name], ...pathFoundFiles];
+      } else {
+        scanPaths[name] = pathFoundFiles;
+      }
+
       // Running the file search
       analyzeFilesForNetworkRequests(pathFoundFiles, panel, name, true);
       streamFilesInDirectory(pathFoundFiles, panel, name);
