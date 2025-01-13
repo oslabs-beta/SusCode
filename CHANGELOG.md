@@ -5,6 +5,20 @@ All notable changes to the "suscode" extension will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file
 and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2025-01-13
+
+### Add
+- **PATCH** VirusTotal API integration to scan and retrieve results.
+- Loading state for ongoing VirusTotal scans.
+
+### Change
+- Visual feedback for scans in progress, including loading indicators.
+- Improved UI for handling multiple scans.
+
+### Fix
+- Minor throttling optimizations for large scans or multiple scans at the same time.
+- Error handling for large scan data.
+
 ## [Unreleased] 2024-08-29
 
 ### Add
