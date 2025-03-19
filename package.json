@@ -77,7 +77,8 @@
     "watch-tests": "tsc -p . -w --outDir out",
     "pretest": "npm run compile-tests && npm run compile && npm run lint",
     "lint": "eslint src --ext ts",
-    "test": "vscode-test"
+    "test": "vscode-test",
+    "test:jest": "jest"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.6.3",
