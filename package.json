@@ -85,6 +85,7 @@
     "@testing-library/react": "^16.2.0",
     "@testing-library/user-event": "^14.6.1",
     "@types/form-data": "^2.2.1",
+    "@types/jest": "^29.5.14",
     "@types/mocha": "^10.0.7",
     "@types/node": "20.x",
     "@types/react-dom": "^18.3.0",

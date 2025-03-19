@@ -13,7 +13,7 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
 import Modal from '@mui/material/Modal';
-import path from 'path'
+import * as path from 'path';
 // import HelpIcon from '@mui/icons-material/Help';
 export default function VirusTotalHowToModal(props: any) {
 

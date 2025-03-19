@@ -2,7 +2,7 @@ import * as React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
-import VirusTotalHowToModal from './VirusTotalHowToModal'; // adjust path as needed
+import VirusTotalHowToModal from '../virusTotalHowToModal'; // adjust path as needed
 
 // Mock the vscode API
 const mockPostMessage = jest.fn();
@@ -14,7 +14,7 @@ describe('VirusTotalHowToModal', () => {
     mockPostMessage.mockReset();
   });
 
-  test('renders nothing when modalOpen is false', () => {
+  test('renders nothing when modalOpen is false', async () => {
     const { container } = render(
       <VirusTotalHowToModal
         modalOpen={false}
@@ -22,10 +22,12 @@ describe('VirusTotalHowToModal', () => {
         vscode={mockVscode}
       />
     );
+    
     expect(container.firstChild).toBeNull();
+  
   });
 
-  test('renders modal when modalOpen is true', () => {
+  test('renders modal when modalOpen is true', async () => {
     render(
       <VirusTotalHowToModal
         modalOpen={true}
@@ -33,9 +35,15 @@ describe('VirusTotalHowToModal', () => {
         vscode={mockVscode}
       />
     );
-    expect(
-      screen.getByText(/You need an API key to use VirusTotal/i)
-    ).toBeInTheDocument();
+    
+    await waitFor(() => {
+      expect(
+        screen.getByText(/You need an API key to use VirusTotal/i)
+      ).toBeInTheDocument();
+    });
+    
+   
+    
   });
 
   test('navigates through steps when Continue button is clicked', async () => {
@@ -48,28 +56,34 @@ describe('VirusTotalHowToModal', () => {
     );
 
     // First step should be visible
-    expect(
+    await expect(
       screen.getByText(/You need an API key to use VirusTotal/i)
     ).toBeInTheDocument();
 
     // Click continue
-    fireEvent.click(screen.getByText('Continue'));
+    await userEvent.click(screen.getByText('Continue'));
 
     // Second step should be visible
-    expect(
-      screen.getByText(/Once you've verified your account/i)
-    ).toBeInTheDocument();
+    await waitFor(() => {
+      expect(
+        screen.getByText(/Once you've verified your account/i)
+      ).toBeInTheDocument();
+    });
+    
 
     // Click continue again
-    fireEvent.click(screen.getByText('Continue'));
+    await userEvent.click(screen.getByText('Continue'));
 
     // Third step should be visible
-    expect(
-      screen.getByText(/Submit your VirusTotal API Key/i)
-    ).toBeInTheDocument();
+    await waitFor(() => {
+      expect(
+        screen.getByText(/Submit your VirusTotal API Key/i)
+      ).toBeInTheDocument();
+    });
+    
   });
 
-  test('navigates back when Back button is clicked', () => {
+  test('navigates back when Back button is clicked', async () => {
     render(
       <VirusTotalHowToModal
         modalOpen={true}
@@ -79,21 +93,27 @@ describe('VirusTotalHowToModal', () => {
     );
 
     // Navigate to second step
-    fireEvent.click(screen.getByText('Continue'));
-    expect(
-      screen.getByText(/Once you've verified your account/i)
-    ).toBeInTheDocument();
+    await userEvent.click(screen.getByText('Continue'));
+    await waitFor(() => {
+      expect(
+        screen.getByText(/Once you've verified your account/i)
+      ).toBeInTheDocument();
+    });
+    
 
     // Click back
-    fireEvent.click(screen.getByText('Back'));
+    await userEvent.click(screen.getByText('Back'));
 
     // First step should be visible again
-    expect(
-      screen.getByText(/You need an API key to use VirusTotal/i)
-    ).toBeInTheDocument();
+    await waitFor(() => {
+      expect(
+        screen.getByText(/You need an API key to use VirusTotal/i)
+      ).toBeInTheDocument();
+    });
+    
   });
 
-  test('submits API key and closes modal when Submit button is clicked', () => {
+  test('submits API key and closes modal when Submit button is clicked', async () => {
     const setModalOpen = jest.fn();
 
     render(
@@ -105,15 +125,15 @@ describe('VirusTotalHowToModal', () => {
     );
 
     // Navigate to the third step
-    fireEvent.click(screen.getByText('Continue'));
-    fireEvent.click(screen.getByText('Continue'));
+    await userEvent.click(screen.getByText('Continue'));
+    await userEvent.click(screen.getByText('Continue'));
 
     // Enter API key
     const apiKeyInput = screen.getByPlaceholderText('Paste your API key');
-    fireEvent.change(apiKeyInput, { target: { value: 'test-api-key-123' } });
+    await userEvent.type(apiKeyInput, 'test-api-key-123');
 
     // Click submit
-    fireEvent.click(screen.getByText('Submit'));
+    await userEvent.click(screen.getByText('Submit'));
 
     // Check if vscode.postMessage was called with the right parameters
     expect(mockPostMessage).toHaveBeenCalledWith({
@@ -125,7 +145,7 @@ describe('VirusTotalHowToModal', () => {
     expect(setModalOpen).toHaveBeenCalledWith(false);
   });
 
-  test('submits API key when Enter key is pressed in input field', () => {
+  test('submits API key when Enter key is pressed in input field', async () => {
     const setModalOpen = jest.fn();
 
     render(
@@ -137,15 +157,15 @@ describe('VirusTotalHowToModal', () => {
     );
 
     // Navigate to the third step
-    fireEvent.click(screen.getByText('Continue'));
-    fireEvent.click(screen.getByText('Continue'));
+    await userEvent.click(screen.getByText('Continue'));
+    await userEvent.click(screen.getByText('Continue'));
 
     // Enter API key
     const apiKeyInput = screen.getByPlaceholderText('Paste your API key');
-    fireEvent.change(apiKeyInput, { target: { value: 'test-api-key-123' } });
+    // await userEvent.type(apiKeyInput, 'test-api-key-123');
 
     // Press Enter key
-    fireEvent.keyDown(apiKeyInput, { key: 'Enter', code: 'Enter' });
+    await userEvent.type(apiKeyInput, 'test-api-key-123{Enter}');
 
     // Check if vscode.postMessage was called
     expect(mockPostMessage).toHaveBeenCalledWith({
