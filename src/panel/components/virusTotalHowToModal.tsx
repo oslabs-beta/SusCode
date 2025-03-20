@@ -82,7 +82,7 @@ export default function VirusTotalHowToModal(props: any) {
       'text': (<h4 style={{marginBottom: 2, marginTop: 4}} >
       Submit your{' '}
       <span style={{ color: 'black', fontWeight: 'bold' }}>VirusTotal</span>
-      {' '}API Key here so we can safely store it.
+      {' '}API key here so we can safely store it.
       {/* <HelpIcon onClick={() => {  console.log('HelpIcon clicked')  }} /> */}
       </h4>),
       //Would like to add the HelpIcon above to explain how we are safely storing their API Key bringing in another Modal

@@ -77,7 +77,7 @@ describe('VirusTotalHowToModal', () => {
     // Third step should be visible
     await waitFor(() => {
       expect(
-        screen.getByText(/Submit your VirusTotal API Key/i)
+        screen.getByRole('heading', { name: /Submit your VirusTotal API key here so we can safely store it./i })
       ).toBeInTheDocument();
     });
     
