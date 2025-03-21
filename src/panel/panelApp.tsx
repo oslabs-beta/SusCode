@@ -1,14 +1,18 @@
 import * as React from 'react';
-import { useState } from 'react';
-import { resultsObj, panelCache } from '../types';
+import { useState, useEffect } from 'react';
+import { resultsObj, panelCache} from '../types';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import NavBar from './components/navBar';
 import TabContextDiv from './components/tabContext';
+// const vscode = acquireVsCodeApi();
+
 
 function App() {
+  
   // initialize state for the read me description
   const [readMe, setReadMe] = useState<object>({});
+ 
   const [displayNames, setDisplayNames] = useState<string[]>([]);
   // Adding unique state for each search that appears in a panel for an app
   const [patternMatchPanelState, setPatternMatchPanelState] =

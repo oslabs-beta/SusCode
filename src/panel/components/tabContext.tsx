@@ -5,6 +5,7 @@ import TabContext from '@mui/lab/TabContext';
 import Tabs from './tabs';
 import TabPanels from './tabPanels';
 
+
 //=================TabContextDive COMPONENT==========================//
 // * This is the container for the Tabs and TabPanels
 // * Tabs are generated dynamically by the generateTabs function in /components/tabs
@@ -12,7 +13,7 @@ import TabPanels from './tabPanels';
 
 export default function TabContextDiv(props: any) {
   const [value, setValue] = useState<number>(0);
-  const { displayNames, patternMatchPanelState, telemetryPanelState, readMe } =
+  const { displayNames, patternMatchPanelState, telemetryPanelState, readMe} =
     props;
 
   return (

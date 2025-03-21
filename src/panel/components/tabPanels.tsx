@@ -8,21 +8,121 @@ import PatternInfo from './patternInfo';
 import DependencyChecker from './dependencyChecker';
 import Divider from '@mui/material/Divider';
 import Chip from '@mui/material/Chip';
-
+import Link from '@mui/material/Link';
+import Button from '@mui/material/Button';
 import PatternSearchResults from './searchResultComponents/patternSearchResults';
 import TelemetrySearchResults from './searchResultComponents/telemetrySearchResults';
+import VirusTotalHowToModal from './virusTotalHowToModal';
+import VirusTotalResults from './searchResultComponents/virusTotalSearchResults';
 import Paper from '@mui/material/Paper';
+import { useState, useEffect, FormEvent } from 'react';
+import {  AnalysisResponse } from '../../types';
+import { Typography } from '@mui/material';
+// import { Input } from '@mui/material';
+
+const vscode = acquireVsCodeApi();
 
 export default function TabPanels(props: any) {
-  const { displayNames, patternMatchPanelState, telemetryPanelState, readMe } =
+
+  type VirusTotalState = {
+    [extensionName:string]: {[filename: string]: AnalysisResponse['data']['attributes']['results']};
+  }; 
+
+  //States for VirusTotal scan 
+  const [ modalOpen, setModalOpen ] = useState(false);
+  const [ keyError, setKeyError ] = useState(false);
+  const [virusTotal, setVirusTotal] = useState<VirusTotalState>({});
+  const [loading, setLoading] = useState(false); // this is also stuff for virusTotal
+
+
+
+  const { displayNames, patternMatchPanelState, telemetryPanelState, readMe} =
     props;
+
+  async function  handleClicking (extensionName: string) {       
+    getApiKey(extensionName);
+  }
+  //Getting API Key for VirusTotal from VSCode secret storage
+  function getApiKey(extensionName: string) {
+    vscode.postMessage({type: 'getApiKey', extensionName: extensionName});
+  }
 
   function getRandom() {
     return Math.random() * 100;
   }
+
+  // useEffect for message handling with regards to VirusTotal scan
+  useEffect(() => {
+    const handleMessage = (event: any) => {
+      const message = event.data;
+      // console.log('message recieved in useEffect: ', message);
+      switch (message.type){
+        case 'returnApiKey' : 
+          if (message.value) {
+            const { value: apiKey, extensionName } = message; // Destructure extensionName from message
+            try {
+              vscode.postMessage({ type: 'runVirusTotalScan', value: apiKey, extensionName: extensionName,
+                });
+            }
+            catch(error) {
+              setModalOpen(true);
+            }
+          }
+          else {
+            setModalOpen(true);
+          }
+          break;
+
+        case 'keyError':
+          console.log('Error with API key');
+          setKeyError(true);
+          break;
+        
+        case 'keyIsGood':
+          setKeyError(false);
+          break;
+
+        case 'vtResultsLoading':
+          console.log('loading');
+          if(keyError === false){
+            message.value.forEach((el: string) => {
+              setVirusTotal((prevState: any) => ({
+                ...prevState,
+                [message.extName]: {
+                  ...prevState[message.extName], 
+                  [el]: 'loading',
+                },
+              }));
+            });
+            setLoading(true);
+          }
+          break;
+
+        case 'vtResults':
+          setLoading(false);
+          setVirusTotal((prevState) => ({
+            ...prevState,
+            [message.extName]: {
+              ...prevState[message.extName],
+              [message.filename]: message.value,
+            },
+          }));
+          break;
+
+        case 'modalOpen':
+          setModalOpen(true);
+          break;
+    }  
+    };
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, []);
+  
   const tabPanels = displayNames.map((extensionName: string, i: number) => {
+
     let value = i.toString();
     let content = `panelFor${extensionName}`;
+
     const patternMatchPanel: scanResult = patternMatchPanelState[
       extensionName
     ] || {
@@ -40,7 +140,7 @@ export default function TabPanels(props: any) {
     return (
       <TabPanel value={value} key={getRandom()} id={content}>
         <ReadMeDiv readMe={readMe} extensionName={extensionName} />
-
+               
         {/* <Results
           patternMatchPanelResults={patternMatchPanel.results}
           telemetryMatchPanelResults={telemetryMatchPanel.results}
@@ -111,10 +211,52 @@ export default function TabPanels(props: any) {
         >
         <DependencyChecker depResults={patternMatchPanel.depVulns} />
         </Paper>
+        {/* <Box> */}
+        <Divider sx={{ marginTop: '8px', marginBottom: '8px' }}>
+          <Chip label='EXTERNAL SCANS' variant='outlined' color='primary' />
+        </Divider>
+        <Paper
+          style={{
+            maxHeight: virusTotal[extensionName] === undefined ? 200 : 500,
+            overflow: 'auto',
+            background: 'inherit',
+            padding: 20,
+          }}
+          elevation={4}
+        >
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: '20px', border: 'none', marginBottom: virusTotal[extensionName] !== undefined ? '-8px' : '5px'}} >
+          <Button sx={{
+            bgcolor: virusTotal[extensionName] !== undefined ? '#3D3D3D' : '#1769aa', 
+            color: virusTotal[extensionName] !== undefined ? '#33ab9f' : '#b3b3b5', 
+            boxShadow: virusTotal[extensionName] !== undefined ? 'none' : 1, 
+            marginBottom: '-3px', 
+            width: '220px', minWidth: '220px','&:hover': {
+              bgcolor: '#33ab9f',
+              color: 'black'},
+            
+          }} variant="contained" id='virusScanBtn' onClick={() => { 
+            handleClicking(extensionName);          
+          }} >Run VirusTotal Scan</Button>
+          <Typography sx={{ visibility: virusTotal[extensionName] !== undefined ? 'hidden' : 'visible', 
+            color: '#b3b3b5', 
+            fontSize: '16px',
+            maxWidth: 1000,
+            }} >VirusTotal is an external resource that 
+            "...inspects items with over 70 antivirus scanners and URL/domain blocklisting services, 
+            in addition to a myriad of tools to extract signals from the studied content."
+             If you'd like to Sus them out yourself, click {' '}
+             <Link href="https://www.virustotal.com/gui/home/upload">HERE</Link>.</Typography>
+        </Box>
+        <Paper sx={{marginTop: 0, paddingTop: 0, marginBottom: 2}} >       
+           <VirusTotalHowToModal modalOpen={modalOpen} setModalOpen={setModalOpen} vscode={vscode} extensionName={extensionName} />
+           <VirusTotalResults keyError={keyError} modalOpen={modalOpen} VTResults={virusTotal[extensionName] || {}} loading={loading} />
+        </Paper>
+        </Paper>
+        <Box sx={{height: '200px'}}></Box>
+        {/* </Box> */}
       </TabPanel>
     );
   });
-
   return <Box>{tabPanels}</Box>;
 }
 module.exports = TabPanels;

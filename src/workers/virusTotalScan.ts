@@ -2,74 +2,95 @@ import * as fs from 'fs';
 import * as path from 'path';
 import  axios from 'axios';
 import FormData from 'form-data';
+// import { WebviewPanel } from 'vscode';
 import { AnalysisResponse, FileUploadResponse } from '../types';
-// import * as vscode from 'vscode';
+import { scanPaths } from './fileFinder';
+import * as vscode from 'vscode';
+// Below is a timeout that might be used to optimize scan times in the future. 
+// let timeoutId: NodeJS.Timeout | null = null;
 
-interface FileAppendOptions {
-    filename: string;
-  }
-const myApi: string = ''; // temporary placeholder - passed in from input or grabbing from vscode settings
-// store in settings.json as "myExtension.apiKey": "your-api-key-goes-here"
-    //then import vscode from vscode
-    //const apiKey = vscode.workspace.getConfiguration('myExtension').get<string>('apiKey')
-        //https://code.visualstudio.com/api/references/vscode-api#workspaceConfiguration
-        //https://code.visualstudio.com/api/references/vscode-api#Configuration
-        //https://code.visualstudio.com/api/references/contribution-points#contributes.configuration <- Ali
-                            //could do in combo with this 
-//encourage users to store API key in an .env
-    //https://nodejs.org/en/learn/command-line/how-to-read-environment-variables-from-nodejs
-
-//could also use VSCode secrets to store with a function in vscode.secrets.store 
-  //apparently this is mainly for temporary storage and not meant for long term
-  //https://code.visualstudio.com/api/references/vscode-api#secrets
-  //https://code.visualstudio.com/api/references/vscode-api#secrets
-
-//Obfusication - good for making sure that the key can't be exposed in logs or anything
-  //https://obfuscator.io/
-  //https://github.com/javascript-obfuscator/javascript-obfuscator
-
-
-
-// const { myApi } = code to get api key from vscode;
-
-
-
-const sample: string = ''
-const fileStream: fs.ReadStream = fs.createReadStream(sample);
-
-const formdata = new FormData(); // good stuff I need here******************************** * * * * *
-formdata.append("file", fileStream, {filename: 'extension.js'});
-
-function getTheResults(fileId: string, myApi: string) {
-   
-    axios.get<AnalysisResponse>(`https://www.virustotal.com/api/v3/analyses/${fileId}`, {
-    headers: {
-        'accept': 'application/json',
-        'x-apikey': myApi,
-        }
-    })
-            // .then((response) => response.json())
-    .then((response) => {
-        //perhaps ... 
-        //
-    })
-    .catch((err: string) => {
-        console.error('error fetching the analysis: ',err)
+export function virusTotalScan(apiKey: string, extName: string, panel: vscode.WebviewPanel) {
+    interface FileAppendOptions {
+        filename: string;
+    }
+    const trails: string[] = scanPaths[extName]; //scanPaths is an object with the file paths for each extension chosen
+    const filenameArray = trails.map((trail) => {
+        return path.basename(trail);
     });
-}
+    panel.webview.postMessage({type: 'vtResultsLoading', value: filenameArray, extName});
+    let currentIndex: number = 0;
+    
+    //VirusTotal only allows 4 scans per minute
+    function scanFilesWithRateLimit (files: string[], apiKey: string, panel: vscode.WebviewPanel) {
+        const round = trails.slice(currentIndex, currentIndex + 4);
+        round.forEach((trail) => {
+        scanOneFile(trail, apiKey, panel);
+        });
+        currentIndex += 4;
+        if (trails.length > 0) {
+            setTimeout(() => scanFilesWithRateLimit(files, apiKey, panel), 18000); // Wait before the next batch
+        }
+    }  
+        
+    function scanOneFile (filePath: string, apiKey: string, panel: vscode.WebviewPanel){
+        const fileStream: fs.ReadStream = fs.createReadStream(filePath); //this was sample until I just changed it on Nov 5th;
 
-axios.post<FileUploadResponse>("https://www.virustotal.com/api/v3/files", formdata, {
-    headers: {
-        "x-apikey": myApi,
-        ...formdata.getHeaders()
-    },
-    })
-    .then((result) => {
-        const fileId = result.data.data.id
-        if(fileId) {
-            setTimeout(() => getTheResults(fileId, myApi), 30000)
-        } else {
-            console.error('fileId is undefined')
-            }  
-    })
-    .catch((error) => console.error(error));
+        const formdata = new FormData(); 
+        const filename = path.basename(filePath);
+        formdata.append("file", fileStream, {filename: filename}); 
+
+        function getTheResults(fileId: string, apiKey: string, count = 30) {    
+            axios.get<AnalysisResponse>(`https://www.virustotal.com/api/v3/analyses/${fileId}`, {
+            headers: {
+                'accept': 'application/json',
+                'x-apikey': apiKey,
+                }
+            })
+            .then((response) => {
+                const status = response.data.data.attributes.status;
+
+                if (status === 'completed') {
+                    panel.webview.postMessage({type: 'vtResults', filename: filename, value: response.data.data.attributes, extName});
+                } else if (count > 0) {
+                    setTimeout(() => {
+                        getTheResults(fileId, apiKey, count -= 1);
+                    }, 15000);     
+                } else {
+                    panel.webview.postMessage({ type: 'vtResultsTimedOut', message: 'Getting the VirusTotal results timed out'});
+                }           
+            })
+            .catch((err: string) => {   
+                console.error('error fetching the analysis: ',err);
+            });
+        }
+
+        axios.post<FileUploadResponse>("https://www.virustotal.com/api/v3/files", formdata, {
+            headers: {
+                "x-apikey": apiKey,
+                ...formdata.getHeaders()
+            },
+            })
+            .then((result) => {
+                const fileId = result.data.data.id;
+                if(fileId) {
+                    setTimeout(() => getTheResults(fileId, apiKey), 20000);
+                    panel.webview.postMessage({type: 'keyIsGood', message: 'The API key is good and scan is running'});
+                } else {
+                    console.error('fileId is undefined');
+                    }  
+            })
+            .catch((error) => {
+                //Would like to add a more dynamic approach to error handling based off of error code sent back
+                console.error(`I'm in virusTotalScan worker and been an error running the api req scan: ${error}`);
+                panel.webview.postMessage({type: 'modalOpen', message: 'Error in the scan'});
+                panel.webview.postMessage({type: 'keyError', message: 'The API key is wrong or missing'});
+                //Might want to add to assure timeout doesn't run if error
+                    // if (timeoutId) {
+                    //     clearTimeout(timeoutId);
+                    // }
+                throw error;
+            });
+        }
+
+        scanFilesWithRateLimit(trails, apiKey, panel);
+}
