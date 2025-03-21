@@ -3,6 +3,8 @@ import path from 'path';
 import fs from 'fs';
 import { reader } from './workers/fileFinder';
 import findReadMe from './workers/findReadMe';
+import { virusTotalScan } from './workers/virusTotalScan';
+
 
 // generates a unique key used for script security
 function getNonce() {
@@ -107,7 +109,7 @@ export function activate(context: vscode.ExtensionContext) {
         let trimmedFilepath = filepaths[i].slice(1, -1);
         reader(trimmedFilepath, panel, names[i]);
       }
-
+      
       filepaths.forEach((el: string, i: number) => {
         el = el.slice(1, -1);
         findReadMe(
@@ -128,6 +130,33 @@ export function activate(context: vscode.ExtensionContext) {
             }
           }
         );
+      });
+      panel.webview.onDidReceiveMessage( async (message) => {
+        switch (message.type) {
+          //This is VirusTotal's apikey functionality messages I'm listening for
+          case 'storeApiKey': {
+            const secretStorage = context.secrets;
+            await secretStorage.store('myExtension.apiKey', message.value);
+            vscode.window.showInformationMessage('API key stored successfully!');
+            break;
+          }
+          case 'getApiKey': {
+            const apiKey = await context.secrets.get('myExtension.apiKey');
+            const extensionName = message.extensionName;
+            panel.webview.postMessage({ type: 'returnApiKey', value: apiKey, extensionName: extensionName });
+            break;
+          }
+          //This is the invocation of the VirusTotal scan
+          case 'runVirusTotalScan': {
+            const {value: apiKey, extensionName } = message;
+            virusTotalScan(apiKey, extensionName, panel);           
+            break;
+          }
+          //Error handling
+          case 'vtResultsTimedOut': {
+            vscode.window.showInformationMessage(message.message);
+          }
+        }
       });
     }
   );
